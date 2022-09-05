@@ -1,0 +1,211 @@
+local mod = mod_loader.mods[modApi.currentMod]
+local resourcePath = mod.resourcePath
+local scriptPath = mod.scriptPath
+local previewer = require(scriptPath.."weaponPreview/api")
+
+local writepath = "img/units/aliens/"
+local readpath = resourcePath .. writepath
+local imagepath = writepath:sub(5,-1)
+local a = ANIMS
+
+local function IsTipImage()
+	return Board:GetSize() == Point(6,6)
+end
+
+-------------
+--  Icons  --
+-------------
+
+modApi:appendAsset("img/effects/DNT_upshot_pillbug1.png", resourcePath.."img/effects/DNT_upshot_pillbug1.png")
+modApi:appendAsset("img/effects/DNT_upshot_pillbug2.png", resourcePath.."img/effects/DNT_upshot_pillbug2.png")
+
+-------------
+--   Art   --
+-------------
+
+local name = "pillbug" --lowercase, I could also use this else where, but let's make it more readable elsewhere
+
+-- UNCOMMENT WHEN YOU HAVE SPRITES; you can do partial
+modApi:appendAsset(writepath.."DNT_"..name..".png", readpath.."DNT_"..name..".png")
+modApi:appendAsset(writepath.."DNT_"..name.."a.png", readpath.."DNT_"..name.."a.png")
+modApi:appendAsset(writepath.."DNT_"..name.."e.png", readpath.."DNT_"..name.."e.png")
+modApi:appendAsset(writepath.."DNT_"..name.."_death.png", readpath.."DNT_"..name.."_death.png")
+--modApi:appendAsset(writepath.."DNT_"..name.."_Bw.png", readpath.."DNT_"..name.."_Bw.png")
+
+local base = a.EnemyUnit:new{Image = imagepath .. "DNT_"..name..".png", PosX = -23, PosY = -5}
+local baseEmerge = a.BaseEmerge:new{Image = imagepath .. "DNT_"..name.."e.png", PosX = -26, PosY = -10, NumFrames = 12}
+
+-- REPLACE "name" with the name
+-- UNCOMENT WHEN YOU HAVE SPRITES
+a.DNT_pillbug = base
+a.DNT_pillbuge = baseEmerge
+a.DNT_pillbuga = base:new{ Image = imagepath.."DNT_"..name.."a.png", NumFrames = 8, Time = .15}
+a.DNT_pillbugd = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Loop = false, NumFrames = 8, Time = .14 } --Numbers copied for now
+--a.DNT_pillbugw = base:new{ Image = imagepath.."DNT_"..name.."_Bw.png"} --Only if there's a boss
+
+
+-------------
+-- Weapons --
+-------------
+
+DNT_PillbugLeap1 = Skill:new{
+	Name = "Bouncing Leap",
+	Description = "Leap to a tile, landing on it or bouncing back on occupied tiles before it.", -- Too confusing?
+	Class = "Enemy",
+	Icon = "weapons/enemy_scarab1.png",
+	Projectile = "effects/DNT_upshot_pillbug1.png",
+	Range = 5,
+	Damage = 1,
+	TipImage = {
+		Unit = Point(2,4),
+		Target = Point(2,0),
+		Enemy1 = Point(2,0),
+		Mountain = Point(2,1),
+		Building = Point(2,2),
+		CustomPawn = "DNT_Pillbug1",
+	}
+}
+
+DNT_PillbugLeap2 = DNT_PillbugLeap1:new{
+	Damage = 2,
+	Projectile = "effects/DNT_upshot_pillbug2.png",
+	TipImage = {
+		Unit = Point(2,4),
+		Target = Point(2,0),
+		Enemy1 = Point(2,0),
+		Mountain = Point(2,1),
+		Building = Point(2,2),
+		CustomPawn = "DNT_Pillbug2",
+	}
+}
+
+function DNT_PillbugLeap1:GetTargetArea(point)
+	local ret = PointList()
+	for i = DIR_START, DIR_END do
+		for k = 2, self.Range do
+			local curr = DIR_VECTORS[i]*k + point
+			if Board:IsValid(curr) then
+				ret:push_back(curr)
+			end
+		end
+	end
+	return ret
+end
+
+function DNT_PillbugLeap1:GetSkillEffect(p1, p2)
+	local ret = SkillEffect()
+	local dir = GetDirection(p2 - p1)
+	local p3 = p2 - DIR_VECTORS[dir]
+
+	if Board:IsBlocked(p2,PATH_PROJECTILE) and p3 ~= p1 then
+		ret:AddQueuedScript(string.format("Board:GetPawn(%s):SetInvisible(true)", p1:GetString()))
+		ret:AddQueuedArtillery(SpaceDamage(p2, self.Damage),self.Projectile,NO_DELAY) -- 1st artillery effect
+
+		ret:AddQueuedDelay(0.8)
+
+		local landing = p2
+		for i = 1, 8 do
+			local nextpoint = landing - DIR_VECTORS[dir]
+			ret:AddQueuedScript(string.format([[
+				local fx = SkillEffect()
+				fx:AddArtillery(%s,SpaceDamage(%s, 0),%q,NO_DELAY)
+				Board:AddEffect(fx)
+			]],landing:GetString(),nextpoint:GetString(),self.Projectile)) -- 2nd artillery effect
+			landing = landing - DIR_VECTORS[dir]
+			if not Board:IsBlocked(nextpoint,PATH_PROJECTILE) or nextpoint == p1 then
+				break
+			end
+			ret:AddQueuedDelay(0.8)
+			ret:AddQueuedDamage(SpaceDamage(landing,self.Damage))
+		end
+
+		ret:AddQueuedScript(string.format("Board:GetPawn(%s):SetSpace(%s)", p1:GetString(), landing:GetString())) -- move pawn to hide charge effect
+		local move = PointList()
+		move:push_back(p1)
+		move:push_back(landing)
+		ret:AddQueuedCharge(move, NO_DELAY) -- charge move pawn preview, with arrows :/   Use pillbug sprite as sImageMark instead of charge?
+		ret.q_effect:back().bHide = true -- hide charge arrow path (this is behaving in a weird way)
+
+		ret:AddQueuedDelay(0.8)
+
+		ret:AddQueuedScript(string.format("Board:GetPawn(%s):SetInvisible(false)", landing:GetString()))
+		ret:AddQueuedDelay(0.5)
+
+	elseif p3 ~= p1 then
+		ret:AddQueuedScript(string.format("Board:GetPawn(%s):SetInvisible(true)", p1:GetString()))
+		ret:AddQueuedScript(string.format("Board:GetPawn(%s):SetSpace(%s)", p1:GetString(), p2:GetString())) -- move pawn to hide charge effect
+		ret:AddQueuedArtillery(SpaceDamage(p2, 0),self.Projectile,NO_DELAY) -- artillery effect
+
+		ret:AddQueuedDelay(0.8)
+		local move = PointList()
+		move:push_back(p1)
+		move:push_back(p2)
+		ret:AddQueuedCharge(move, NO_DELAY) -- charge arrows
+		ret.q_effect:back().bHide = true -- hide charge arrow path
+
+		ret:AddQueuedScript(string.format("Board:GetPawn(%s):SetInvisible(false)", p2:GetString()))
+		ret:AddQueuedDelay(0.5)
+	end
+
+	return ret
+end
+
+function DNT_PillbugLeap1:GetTargetScore(p1, p2)
+  local ret = Skill.GetTargetScore(self, p1, p2)
+  local dir = GetDirection(p2 - p1)
+
+	if ret > 5 then
+	  ret = 5
+	end
+
+	local p3 = p2
+	for i = 1, 8 do
+		if not Board:IsBlocked(p3,PATH_PROJECTILE) or p3 == p1 then
+			p3 = p3 - DIR_VECTORS[dir]
+			break
+		end
+		p3 = p3 - DIR_VECTORS[dir]
+	end
+	if Board:GetTerrain(p3) == TERRAIN_WATER or Board:GetTerrain(p3) == TERRAIN_HOLE then -- less priority to suicide attacks
+		ret = ret - 4
+	end
+
+    return ret
+end
+
+-----------
+-- Pawns --
+-----------
+
+DNT_Pillbug1 = Pawn:new{
+	Name = "Pillbug",
+	Health = 1,
+	MoveSpeed = 2,
+	Ranged = 1,
+	Image = "DNT_pillbug",
+	Armor = true,
+	SkillList = { "DNT_PillbugLeap1" },
+	SoundLocation = "/enemy/digger_1/",
+	DefaultTeam = TEAM_ENEMY,
+	ImpactMaterial = IMPACT_FLESH,
+	-- -- Mech test
+	-- Class = "Prime",
+	-- DefaultTeam = TEAM_PLAYER,
+}
+
+DNT_Pillbug2 = Pawn:new{
+	Name = "Alpha Pillbug",
+	Health = 3,
+	MoveSpeed = 2,
+	Ranged = 1,
+	Image = "DNT_pillbug",
+	ImageOffset = 1,
+	Armor = true,
+	SkillList = { "DNT_PillbugLeap2" },
+	SoundLocation = "/enemy/digger_2/",
+	DefaultTeam = TEAM_ENEMY,
+	ImpactMaterial = IMPACT_FLESH,
+	-- -- Mech test
+	-- Class = "Prime",
+	-- DefaultTeam = TEAM_PLAYER,
+}
