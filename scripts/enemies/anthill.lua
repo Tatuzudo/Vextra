@@ -53,7 +53,7 @@ DNT_AnthillAtk1 = Skill:new {
 	Class = "Enemy",
 	LaunchSound = "",
 	Projectile = "effects/shotup_crab1.png",
-	Spawns = {"DNT_SoldierAnt1","DNT_FlyingAnt1","DNT_WorkerAnt1"},
+	Spawns = {"DNT_WorkerAnt1","DNT_FlyingAnt1","DNT_SoldierAnt1"},
 	-- PathSize = 1,
 	TipImage = {
 		Unit = Point(2,3),
@@ -63,7 +63,7 @@ DNT_AnthillAtk1 = Skill:new {
 }
 
 DNT_AnthillAtk2 = DNT_AnthillAtk1:new {
-	Spawns = {"DNT_SoldierAnt2","DNT_FlyingAnt2","DNT_WorkerAnt2"},
+	-- Spawns = {"DNT_SoldierAnt2","DNT_FlyingAnt2","DNT_WorkerAnt2"},
 	TipImage = {
 		Unit = Point(2,3),
 		Target = Point(2,2),
