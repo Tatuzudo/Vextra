@@ -71,7 +71,7 @@ DNT_CockroachAtk1 = LineArtillery:new {
 	Name = "Cockroach Atk",
 	Description = "Description",
 	Damage = 1,
-	ArtillerySize = 5,
+	ArtillerySize = 4,
 	SelfDamage = 1,
 	Class = "Enemy",
 	PathSize = 1,
@@ -101,8 +101,22 @@ DNT_CockroachAtk2 = DNT_CockroachAtk1:new { --Just an example
 function DNT_CockroachAtk1:GetSkillEffect(p1,p2)
 	local ret = SkillEffect()
 	local direction = GetDirection(p2 - p1)
-	local backdir = GetDirection(p1 - p2)
+	--local backdir = GetDirection(p1 - p2)
 
+	local target = p2
+	local damage = SpaceDamage(target, self.Damage)
+	damage.sAnimation = "ExploArt1",
+
+	ret:AddQueuedArtillery(damage,self.Projectile, NO_DELAY)
+
+	target = p2 + DIR_VECTORS[direction]*2
+	damage.loc = target
+
+	ret:AddQueuedArtillery(damage,self.Projectile, NO_DELAY)
+
+	ret:AddQueuedDamage(SpaceDamage(p1,self.SelfDamage))
+
+	--[[ OLD TARGETTING SYSTEM
 	local target = p2 + DIR_VECTORS[direction]
 	local damage = SpaceDamage(target, self.Damage)
 	damage.sAnimation = "ExploArt1",
@@ -113,8 +127,7 @@ function DNT_CockroachAtk1:GetSkillEffect(p1,p2)
 	damage.loc = target
 
 	ret:AddQueuedArtillery(damage,self.Projectile, NO_DELAY)
-
-	ret:AddQueuedDamage(SpaceDamage(p1,self.SelfDamage))
+	]]
 
 	return ret
 end
