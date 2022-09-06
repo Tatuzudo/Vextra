@@ -117,20 +117,19 @@ function DNT_PillbugLeap1:GetSkillEffect(p1, p2)
 		end
 	else
 		ret:AddQueuedArtillery(SpaceDamage(p2, 0),self.Projectile,NO_DELAY) -- 1st artillery effect
-		ret:AddQueuedDelay(0.8)
 	end
 	
 	ret:AddQueuedDelay(0.8)
 	ret:AddQueuedScript(string.format("Board:GetPawn(%s):SetSpace(%s)", p1:GetString(), p3:GetString())) --move pawn
 	ret:AddQueuedScript(string.format("Board:GetPawn(%s):SetInvisible(false)", p3:GetString())) -- show pawn
-	ret:AddQueuedDelay(0.5)
 	
 	-- Preview
 	local move = PointList()
 	move:push_back(p1)
 	move:push_back(p3)
-	ret:AddQueuedCharge(move, NO_DELAY) -- charge preview
+	ret:AddQueuedMove(move, NO_DELAY) -- charge preview
 	ret.q_effect:back().bHide = true -- hide charge arrow path
+	ret:AddQueuedDelay(0.5)
 	
 	return ret
 end

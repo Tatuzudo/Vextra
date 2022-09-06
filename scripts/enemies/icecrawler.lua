@@ -55,6 +55,7 @@ DNT_IceCrawlerAtk1 = Skill:new {
 	Class = "Enemy",
 	LaunchSound = "",
 	FreezeSelf = false, -- set true and uncomment the hooks to test with self freeze
+	ExplodeIce = true,
 	Projectile = "effects/shot_tankice",
 	PathSize = 1,
 	Icon = "weapons/enemy_leaper1.png",
@@ -80,31 +81,42 @@ DNT_IceCrawlerAtk2 = DNT_IceCrawlerAtk1:new {
 function DNT_IceCrawlerAtk1:GetSkillEffect(p1,p2)
 	local ret = SkillEffect()
 	local target = GetProjectileEnd(p1,p2)
-	local damage = SpaceDamage(target,self.Damage)
-
+	local damage = SpaceDamage(target,self.Damage) 
+	
 	-- damage.sAnimation = "SwipeClaw2"
 	-- damage.sSound = self.SoundBase.."/attack"
 
 	if not Board:IsFrozen(target) then -- do not freeze frozen things again
 		damage.iFrozen = EFFECT_CREATE
 	end
-
-	ret:AddQueuedProjectile(damage,self.Projectile)
-
+	
 	if self.FreezeSelf then
 		damage = SpaceDamage(p1)
 		damage.iFrozen = EFFECT_CREATE
+		-- damage.sSound = "/weapons/ice_throw"
 		ret:AddQueuedDamage(damage)
 	end
-
+	
+	ret:AddQueuedProjectile(damage,self.Projectile,FULL_DELAY)
+	
+	if Board:IsFrozen(target) and self.ExplodeIce then
+		for i = DIR_START, DIR_END do
+			local curr = DIR_VECTORS[i] + target
+			damage = SpaceDamage(curr,1)
+			-- damage.sAnimation = "IceShards"
+			-- damage.sSound = self.SoundBase.."/attack"
+			ret:AddQueuedDamage(damage)
+		end
+	end
+	
 	return ret
 end
 
 function DNT_IceCrawlerAtk1:GetTargetScore(p1,p2)
 	local ret = Skill.GetTargetScore(self, p1, p2)
-
+	
 	local target = GetProjectileEnd(p1,p2)
-
+	
 	local pawn = Board:GetPawn(target)
 	if pawn then -- only unfreeze allies.
 		if pawn:GetTeam() == TEAM_PLAYER and pawn:IsFrozen() then
