@@ -2,7 +2,7 @@
 local enemies = {
 	DNT_Mantis = {
 		weakpawn = true,
-		ExclusiveElements = "Starfish",
+		ExclusiveElement = "Starfish",
 		max_pawns = 3,
 	},
 	DNT_Pillbug = {
@@ -28,18 +28,19 @@ local enemies = {
 	},
 	DNT_Antlion = {
 		weakpawn = true,
-		ExclusiveElements = "Jelly_Explode",
-		max_pawns = 2,
-	},
-	DNT_Antlion = {
-		weakpawn = true,
+		--ExclusiveElement = "Jelly_Explode", Not stable, so this is uneeded
 		max_pawns = 3,
+	},
+	DNT_Stinkbug = {
+		weakpawn = true,
+		ExclusiveElement = "Mosquito",
+		max_pawns = 2,
 	},
 	DNT_Cockroach = {
 		weakpawn = false,
 		max_pawns = 2,
 		IslandLocks = 2,
-		ExclusiveElements = "Jelly_Explode", --Doens't work with them, so just exclude them
+		ExclusiveElement = "Jelly_Explode", --Doens't work with them, so just exclude them
 	},
 	DNT_Termites = {
 		weakpawn = false,
@@ -63,20 +64,43 @@ for id, v in pairs(enemies) do
 	WeakPawns[id] = v.weakpawn
 	Spawner.max_pawns[id] = v.max_pawns -- defaults to 3
 	Spawner.max_level[id] = v.max_level -- defaults to 2 (no alpha is 1)
-	ExclusiveElements[id] = v.exclusive_element
+	if v.ExclusiveElement then
+		if ExclusiveElements then
+			ExclusiveElements[id] = v.exclusive_element
+		elseif exclusiveElements then
+			table.insert(exclusiveElements, {string.format("%q",id), v.ExclusiveElement})
+		end
+	end
 end
 
 --Anthill has many (spawner), Cockroach has many (arty), Pillbug has many (arty)
 --This is following vanilla's standards of only one arty and one spawner per island
-ExclusiveElements = {
-	DNT_Anthill = "Blobber",
-	DNT_Anthill = "Spider",
-	DNT_Anthill = "Shaman",
-	DNT_Cockroach = "Moth",
-	DNT_Cockroach = "DNT_Pillbug",
-	DNT_Cockroach = "Shaman",
-	DNT_Cockroach = "Scarab",
-	DNT_Pillbug = "Moth",
-	DNT_Pillbug = "Scarab",
-	DNT_Pillbug = "Shaman",
-}
+if ExclusiveElements then --1.2.76b  I also do not know if this actually works.
+	ExclusiveElements = {
+		DNT_Anthill = "Blobber",
+		DNT_Anthill = "Spider",
+		DNT_Anthill = "Shaman",
+		DNT_Cockroach = "Moth",
+		DNT_Cockroach = "DNT_Pillbug",
+		DNT_Cockroach = "Shaman",
+		DNT_Cockroach = "Scarab",
+		DNT_Pillbug = "Moth",
+		DNT_Pillbug = "Scarab",
+		DNT_Pillbug = "Shaman",
+	}
+elseif exclusiveElements then --1.2.79+
+	for _, list in pairs(exclusiveElements) do
+		if list[1] == "Moth" then
+			table.insert(list, "DNT_Cockroach")
+			table.insert(list, "DNT_Pillbug")
+		elseif list[1] == "Spider" then
+			table.insert(list, "DNT_Anthill")
+		elseif list[1] == "Leaper" then
+			table.insert(list, "DNT_Silkworm")
+		end
+	end
+end
+
+--Console testing
+-- for i, j in pairs(exclusiveElements) do LOG(i); for k, l in pairs(j) do LOG(l) end end
+-- checkExclusiveList
