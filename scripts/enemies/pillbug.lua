@@ -95,58 +95,43 @@ end
 function DNT_PillbugLeap1:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	local dir = GetDirection(p2 - p1)
-	local p3 = p2 - DIR_VECTORS[dir]
-
-	if Board:IsBlocked(p2,PATH_PROJECTILE) and p3 ~= p1 then
-		ret:AddQueuedScript(string.format("Board:GetPawn(%s):SetInvisible(true)", p1:GetString()))
+	local p3 = p2
+	
+	ret:AddQueuedScript(string.format("Board:GetPawn(%s):SetInvisible(true)", p1:GetString())) -- hide pawn
+	if Board:IsBlocked(p2,PATH_PROJECTILE) then
 		ret:AddQueuedArtillery(SpaceDamage(p2, self.Damage),self.Projectile,NO_DELAY) -- 1st artillery effect
-
 		ret:AddQueuedDelay(0.8)
-
-		local landing = p2
 		for i = 1, 8 do
-			local nextpoint = landing - DIR_VECTORS[dir]
+			local nextpoint = p3 - DIR_VECTORS[dir]
 			ret:AddQueuedScript(string.format([[
 				local fx = SkillEffect()
 				fx:AddArtillery(%s,SpaceDamage(%s, 0),%q,NO_DELAY)
 				Board:AddEffect(fx)
-			]],landing:GetString(),nextpoint:GetString(),self.Projectile)) -- 2nd artillery effect
-			landing = landing - DIR_VECTORS[dir]
+			]],p3:GetString(),nextpoint:GetString(),self.Projectile)) -- 2nd artillery effect
+			p3 = p3 - DIR_VECTORS[dir]
 			if not Board:IsBlocked(nextpoint,PATH_PROJECTILE) or nextpoint == p1 then
 				break
 			end
 			ret:AddQueuedDelay(0.8)
-			ret:AddQueuedDamage(SpaceDamage(landing,self.Damage))
+			ret:AddQueuedDamage(SpaceDamage(p3,self.Damage))
 		end
-
-		ret:AddQueuedScript(string.format("Board:GetPawn(%s):SetSpace(%s)", p1:GetString(), landing:GetString())) -- move pawn to hide charge effect
-		local move = PointList()
-		move:push_back(p1)
-		move:push_back(landing)
-		ret:AddQueuedCharge(move, NO_DELAY) -- charge move pawn preview, with arrows :/   Use pillbug sprite as sImageMark instead of charge?
-		ret.q_effect:back().bHide = true -- hide charge arrow path (this is behaving in a weird way)
-
+	else
+		ret:AddQueuedArtillery(SpaceDamage(p2, 0),self.Projectile,NO_DELAY) -- 1st artillery effect
 		ret:AddQueuedDelay(0.8)
-
-		ret:AddQueuedScript(string.format("Board:GetPawn(%s):SetInvisible(false)", landing:GetString()))
-		ret:AddQueuedDelay(0.5)
-
-	elseif p3 ~= p1 then
-		ret:AddQueuedScript(string.format("Board:GetPawn(%s):SetInvisible(true)", p1:GetString()))
-		ret:AddQueuedScript(string.format("Board:GetPawn(%s):SetSpace(%s)", p1:GetString(), p2:GetString())) -- move pawn to hide charge effect
-		ret:AddQueuedArtillery(SpaceDamage(p2, 0),self.Projectile,NO_DELAY) -- artillery effect
-
-		ret:AddQueuedDelay(0.8)
-		local move = PointList()
-		move:push_back(p1)
-		move:push_back(p2)
-		ret:AddQueuedCharge(move, NO_DELAY) -- charge arrows
-		ret.q_effect:back().bHide = true -- hide charge arrow path
-
-		ret:AddQueuedScript(string.format("Board:GetPawn(%s):SetInvisible(false)", p2:GetString()))
-		ret:AddQueuedDelay(0.5)
 	end
-
+	
+	ret:AddQueuedDelay(0.8)
+	ret:AddQueuedScript(string.format("Board:GetPawn(%s):SetSpace(%s)", p1:GetString(), p3:GetString())) --move pawn
+	ret:AddQueuedScript(string.format("Board:GetPawn(%s):SetInvisible(false)", p3:GetString())) -- show pawn
+	ret:AddQueuedDelay(0.5)
+	
+	-- Preview
+	local move = PointList()
+	move:push_back(p1)
+	move:push_back(p3)
+	ret:AddQueuedCharge(move, NO_DELAY) -- charge preview
+	ret.q_effect:back().bHide = true -- hide charge arrow path
+	
 	return ret
 end
 
@@ -209,3 +194,22 @@ DNT_Pillbug2 = Pawn:new{
 	-- Class = "Prime",
 	-- DefaultTeam = TEAM_PLAYER,
 }
+
+-----------
+-- Hooks --
+-----------
+
+-- local HOOK_pawnFocused = function(pawnType)
+	-- LOGF("PawnType %s is now being focused!", pawnType)
+-- end
+
+-- local HOOK_pawnUnfocused = function(pawnType)
+	-- LOGF("PawnType %s is now being focused!", pawnType)
+-- end
+
+-- local function EVENT_onModsLoaded()
+	-- modApi:addPawnFocusedHook(HOOK_pawnFocused)
+	-- modApi:addPawnUnfocusedHook(HOOK_pawnUnfocused)
+-- end
+
+-- modApi.events.onModsLoaded:subscribe(EVENT_onModsLoaded)
