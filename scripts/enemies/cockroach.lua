@@ -41,8 +41,15 @@ a.DNT_cockroachd = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Loop
 --a.DNT_namew = base:new{ Image = imagepath.."DNT_"..name.."_Bw.png"} --Only if there's a boss
 
 --MINE
-modApi:appendAsset(writepath.."DNT_cockroach_corpse.png", readpath.."DNT_cockroach_corpse.png")
-	Location[imagepath.."DNT_cockroach_corpse.png"] = Point(-23,-5)
+local corpseNames = {
+	"beta",
+	"alpha",
+	"leader",
+}
+for _, suffix in pairs(corpseNames) do
+	modApi:appendAsset(writepath.."DNT_cockroach_corpse_"..suffix..".png", readpath.."DNT_cockroach_corpse_"..suffix..".png")
+		Location[imagepath.."DNT_cockroach_corpse_"..suffix..".png"] = Point(-23,-5)
+end
 modApi:appendAsset(writepath.."DNT_cockroach_explosion.png", readpath.."DNT_cockroach_explosion.png")
 
 --[[
@@ -222,7 +229,7 @@ local mine_damage = SpaceDamage(0)
 mine_damage.sAnimation = "DNT_cockroach_explosion"
 
 DNT_Corpse_Mine = {
-	Image = imagepath.."DNT_cockroach_corpse.png",
+	Image = imagepath.."DNT_cockroach_corpse_beta.png",
 	Damage = mine_damage,
 	Tooltip = "DNT_Corpse_Text",
 	Icon = imagepath.."combat/icons/icon_frozenmine_glow.png",
@@ -230,7 +237,7 @@ DNT_Corpse_Mine = {
 }
 
 DNT_Corpse2_Mine = {
-	Image = imagepath.."DNT_cockroach_corpse.png",
+	Image = imagepath.."DNT_cockroach_corpse_alpha.png",
 	Damage = mine_damage,
 	Tooltip = "DNT_Corpse_Text2",
 	Icon = imagepath.."combat/icons/icon_frozenmine_glow.png",
