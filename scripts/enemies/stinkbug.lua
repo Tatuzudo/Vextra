@@ -241,7 +241,7 @@ DNT_Stinkbug1 = Pawn:new
 	{
 		Name = "Stinkbug",
 		Description = "Description",
-		Health = 3,
+		Health = 2,
 		MoveSpeed = 3,
 		Image = "blobber", --Image = "DNT_stinkbug" --lowercase
 		SkillList = {"DNT_StinkbugAtk1"},
@@ -254,7 +254,7 @@ AddPawn("DNT_Stinkbug1")
 DNT_Stinkbug2 = Pawn:new
 	{
 		Name = "Alpha Stinkbug",
-		Health = 5,
+		Health = 4,
 		MoveSpeed = 3,
 		SkillList = {"DNT_StinkbugAtk2"},
 		Image = "blobber", --Image = "DNT_stinkbug",
