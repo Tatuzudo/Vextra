@@ -172,10 +172,8 @@ DNT_Pillbug1 = Pawn:new{
 	SoundLocation = "/enemy/digger_1/",
 	DefaultTeam = TEAM_ENEMY,
 	ImpactMaterial = IMPACT_FLESH,
-	-- -- Mech test
-	-- Class = "Prime",
-	-- DefaultTeam = TEAM_PLAYER,
 }
+AddPawn("DNT_Pillbug1")
 
 DNT_Pillbug2 = Pawn:new{
 	Name = "Alpha Pillbug",
@@ -189,10 +187,8 @@ DNT_Pillbug2 = Pawn:new{
 	SoundLocation = "/enemy/digger_2/",
 	DefaultTeam = TEAM_ENEMY,
 	ImpactMaterial = IMPACT_FLESH,
-	-- -- Mech test
-	-- Class = "Prime",
-	-- DefaultTeam = TEAM_PLAYER,
 }
+AddPawn("DNT_Pillbug2")
 
 -----------
 -- Hooks --
