@@ -101,6 +101,11 @@ elseif exclusiveElements then --1.2.79+
 	end
 end
 
+if FlyingEnemies then --Flying table, seperate from Exlcuisve Elements
+	local new_flying = {DNT_Dragonfly = true}
+	FlyingEnemies = add_tables(FlyingEnemies, new_flying)
+end
+
 --Console testing
 -- for i, j in pairs(exclusiveElements) do LOG(i); for k, l in pairs(j) do LOG(l) end end
 -- checkExclusiveList
