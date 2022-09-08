@@ -49,6 +49,7 @@ local function init(self)
 	require(self.scriptPath.."enemies")
 	require(self.scriptPath.."enemyList")
 	require(self.scriptPath.."tips")
+	require(self.scriptPath.."spawnerfix")
 	--require(self.scriptPath.."modApiExt_fix")
 
 	--Scripts
