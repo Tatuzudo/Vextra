@@ -48,7 +48,7 @@ local name = "termites" --lowercase, I could also use this else where, but let's
 
 DNT_TermitesAtk1 = Skill:new {
 	Name = "Termite Rush",
-	Description = "Rush forward through all units and structures till an empty space, dealing damage, and leaving a rock on the starting space. If it can't dash, do a basic melee strike instead.",
+	Description = "Rush forward through all solid objects till an empty space, dealing damage, and leaving a rock on the starting space. If it can't dash, do a basic melee strike instead.",
 	PathSize = 1,
 	Damage = 1,
 	Class = "Enemy",
@@ -57,6 +57,9 @@ DNT_TermitesAtk1 = Skill:new {
 		Unit = Point(2,4),
 		Target = Point(2,3),
 		Enemy = Point(2,3),
+		Building = Point(2,2),
+		Second_Origin = Point(2,1),
+		Second_Target = Point(1,1), --Can also do 2,2
 		CustomPawn = "DNT_Termites1",
 	}
 }
@@ -67,7 +70,9 @@ DNT_TermitesAtk2 = DNT_TermitesAtk1:new { --Just an example
 		Target = Point(2,3),
 		Enemy = Point(2,3),
 		Building = Point(2,2),
-		CustomPawn = "DNT_Termites1",
+		Second_Origin = Point(2,1),
+		Second_Target = Point(1,1), --Can also do 2,2
+		CustomPawn = "DNT_Termites2",
 	}
 }
 
