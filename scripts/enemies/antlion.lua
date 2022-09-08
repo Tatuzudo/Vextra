@@ -94,9 +94,9 @@ end
 DNT_AntlionAtk2 = DNT_AntlionAtk1:new { --Just an example
 	Damage = 3,
 	TipImage = { --This is all tempalate and probably needs to change
-		Unit = Point(2,3),
-		Target = Point(2,2),
-		Enemy = Point(2,2),
+		Unit = Point(2,2),
+		Target = Point(2,1),
+		Enemy = Point(2,1),
 		CustomPawn = "DNT_Antlion2",
 	}
 }
