@@ -59,6 +59,17 @@ DNT_LadybugAtk1 = Skill:new {
 	}
 }
 
+DNT_LadybugAtk2 = DNT_LadybugAtk1:new{
+	TipImage = {
+		Unit = Point(2,2),
+		Target = Point(2,2),
+		Enemy = Point(2,1),
+		Enemy2 = Point(1,2),
+		Building = Point(3,2),
+		CustomPawn = "DNT_Ladybug2",
+	}
+}
+
 function DNT_LadybugAtk1:GetTargetArea(p1)
 	local ret = PointList()
 	ret:push_back(p1)
@@ -117,8 +128,8 @@ DNT_Ladybug2 = Pawn:new
 	{
 		Name = "Alpha Ladybug",
 		Health = 5,
-		MoveSpeed = 5,
-		SkillList = {"DNT_LadybugAtk1"},
+		MoveSpeed = 4,
+		SkillList = {"DNT_LadybugAtk2"},
 		Image = "DNT_ladybug",
 		SoundLocation = "/enemy/beetle_1/",
 		ImageOffset = 1,
