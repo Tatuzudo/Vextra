@@ -8,8 +8,6 @@ local readpath = resourcePath .. writepath
 local imagepath = writepath:sub(5,-1)
 local a = ANIMS
 
-local customAnim = require(scriptPath .."libs/customAnim")
-
 local function IsTipImage()
 	return Board:GetSize() == Point(6,6)
 end
@@ -23,7 +21,7 @@ end
 --   Art   --
 -------------
 
-local name = "IceCrawler" --lowercase, I could also use this else where, but let's make it more readable elsewhere
+local name = "icecrawler" --lowercase, I could also use this else where, but let's make it more readable elsewhere
 
 -- UNCOMMENT WHEN YOU HAVE SPRITES; you can do partial
 --modApi:appendAsset(writepath.."DNT_"..name..".png", readpath.."DNT_"..name..".png")
@@ -49,21 +47,25 @@ local name = "IceCrawler" --lowercase, I could also use this else where, but let
 -------------
 
 DNT_IceCrawlerAtk1 = Skill:new {
-	Name = "Name",
-	Description = "Shoots a projectile that freezes and damages the target",
+	Name = "Cryo Spit",
+	Description = "Damage and freeze the target or explode ice to damage adjacent tiles.",
 	Damage = 1,
 	Class = "Enemy",
-	LaunchSound = "",
 	FreezeSelf = false, -- set true and uncomment the hooks to test with self freeze
 	ExplodeIce = true,
+	LaunchSound = "/enemy/snowtank_1/attack",
+	ImpactSound = "/impact/generic/explosion",
 	Projectile = "effects/shot_tankice",
 	PathSize = 1,
 	Icon = "weapons/enemy_leaper1.png",
 	SoundBase = "/enemy/leaper_1",
 	TipImage = {
 		Unit = Point(2,3),
-		Target = Point(2,1),
-		Enemy = Point(2,1),
+		Target = Point(2,2),
+		Second_Origin = Point(2,3),
+		Second_Target = Point(2,2),
+		Enemy = Point(1,1),
+		Building = Point(2,1),
 		CustomPawn = "DNT_IceCrawler1",
 	}
 }
@@ -72,8 +74,11 @@ DNT_IceCrawlerAtk2 = DNT_IceCrawlerAtk1:new {
 	Damage = 3,
 	TipImage = {
 		Unit = Point(2,3),
-		Target = Point(2,1),
-		Enemy = Point(2,1),
+		Target = Point(2,2),
+		Second_Origin = Point(2,3),
+		Second_Target = Point(2,2),
+		Enemy = Point(1,1),
+		Building = Point(2,1),
 		CustomPawn = "DNT_IceCrawler2",
 	}
 }
@@ -83,9 +88,6 @@ function DNT_IceCrawlerAtk1:GetSkillEffect(p1,p2)
 	local target = GetProjectileEnd(p1,p2)
 	local damage = SpaceDamage(target,self.Damage) 
 	
-	-- damage.sAnimation = "SwipeClaw2"
-	-- damage.sSound = self.SoundBase.."/attack"
-
 	if not Board:IsFrozen(target) then -- do not freeze frozen things again
 		damage.iFrozen = EFFECT_CREATE
 	end
@@ -93,7 +95,6 @@ function DNT_IceCrawlerAtk1:GetSkillEffect(p1,p2)
 	if self.FreezeSelf then
 		damage = SpaceDamage(p1)
 		damage.iFrozen = EFFECT_CREATE
-		-- damage.sSound = "/weapons/ice_throw"
 		ret:AddQueuedDamage(damage)
 	end
 	
@@ -109,6 +110,17 @@ function DNT_IceCrawlerAtk1:GetSkillEffect(p1,p2)
 		end
 	end
 	
+	-- Unfreeze mech corpse because it's weird (invisible ice). Also unfreeze shielded targets.
+	local defrost = Board:GetPawn(target)
+	if defrost then
+		defrost = Board:IsDeadly(SpaceDamage(target,self.Damage),defrost) or defrost:IsDead() or defrost:IsShield()
+	end
+	if defrost then
+		damage = SpaceDamage(target)
+		damage.iFrozen = EFFECT_REMOVE
+		ret:AddQueuedDamage(damage)
+	end
+	
 	return ret
 end
 
@@ -118,9 +130,9 @@ function DNT_IceCrawlerAtk1:GetTargetScore(p1,p2)
 	local target = GetProjectileEnd(p1,p2)
 	
 	local pawn = Board:GetPawn(target)
-	if pawn then -- only unfreeze allies.
+	if pawn then -- make it more difficult to unfreeze mechs.
 		if pawn:GetTeam() == TEAM_PLAYER and pawn:IsFrozen() then
-			ret = 0
+			ret = ret - 4
 		end
 	end
 
@@ -138,7 +150,6 @@ end
 DNT_IceCrawler1 = Pawn:new
 	{
 		Name = "Ice Crawler",
-		Description = "Shoots a projectile that freezes and damages the target",
 		Health = 3,
 		MoveSpeed = 4,
 		Ranged = 1,

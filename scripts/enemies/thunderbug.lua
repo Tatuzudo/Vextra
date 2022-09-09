@@ -1,3 +1,46 @@
+local mod = mod_loader.mods[modApi.currentMod]
+local resourcePath = mod.resourcePath
+local scriptPath = mod.scriptPath
+local previewer = require(scriptPath.."weaponPreview/api")
+
+local writepath = "img/units/aliens/"
+local readpath = resourcePath .. writepath
+local imagepath = writepath:sub(5,-1)
+local a = ANIMS
+
+local function IsTipImage()
+	return Board:GetSize() == Point(6,6)
+end
+
+
+-------------
+--  Icons  --
+-------------
+
+-------------
+--   Art   --
+-------------
+
+local name = "thunderbug" --lowercase, I could also use this else where, but let's make it more readable elsewhere
+
+-- UNCOMMENT WHEN YOU HAVE SPRITES; you can do partial
+--modApi:appendAsset(writepath.."DNT_"..name..".png", readpath.."DNT_"..name..".png")
+--modApi:appendAsset(writepath.."DNT_"..name.."a.png", readpath.."DNT_"..name.."a.png")
+--modApi:appendAsset(writepath.."DNT_"..name.."e.png", readpath.."DNT_"..name.."e.png")
+--modApi:appendAsset(writepath.."DNT_"..name.."_death.png", readpath.."DNT_"..name.."_death.png")
+--modApi:appendAsset(writepath.."DNT_"..name.."_Bw.png", readpath.."DNT_"..name.."_Bw.png")
+
+--local base = a.EnemyUnit:new{Image = imagepath .. "DNT_"..name..".png", PosX = -23, PosY = -5}
+--local baseEmerge = a.BaseEmerge:new{Image = imagepath .. "DNT_"..name.."e.png", PosX = 0, PosY = 0}
+
+-- REPLACE "name" with the name
+-- UNCOMENT WHEN YOU HAVE SPRITES
+--a.DNT_name = base
+--a.DNT_namee = baseEmerge
+--a.DNT_ladybuga = base:new{ Image = imagepath.."DNT_"..name.."a.png", NumFrames = 8 }
+--a.DNT_named = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Loop = false, NumFrames = 8, Time = .04 } --Numbers copied for now
+--a.DNT_namew = base:new{ Image = imagepath.."DNT_"..name.."_Bw.png"} --Only if there's a boss
+
 
 -------------
 -- Weapons --
@@ -5,10 +48,9 @@
 
 DNT_VekLightning1 = Skill:new{
 	Name = "Lightning Bolt",
-	Description = "Electrocute chained units and buildings, dealing less damage with distance.",
+	Description = "Damage chained units and buildings, dealing less damage with distance.",
 	Class = "Enemy",
 	Icon = "weapons/prime_lightning.png",
-	Queued = true, -- set false to test as mech weapon (instant effect)
 	PathSize = 1,
 	Damage = 2,
 	TipImage = {
@@ -55,16 +97,9 @@ function DNT_VekLightning1:GetSkillEffect(p1, p2)
 			local direction = GetDirection(current - origin[hash(current)])
 			local damage = SpaceDamage(current,damvalue)
 			damage.sAnimation = "Lightning_Attack_"..direction
-
-			if self.Queued then -- queued
-				ret:AddQueuedDamage(damage)
-				ret:AddQueuedAnimation(current,"Lightning_Hit")
-				ret:AddQueuedSound("/weapons/electric_whip")
-			else -- instant
-				ret:AddDamage(damage)
-				ret:AddAnimation(current,"Lightning_Hit")
-				ret:AddSound("/weapons/electric_whip")
-			end
+			ret:AddQueuedDamage(damage)
+			ret:AddQueuedAnimation(current,"Lightning_Hit")
+			ret:AddQueuedSound("/weapons/electric_whip")
 
 			if Board:IsPawnSpace(current) or Board:IsBuilding(current) then
 				for i = DIR_START, DIR_END do
@@ -83,6 +118,21 @@ function DNT_VekLightning1:GetSkillEffect(p1, p2)
 	return ret
 end
 
+
+function DNT_VekLightning1:GetTargetScore(p1,p2)
+	local ret = Skill.GetTargetScore(self, p1, p2)
+	
+	-- don't zap your friends.
+	local zapPawn = Board:GetPawn(p2)
+	if zapPawn then
+		if zapPawn:GetTeam() == TEAM_ENEMY then
+			ret = 0
+		end
+	end
+
+    return ret
+end
+
 -----------
 -- Pawns --
 -----------
@@ -96,9 +146,6 @@ DNT_Thunderbug1 = Pawn:new{
 	SoundLocation = "/enemy/beetle_1/",
 	DefaultTeam = TEAM_ENEMY,
 	ImpactMaterial = IMPACT_INSECT,
-	-- -- Mech test
-	-- Class = "Prime",
-	-- DefaultTeam = TEAM_PLAYER,
 }
 AddPawn("DNT_Thunderbug1")
 
@@ -112,9 +159,5 @@ DNT_Thunderbug2 = Pawn:new{
 	SoundLocation = "/enemy/beetle_2/",
 	DefaultTeam = TEAM_ENEMY,
 	ImpactMaterial = IMPACT_INSECT,
-	-- -- Mech test
-	-- Class = "Prime",
-	-- DefaultTeam = TEAM_PLAYER,
 }
-
 AddPawn("DNT_Thunderbug2")
