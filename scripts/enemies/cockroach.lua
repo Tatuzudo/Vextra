@@ -75,8 +75,8 @@ DNT_cockroach_explosion = Animation:new{
 -------------
 
 DNT_CockroachAtk1 = LineArtillery:new {
-	Name = "Cockroach Atk",
-	Description = "Description",
+	Name = "Organ Donor",
+	Description = "Launch artillery attack on two tiles, one tile apart.",
 	Damage = 1,
 	ArtillerySize = 4,
 	SelfDamage = 1,
@@ -86,20 +86,24 @@ DNT_CockroachAtk1 = LineArtillery:new {
 	--Explosion = "ExploArt1",
 	ImpactSound = "/impact/generic/explosion",
 	LaunchSound = "",
-	TipImage = { --This is all tempalate and probably needs to change
-		Unit = Point(2,3),
+	TipImage = {
+		Unit = Point(2,4),
+		Enemy = Point(2,2),
+		Enemy2 = Point(2,1),
+		Building = Point(2,0),
 		Target = Point(2,2),
-		Enemy = Point(2,1),
 		CustomPawn = "DNT_Cockroach1",
 	}
 }
 DNT_CockroachAtk2 = DNT_CockroachAtk1:new { --Just an example
 	Damage = 3,
-	TipImage = { --This is all tempalate and probably needs to change
-		Unit = Point(2,3),
+	TipImage = {
+		Unit = Point(2,4),
+		Enemy = Point(2,2),
+		Enemy2 = Point(2,1),
+		Building = Point(2,0),
 		Target = Point(2,2),
-		Enemy = Point(2,1),
-		CustomPawn = "DNT_Cockroach1",
+		CustomPawn = "DNT_Cockroach2",
 	}
 }
 
