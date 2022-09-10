@@ -103,7 +103,7 @@ function DNT_IceCrawlerAtk1:GetSkillEffect(p1,p2)
 	if Board:IsFrozen(target) and self.ExplodeIce then
 		for i = DIR_START, DIR_END do
 			local curr = DIR_VECTORS[i] + target
-			damage = SpaceDamage(curr,1)
+			damage = SpaceDamage(curr,self.Damage)
 			-- damage.sAnimation = "IceShards"
 			-- damage.sSound = self.SoundBase.."/attack"
 			ret:AddQueuedDamage(damage)
