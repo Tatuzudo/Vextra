@@ -2,6 +2,7 @@ local mod = mod_loader.mods[modApi.currentMod]
 local resourcePath = mod.resourcePath
 local scriptPath = mod.scriptPath
 local previewer = require(scriptPath.."weaponPreview/api")
+local trait = require(scriptPath..'libs/trait')
 
 local writepath = "img/units/aliens/"
 local readpath = resourcePath .. writepath
@@ -18,6 +19,25 @@ end
 
 modApi:appendAsset("img/icons/fail.png",resourcePath.."img/icons/fail.png") --TEMPORARY
 	Location["icons/fail.png"] = Point(-5,-5)
+--modApi:appendAsset("img/combat/traits/DNT_ladybug_trait.png",resourcePath.."img/combat/traits/DNT_ladybug_trait.png")
+
+	------------
+	-- Traits --
+	------------
+
+	trait:add{
+		pawnType = "DNT_Ladybug1",
+		icon = resourcePath.."img/combat/traits/DNT_ladybug_trait.png",
+		desc_title = "Hypnotic Shell",
+		desc_text = "If this unit can be targetted by a mech and isn't, that mech takes 1 self damage (cumulative).",
+	}
+	trait:add{
+		pawnType = "DNT_Ladybug2",
+		icon = resourcePath.."img/combat/traits/DNT_ladybug_trait.png",
+		desc_title = "Mesmerizing Shell",
+		desc_text = "If this unit can be targetted by a mech and isn't, that mech takes 2 self damage (cumulative).",
+	}
+
 
 -------------
 --   Art   --
@@ -105,6 +125,7 @@ function DNT_LadybugAtk1:GetSkillEffect(p1,p2)
 	ret:AddQueuedDamage(selfDamage)
 	return ret
 end
+
 
 -----------
 -- Pawns --
