@@ -2,6 +2,7 @@ local mod = mod_loader.mods[modApi.currentMod]
 local resourcePath = mod.resourcePath
 local scriptPath = mod.scriptPath
 local previewer = require(scriptPath.."weaponPreview/api")
+local trait = require(scriptPath..'libs/trait')
 
 local writepath = "img/units/aliens/"
 local readpath = resourcePath .. writepath
@@ -15,6 +16,24 @@ end
 -------------
 --  Icons  --
 -------------
+
+------------
+-- Traits --
+------------
+
+trait:add{
+	pawnType = "DNT_Cockroach1",
+	--icon = resourcePath.."img/combat/traits/DNT_ladybug_trait.png",
+	desc_title = "Undying",
+	desc_text = "If killed, resurrect with full hp after the Vek attack, unless damaged again or stepped on.",
+}
+trait:add{
+	pawnType = "DNT_Cockroach2",
+	--icon = resourcePath.."img/combat/traits/DNT_ladybug_trait.png",
+	desc_title = "Undying",
+	desc_text = "If killed, resurrect with full hp after the Vek attack, unless damaged again or stepped on.",
+}
+
 
 -------------
 --   Art   --
