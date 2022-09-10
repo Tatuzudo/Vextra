@@ -48,7 +48,7 @@ local name = "thunderbug" --lowercase, I could also use this else where, but let
 
 DNT_VekLightning1 = Skill:new{
 	Name = "Lightning Bolt",
-	Description = "Damage chained units and buildings, dealing less damage with distance.",
+	Description = "Damage the target and adjacent units and buildings.",
 	Class = "Enemy",
 	Icon = "weapons/prime_lightning.png",
 	PathSize = 1,
