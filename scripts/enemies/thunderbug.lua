@@ -52,7 +52,9 @@ DNT_VekLightning1 = Skill:new{
 	Class = "Enemy",
 	Icon = "weapons/prime_lightning.png",
 	PathSize = 1,
-	Damage = 2,
+	Damage = 1,
+	MaxSpread = 2,
+	DistRed = 0,
 	TipImage = {
 		Unit = Point(2,3),
 		Target = Point(2,2),
@@ -65,7 +67,7 @@ DNT_VekLightning1 = Skill:new{
 }
 
 DNT_VekLightning2 = DNT_VekLightning1:new{
-	Damage = 3,
+	Damage = 2,
 	TipImage = {
 		Unit = Point(2,3),
 		Target = Point(2,2),
@@ -82,31 +84,31 @@ function DNT_VekLightning1:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	local hash = function(point) return point.x + point.y*10 end
 	local explored = {[hash(p1)] = true}
-	local damvalue = self.Damage
-	local todo = {{p2,damvalue}}
+	local spread = self.MaxSpread
+	local todo = {{p2,spread}}
 	local origin = { [hash(p2)] = p1 }
-
+	
 	while #todo ~= 0 do
 		local current = todo[1][1]
-		damvalue = todo[1][2]
+		spread = todo[1][2]
 		table.remove(todo, 1)
-
+		
 		if not explored[hash(current)] then
 			explored[hash(current)] = true
-
+			
 			local direction = GetDirection(current - origin[hash(current)])
-			local damage = SpaceDamage(current,damvalue)
+			local damage = SpaceDamage(current,self.Damage - (self.MaxSpread + spread) * self.DistRed)
 			damage.sAnimation = "Lightning_Attack_"..direction
 			ret:AddQueuedDamage(damage)
 			ret:AddQueuedAnimation(current,"Lightning_Hit")
 			ret:AddQueuedSound("/weapons/electric_whip")
-
+			
 			if Board:IsPawnSpace(current) or Board:IsBuilding(current) then
 				for i = DIR_START, DIR_END do
 					local neighbor = current + DIR_VECTORS[i]
-					if not explored[hash(neighbor)] and damvalue > 1 then
+					if not explored[hash(neighbor)] and spread > 1 then
 						if Board:IsPawnSpace(neighbor) or Board:IsBuilding(neighbor) then
-							todo[#todo + 1] = {neighbor,damvalue-1}
+							todo[#todo + 1] = {neighbor,spread-1}
 							origin[hash(neighbor)] = current
 						end
 					end
@@ -114,7 +116,7 @@ function DNT_VekLightning1:GetSkillEffect(p1, p2)
 			end
 		end
 	end
-
+	
 	return ret
 end
 

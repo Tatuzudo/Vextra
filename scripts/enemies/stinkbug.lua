@@ -69,7 +69,7 @@ a.DNT_FartAppear = Animation:new{
 a.DNT_FartFront = Animation:new{
 	Image = "effects/fart_front.png",
 	NumFrames = 6,
-	Loop = true,
+	Loop = false,
 	PosX = -23,
 	PosY = 0,
 	Time = 0.4
@@ -84,8 +84,8 @@ a.DNT_FartBack = a.DNT_FartFront:new{
 -------------
 
 DNT_StinkbugAtk1 = Skill:new {
-	Name = "Name",
-	Description = "Description",
+	Name = "Acrid Spray",
+	Description = "Prepares to attack while surrounding itself with short-lived stink clouds.",
 	Damage = 1,
 	Class = "Enemy",
 	LaunchSound = "",
@@ -96,8 +96,8 @@ DNT_StinkbugAtk1 = Skill:new {
 	TipImage = {
 		Unit = Point(2,2),
 		Target = Point(2,1),
-		Enemy = Point(2,1),
 		Enemy = Point(1,2),
+		Building = Point(2,1),
 		CustomPawn = "DNT_Stinkbug1",
 	}
 }
@@ -105,13 +105,6 @@ DNT_StinkbugAtk1 = Skill:new {
 DNT_StinkbugAtk2 = DNT_StinkbugAtk1:new {
 	Damage = 3,
 	CustomTipImage = "DNT_StinkbugAtk2_Tip",
-	TipImage = {
-		Unit = Point(2,2),
-		Target = Point(2,1),
-		Enemy = Point(2,1),
-		Enemy = Point(1,2),
-		CustomPawn = "DNT_Stinkbug2",
-	}
 }
 
 function DNT_StinkbugAtk1:GetSkillEffect(p1,p2)
@@ -119,22 +112,22 @@ function DNT_StinkbugAtk1:GetSkillEffect(p1,p2)
 	local dir = GetDirection(p2 - p1)
 	local mission = GetCurrentMission()
     if not mission.DNT_FartList then mission.DNT_FartList = {} end
-
+	
 	local dir2 = dir+1 > 3 and 0 or dir+1
 	local p3 = p1 + DIR_VECTORS[dir2]
 	ret:AddScript(string.format("table.insert(GetCurrentMission().DNT_FartList,%s)",p3:GetString())) -- insert point in fart list
-
+	
 	local dir3 = dir-1 < 0 and 3 or dir-1
 	local p4 = p1 + DIR_VECTORS[dir3]
 	ret:AddScript(string.format("table.insert(GetCurrentMission().DNT_FartList,%s)",p4:GetString())) -- insert other fart point
-
+	
 	-- ret:AddScript(string.format("Board:AddAnimation(p3,'DNT_FartFront')",p4:GetString())) -- add fart animation
-
+	
 	local damage = SpaceDamage(p2,self.Damage) -- attack
 	damage.sAnimation = "SwipeClaw2"
 	damage.sSound = self.SoundBase.."/attack"
 	ret:AddQueuedMelee(p1,damage)
-
+	
 	damage = SpaceDamage(p3,0) -- smoke
 	-- damage.sAnimation = "airpush_"..dir2
 	damage.sAnimation = "DNT_FartAppear"
@@ -143,19 +136,9 @@ function DNT_StinkbugAtk1:GetSkillEffect(p1,p2)
 	damage.loc = p4
 	-- damage.sAnimation = "airpush_"..dir3
 	ret:AddDamage(damage)
-
+	
 	ret:AddDelay(0.24) -- delay for adding smoke anim (hook)
-
-
-	-- if IsTipImage() then -- failed attempt to fart to tip images
-		-- if not customAnim:Is(mission,p3,"DNT_FartFront") then
-			-- customAnim:Add(mission,p3,"DNT_FartFront")
-		-- end
-		-- if not customAnim:Add(mission,p4,"DNT_FartFront") then
-			-- customAnim:Add(mission,p4,"DNT_FartFront")
-		-- end
-	-- end
-
+	
 	return ret
 end
 
@@ -195,6 +178,13 @@ end
 DNT_StinkbugAtk_Tip = DNT_StinkbugAtk1:new{}
 DNT_StinkbugAtk2_Tip = DNT_StinkbugAtk_Tip:new {
 	Damage = DNT_StinkbugAtk2.Damage,
+	TipImage = {
+		Unit = Point(2,2),
+		Target = Point(2,1),
+		Enemy = Point(1,2),
+		Building = Point(2,1),
+		CustomPawn = "DNT_Stinkbug2",
+	}
 }
 
 function DNT_StinkbugAtk_Tip:GetSkillEffect(p1,p2)
@@ -219,17 +209,24 @@ function DNT_StinkbugAtk_Tip:GetSkillEffect(p1,p2)
 	ret:AddQueuedMelee(p1,damage)
 
 	damage = SpaceDamage(p3,0) -- smoke
-	-- damage.sAnimation = "airpush_"..dir2
 	damage.sAnimation = "DNT_FartAppear"
 	damage.iSmoke = EFFECT_CREATE
 	ret:AddDamage(damage)
 	damage.loc = p4
-	-- damage.sAnimation = "airpush_"..dir3
 	ret:AddDamage(damage)
-
-	ret:AddDelay(0.24) -- delay for adding smoke anim (hook)
-	ret:AddScript(string.format("Board:AddAnimation(%s, DNT_FartFront,0)",p3:GetString()))
-	ret:AddScript(string.format("Board:AddAnimation(%s, DNT_FartFront,0)",p4:GetString()))
+	
+	ret:AddDelay(0.24) -- delay for adding smoke anim
+	damage = SpaceDamage(p3,0) -- smoke
+	damage.sAnimation = "DNT_FartFront"
+	ret:AddDamage(damage)
+	damage.loc = p4
+	ret:AddDamage(damage)
+	
+	ret:AddDelay(0.4) -- prolong the animation for Tip
+	ret:AddDamage(damage)
+	damage.loc = p3
+	ret:AddDamage(damage)
+	
 	return ret
 end
 

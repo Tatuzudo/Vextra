@@ -93,9 +93,9 @@ function DNT_IceCrawlerAtk1:GetSkillEffect(p1,p2)
 	end
 	
 	if self.FreezeSelf then
-		damage = SpaceDamage(p1)
-		damage.iFrozen = EFFECT_CREATE
-		ret:AddQueuedDamage(damage)
+		selfdamage = SpaceDamage(p1)
+		selfdamage.iFrozen = EFFECT_CREATE
+		ret:AddQueuedDamage(selfdamage)
 	end
 	
 	ret:AddQueuedProjectile(damage,self.Projectile,FULL_DELAY)
@@ -185,6 +185,13 @@ AddPawn("DNT_IceCrawler2")
 -- local function HOOK_nextTurn(mission)
 	-- if Game:GetTeamTurn() == TEAM_ENEMY then
 		-- local enemyList = extract_table(Board:GetPawns(TEAM_ENEMY))
+		-- for i = 1, #enemyList do
+			-- if Board:GetPawn(enemyList[i]):GetType():find("^DNT_IceCrawler") ~= nil then
+				-- Board:GetPawn(enemyList[i]):SetFrozen(false)
+			-- end
+		-- end
+	-- elseif Game:GetTeamTurn() == TEAM_PLAYER then
+		-- local enemyList = extract_table(Board:GetPawns(TEAM_PLAYER))
 		-- for i = 1, #enemyList do
 			-- if Board:GetPawn(enemyList[i]):GetType():find("^DNT_IceCrawler") ~= nil then
 				-- Board:GetPawn(enemyList[i]):SetFrozen(false)
