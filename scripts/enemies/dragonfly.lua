@@ -31,7 +31,8 @@ modApi:appendAsset(writepath.."DNT_"..name.."e.png", readpath.."DNT_"..name.."e.
 modApi:appendAsset(writepath.."DNT_"..name.."_death.png", readpath.."DNT_"..name.."_death.png")
 --modApi:appendAsset(writepath.."DNT_"..name.."_Bw.png", readpath.."DNT_"..name.."_Bw.png")
 
-local base = a.EnemyUnit:new{Image = imagepath .. "DNT_"..name..".png", PosX = -23, PosY = -10}
+-- local base = a.EnemyUnit:new{Image = imagepath .. "DNT_"..name..".png", PosX = -23, PosY = -10} -- old 50x50
+local base = a.EnemyUnit:new{Image = imagepath .. "DNT_"..name..".png", PosX = -28, PosY = -15} --60x60
 local baseEmerge = a.BaseEmerge:new{Image = imagepath .. "DNT_"..name.."e.png", PosX = -28, PosY = -15, NumFrames = 14} --60x60
 
 -- REPLACE "name" with the name

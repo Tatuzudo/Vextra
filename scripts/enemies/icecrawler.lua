@@ -71,7 +71,7 @@ DNT_IceCrawlerAtk1 = Skill:new {
 }
 
 DNT_IceCrawlerAtk2 = DNT_IceCrawlerAtk1:new {
-	Damage = 3,
+	Damage = 2,
 	TipImage = {
 		Unit = Point(2,3),
 		Target = Point(2,2),
@@ -103,10 +103,12 @@ function DNT_IceCrawlerAtk1:GetSkillEffect(p1,p2)
 	if Board:IsFrozen(target) and self.ExplodeIce then
 		for i = DIR_START, DIR_END do
 			local curr = DIR_VECTORS[i] + target
-			damage = SpaceDamage(curr,self.Damage)
-			-- damage.sAnimation = "IceShards"
-			-- damage.sSound = self.SoundBase.."/attack"
-			ret:AddQueuedDamage(damage)
+			if curr ~= p1 then
+				damage = SpaceDamage(curr,self.Damage)
+				-- damage.sAnimation = "IceShards"
+				-- damage.sSound = self.SoundBase.."/attack"
+				ret:AddQueuedDamage(damage)
+			end
 		end
 	end
 	
@@ -124,24 +126,26 @@ function DNT_IceCrawlerAtk1:GetSkillEffect(p1,p2)
 	return ret
 end
 
-function DNT_IceCrawlerAtk1:GetTargetScore(p1,p2)
-	local ret = Skill.GetTargetScore(self, p1, p2)
+-- function DNT_IceCrawlerAtk1:GetTargetScore(p1,p2)
+	-- local ret = Skill.GetTargetScore(self, p1, p2)
+	-- local dir = GetDirection(p2 - p1)
+	-- local target = GetProjectileEnd(p1,p2)
 	
-	local target = GetProjectileEnd(p1,p2)
-	
-	local pawn = Board:GetPawn(target)
-	if pawn then -- make it more difficult to unfreeze mechs.
-		if pawn:GetTeam() == TEAM_PLAYER and pawn:IsFrozen() then
-			ret = ret - 4
-		end
-	end
-
-	-- if Board:IsFrozen(p2) then -- ignore frozen things
-		-- ret = 0
+	-- local pawn = Board:GetPawn(target)
+	-- if pawn then
+		-- if pawn:IsFrozen() then
+			-- local p3 = p2 - DIR_VECTORS[dir]
+			-- if p3 == p1 then
+				-- ret = ret - 5
+			-- end
+			-- -- if pawn:GetTeam() == TEAM_PLAYER then -- make it more difficult to unfreeze mechs (it explodes now, not a big problem anymore).
+				-- -- ret = ret - 5
+			-- -- end
+		-- end
 	-- end
-
-    return ret
-end
+	
+    -- return ret
+-- end
 
 -----------
 -- Pawns --
