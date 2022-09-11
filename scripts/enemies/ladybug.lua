@@ -19,6 +19,8 @@ end
 
 modApi:appendAsset("img/icons/fail.png",resourcePath.."img/icons/fail.png") --TEMPORARY
 	Location["icons/fail.png"] = Point(-5,-5)
+modApi:appendAsset("img/icons/DNT_ladybug_icon.png",resourcePath.."img/icons/DNT_ladybug_icon.png") --TEMPORARY
+	Location["icons/DNT_ladybug_icon.png"] = Point(-10,2)
 --modApi:appendAsset("img/combat/traits/DNT_ladybug_trait.png",resourcePath.."img/combat/traits/DNT_ladybug_trait.png")
 
 	------------
@@ -29,13 +31,13 @@ modApi:appendAsset("img/icons/fail.png",resourcePath.."img/icons/fail.png") --TE
 		pawnType = "DNT_Ladybug1",
 		icon = resourcePath.."img/combat/traits/DNT_ladybug_trait.png",
 		desc_title = "Hypnotic Shell",
-		desc_text = "If this unit can be targetted by a mech and isn't, that mech takes 1 self damage (cumulative).",
+		desc_text = "If this unit can be targeted by a mech and isn't, that mech takes 1 self damage (cumulative).",
 	}
 	trait:add{
 		pawnType = "DNT_Ladybug2",
 		icon = resourcePath.."img/combat/traits/DNT_ladybug_trait.png",
 		desc_title = "Mesmerizing Shell",
-		desc_text = "If this unit can be targetted by a mech and isn't, that mech takes 2 self damage (cumulative).",
+		desc_text = "If this unit can be targeted by a mech and isn't, that mech takes 2 self damage (cumulative).",
 	}
 
 
@@ -196,6 +198,11 @@ local function SkillBuild(mission, pawn, weaponId, p1, p2, skillEffect)
 							Board:AddAlert(v, "DIDN'T TARGET")
 						]])
 						punishmentDmg = punishmentDmg + _G[Board:GetPawn(point):GetType()].PunishmentDamage
+
+						local icon = SpaceDamage(point, 0)
+						icon.sImageMark = "icons/DNT_ladybug_icon.png"
+						skillEffect:AddDamage(icon)
+
 					end
 				end
 
@@ -212,7 +219,8 @@ local function SkillBuild(mission, pawn, weaponId, p1, p2, skillEffect)
 				--ADD SELF DAMAGE TO SKILL EFFECT
 				skillEffect.effect = DamageList()
 				local damage = SpaceDamage(p1, punishmentDmg) --Add up? Biggest One? This is temporary
-				damage.sImageMark = "icons/fail.png"
+				--damage.sImageMark = "icons/fail.png"
+				--damage.sImageMark = "icons/DNT_ladybug_icon.png"
 				skillEffect.effect:push_back(damage)
 
 				--Add old effect back in
