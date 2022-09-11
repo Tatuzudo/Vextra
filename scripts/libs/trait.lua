@@ -33,7 +33,7 @@ local VERSION = "2.2.0"
 --    Priority order when multiple traits appliest to a pawn:
 -- func > pilotSkill > pawnType
 -- first created > last created
--- 
+--
 
 local isLApiAvailable = LApi ~= nil
 local mod = modApi:getCurrentMod()
@@ -226,6 +226,7 @@ local function add(self, trait)
 			if modApi:fileExists(icon) then
 				modApi:appendAsset("img/"..path, icon)
 			end
+			--Location[path] = icon_offset
 		end
 	else
 		modApi:copyAsset("img/empty.png", "img/"..path)
