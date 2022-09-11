@@ -17,7 +17,12 @@ end
 -------------
 
 modApi:appendAsset("img/effects/DNT_upshot_pillbug1.png", resourcePath.."img/effects/DNT_upshot_pillbug1.png")
+modApi:appendAsset("img/effects/DNT_effect1_pillbug1.png", resourcePath.."img/effects/DNT_effect1_pillbug1.png")
+modApi:appendAsset("img/effects/DNT_effect2_pillbug1.png", resourcePath.."img/effects/DNT_effect2_pillbug1.png")
+
 modApi:appendAsset("img/effects/DNT_upshot_pillbug2.png", resourcePath.."img/effects/DNT_upshot_pillbug2.png")
+modApi:appendAsset("img/effects/DNT_effect1_pillbug2.png", resourcePath.."img/effects/DNT_effect1_pillbug2.png")
+modApi:appendAsset("img/effects/DNT_effect2_pillbug2.png", resourcePath.."img/effects/DNT_effect2_pillbug2.png")
 
 -------------
 --   Art   --
@@ -54,6 +59,8 @@ DNT_PillbugLeap1 = Skill:new{
 	Class = "Enemy",
 	Icon = "weapons/enemy_scarab1.png",
 	Projectile = "effects/DNT_upshot_pillbug1.png",
+	Effect1 = "effects/DNT_effect1_pillbug1.png",
+	Effect2 = "effects/DNT_effect2_pillbug1.png",
 	Range = 5,
 	Damage = 1,
 	TipImage = {
@@ -69,6 +76,8 @@ DNT_PillbugLeap1 = Skill:new{
 DNT_PillbugLeap2 = DNT_PillbugLeap1:new{
 	Damage = 2,
 	Projectile = "effects/DNT_upshot_pillbug2.png",
+	Effect1 = "effects/DNT_effect1_pillbug2.png",
+	Effect2 = "effects/DNT_effect2_pillbug2.png",
 	TipImage = {
 		Unit = Point(2,4),
 		Target = Point(2,0),
@@ -99,15 +108,32 @@ function DNT_PillbugLeap1:GetSkillEffect(p1, p2)
 	
 	ret:AddQueuedScript(string.format("Board:GetPawn(%s):SetInvisible(true)", p1:GetString())) -- hide pawn
 	if Board:IsBlocked(p2,PATH_PROJECTILE) then
-		ret:AddQueuedArtillery(SpaceDamage(p2, self.Damage),self.Projectile,NO_DELAY) -- 1st artillery effect
-		ret:AddQueuedDelay(0.8)
+		ret:AddQueuedArtillery(SpaceDamage(p2, self.Damage),self.Projectile,NO_DELAY) -- jump effect
+		ret:AddQueuedDelay(0.01)
+		ret:AddQueuedArtillery(SpaceDamage(p2),self.Effect1,NO_DELAY) -- after effect 1
+		ret:AddQueuedDelay(0.01)
+		ret:AddQueuedArtillery(SpaceDamage(p2),self.Effect2,NO_DELAY) -- after effect 2
+		ret:AddQueuedDelay(0.78)
 		for i = 1, 8 do
 			local nextpoint = p3 - DIR_VECTORS[dir]
+			
 			ret:AddQueuedScript(string.format([[
 				local fx = SkillEffect()
-				fx:AddArtillery(%s,SpaceDamage(%s, 0),%q,NO_DELAY)
+				local p1 = %s
+				local p2 = %s
+				local proj = %q
+				local effect1 = %q
+				local effect2 = %q
+				
+				fx:AddArtillery(p1,SpaceDamage(p2),proj,NO_DELAY)
+				fx:AddDelay(0.02)
+				fx:AddArtillery(p1,SpaceDamage(p2),effect1,NO_DELAY)
+				fx:AddDelay(0.02)
+				fx:AddArtillery(p1,SpaceDamage(p2),effect2,NO_DELAY)
+				
 				Board:AddEffect(fx)
-			]],p3:GetString(),nextpoint:GetString(),self.Projectile)) -- 2nd artillery effect
+			]],p3:GetString(),nextpoint:GetString(),self.Projectile,self.Effect1,self.Effect2)) -- bounce effect
+			
 			p3 = p3 - DIR_VECTORS[dir]
 			if not Board:IsBlocked(nextpoint,PATH_PROJECTILE) or nextpoint == p1 then
 				break
@@ -115,11 +141,15 @@ function DNT_PillbugLeap1:GetSkillEffect(p1, p2)
 			ret:AddQueuedDelay(0.8)
 			ret:AddQueuedDamage(SpaceDamage(p3,self.Damage))
 		end
+		ret:AddQueuedDelay(0.02)
 	else
-		ret:AddQueuedArtillery(SpaceDamage(p2, 0),self.Projectile,NO_DELAY) -- 1st artillery effect
+		ret:AddQueuedArtillery(SpaceDamage(p2),self.Projectile,NO_DELAY) -- jump effect
+		ret:AddQueuedDelay(0.01)
+		ret:AddQueuedArtillery(SpaceDamage(p2),self.Effect1,NO_DELAY) -- after effect 1
+		ret:AddQueuedDelay(0.01)
+		ret:AddQueuedArtillery(SpaceDamage(p2),self.Effect2,NO_DELAY) -- after effect 2
 	end
-	
-	ret:AddQueuedDelay(0.8)
+	ret:AddQueuedDelay(0.78)
 	ret:AddQueuedScript(string.format("Board:GetPawn(%s):SetSpace(%s)", p1:GetString(), p3:GetString())) --move pawn
 	ret:AddQueuedScript(string.format("Board:GetPawn(%s):SetInvisible(false)", p3:GetString())) -- show pawn
 	
