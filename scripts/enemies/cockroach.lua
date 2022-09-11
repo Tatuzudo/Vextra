@@ -23,13 +23,15 @@ end
 
 trait:add{
 	pawnType = "DNT_Cockroach1",
-	--icon = resourcePath.."img/combat/traits/DNT_ladybug_trait.png",
+	icon = resourcePath.."img/combat/traits/DNT_cockroach_trait.png",
+	--icon_offset = Point(0,-15),
 	desc_title = "Undying",
 	desc_text = "If killed, resurrect with full hp after the Vek attack, unless damaged again or stepped on.",
 }
 trait:add{
 	pawnType = "DNT_Cockroach2",
-	--icon = resourcePath.."img/combat/traits/DNT_ladybug_trait.png",
+	icon = resourcePath.."img/combat/traits/DNT_cockroach_trait.png",
+	--icon_offset = Point(0,-15),
 	desc_title = "Undying",
 	desc_text = "If killed, resurrect with full hp after the Vek attack, unless damaged again or stepped on.",
 }
