@@ -70,8 +70,10 @@ local corpseNames = {
 for _, suffix in pairs(corpseNames) do
 	modApi:appendAsset(writepath.."DNT_cockroach_corpse_"..suffix..".png", readpath.."DNT_cockroach_corpse_"..suffix..".png")
 		Location[imagepath.."DNT_cockroach_corpse_"..suffix..".png"] = Point(-23,-5)
+
+	modApi:appendAsset(writepath.."DNT_cockroach_explosion_"..suffix..".png", readpath.."DNT_cockroach_explosion_"..suffix..".png")
 end
-modApi:appendAsset(writepath.."DNT_cockroach_explosion.png", readpath.."DNT_cockroach_explosion.png")
+
 
 --[[
 DNT_cockroach_filler = Animation:new{
@@ -83,14 +85,20 @@ DNT_cockroach_filler = Animation:new{
 	PosY = 0,
 }
 --]]
-DNT_cockroach_explosion = Animation:new{
-	Image = imagepath.."DNT_cockroach_explosion.png",
+a.DNT_cockroach_explosion_beta = Animation:new{
+	Image = imagepath.."DNT_cockroach_explosion_beta.png",
 	NumFrames = 8,
+	Time = .14,
 	Loop = false,
-	PosX = 0,
-	PosY = 0,
+	PosX = -23,
+	PosY = -5,
 }
-
+a.DNT_cockroach_explosion_alpha = a.DNT_cockroach_explosion_beta:new{
+	Image = imagepath.."DNT_cockroach_explosion_alpha.png",
+}
+a.DNT_cockroach_explosion_leader = a.DNT_cockroach_explosion_beta:new{
+	Image = imagepath.."DNT_cockroach_explosion_leader.png",
+}
 -------------
 -- Weapons --
 -------------
@@ -250,12 +258,17 @@ TILE_TOOLTIPS = {
 	DNT_Corpse_Text2 = {"Alpha Cockroach Corpse", "Comes back to life at the beginning of the Vek turn as an Alpha Cockroach unless stepped on or damaged."}
 }
 
-local mine_damage = SpaceDamage(0)
-mine_damage.sAnimation = "DNT_cockroach_explosion"
+local mine_damage_beta = SpaceDamage(0)
+mine_damage_beta.sAnimation = "DNT_cockroach_explosion_beta"
+mine_damage_beta.sScript = "LOG(mine_damage_beta.loc)"
+--mine_damage_beta.sScript = string.format("Board:AddAnimation(%s,%q,ANIM_NO_DELAY)",self.loc,"DNT_cockroach_explosion_beta")
+
+local mine_damage_alpha = SpaceDamage(0)
+mine_damage_alpha.sAnimation = "DNT_cockroach_explosion_alpha"
 
 DNT_Corpse_Mine = {
 	Image = imagepath.."DNT_cockroach_corpse_beta.png",
-	Damage = mine_damage,
+	Damage = mine_damage_beta,
 	Tooltip = "DNT_Corpse_Text",
 	Icon = imagepath.."combat/icons/icon_frozenmine_glow.png",
 	UsedImage = "",
@@ -263,7 +276,7 @@ DNT_Corpse_Mine = {
 
 DNT_Corpse2_Mine = {
 	Image = imagepath.."DNT_cockroach_corpse_alpha.png",
-	Damage = mine_damage,
+	Damage = mine_damage_alpha,
 	Tooltip = "DNT_Corpse_Text2",
 	Icon = imagepath.."combat/icons/icon_frozenmine_glow.png",
 	UsedImage = "",
