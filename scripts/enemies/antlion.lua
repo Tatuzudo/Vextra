@@ -47,7 +47,8 @@ a.DNT_antliond = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Loop =
 -------------
 
 DNT_AntlionAtk1 = Skill:new {
-	Name = "Shattering Mandibles", --This needs to be better
+	-- Name = "Shattering Mandibles", --This needs to be better
+	Name = "Seismic Pincers",
 	Description = "Crack the targets tile, preparing to strike it.",
 	Damage = 1,
 	PathSize = 1,
@@ -110,7 +111,7 @@ DNT_Antlion1 = Pawn:new
 	{
 		Name = "Antlion",
 		Health = 3,
-		MoveSpeed = 4,
+		MoveSpeed = 3,
 		Image = "DNT_antlion", --lowercase
 		SkillList = {"DNT_AntlionAtk1"},
 		SoundLocation = "/enemy/burrower_1/",
@@ -124,7 +125,7 @@ DNT_Antlion2 = Pawn:new
 	{
 		Name = "Alpha Antlion",
 		Health = 5,
-		MoveSpeed = 4,
+		MoveSpeed = 3,
 		SkillList = {"DNT_AntlionAtk2"},
 		Image = "DNT_antlion",
 		SoundLocation = "/enemy/burrower_1/",
@@ -136,20 +137,84 @@ DNT_Antlion2 = Pawn:new
 	}
 AddPawn("DNT_Antlion2")
 
+-- Death effect on water/chasms
+DNT_FallAntlion1 = Pawn:new
+	{
+		Health = 1,
+		Neutral = true,
+		MoveSpeed = 0,
+		IsPortrait = false,
+		Image = "DNT_antlion",
+		SoundLocation = "/enemy/burrower_1/",
+		DefaultTeam = TEAM_NONE,
+		ImpactMaterial = IMPACT_INSECT
+	}
+AddPawn("DNT_FallAntlion1")
 
+DNT_FallAntlion2 = Pawn:new
+	{
+		Health = 1,
+		Neutral = true,
+		MoveSpeed = 0,
+		IsPortrait = false,
+		Image = "DNT_antlion",
+		ImageOffset = 1,
+		SoundLocation = "/enemy/burrower_1/",
+		DefaultTeam = TEAM_NONE,
+		ImpactMaterial = IMPACT_INSECT
+	}
+AddPawn("DNT_FallAntlion2")
+
+DNT_FallAntlion3 = Pawn:new
+	{
+		Health = 1,
+		Neutral = true,
+		MoveSpeed = 0,
+		IsPortrait = false,
+		Image = "DNT_antlion",
+		ImageOffset = 2,
+		SoundLocation = "/enemy/burrower_1/",
+		DefaultTeam = TEAM_NONE,
+		ImpactMaterial = IMPACT_INSECT
+	}
+AddPawn("DNT_FallAntlion3")
 
 -----------
 -- Hooks --
 -----------
---UNCOMMENT fi you need it
---[[
-local this = {}
 
-function this:load(NAH_MechTaunt_ModApiExt)
-	local options = mod_loader.currentModContent[mod.id].options
-	NAH_MechTaunt_ModApiExt:addSkillBuildHook(SkillBuild) --EXAMPLE
-
+local function HOOK_pawnPositionChanged(mission, pawn, oldPosition)
+	if pawn:GetType():find("^DNT_Antlion") ~= nil and not pawn:IsDead() then
+		local pos = pawn:GetSpace()
+		local n = (pawn:GetType()):sub(-1)
+		-- LOG("DNT_FallAntlion"..n)
+		if Board:GetTerrain(pos) == TERRAIN_HOLE then
+			pawn:Kill(true)
+			Board:AddPawn("DNT_FallAntlion"..n,pos)
+		elseif Board:GetTerrain(pos) == TERRAIN_WATER and _G[pawn:GetType()].Tier ~= TIER_BOSS then
+			pawn:Kill(true)
+			Board:AddPawn("DNT_FallAntlion"..n,pos)
+		end
+	end
 end
 
-return this
---]]
+local function HOOK_pawnDamaged(mission, pawn, damageTaken)
+	if pawn:GetType():find("^DNT_Antlion") ~= nil and not pawn:IsDead() then
+		local pos = pawn:GetSpace()
+		local n = (pawn:GetType()):sub(-1)
+		if Board:GetTerrain(pos) == TERRAIN_HOLE then
+			pawn:Kill(true)
+			Board:AddPawn("DNT_FallAntlion"..n,pos)
+		elseif Board:GetTerrain(pos) == TERRAIN_WATER and _G[pawn:GetType()].Tier ~= TIER_BOSS then
+			pawn:Kill(true)
+			Board:AddPawn("DNT_FallAntlion"..n,pos)
+		end
+	end
+end
+
+local function EVENT_onModsLoaded()
+	DNT_Vextra_ModApiExt:addPawnPositionChangedHook(HOOK_pawnPositionChanged)
+	DNT_Vextra_ModApiExt:addPawnDamagedHook(HOOK_pawnDamaged)
+end
+
+modApi.events.onModsLoaded:subscribe(EVENT_onModsLoaded)
