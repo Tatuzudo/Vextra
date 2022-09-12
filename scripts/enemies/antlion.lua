@@ -110,7 +110,7 @@ DNT_Antlion1 = Pawn:new
 	{
 		Name = "Antlion",
 		Health = 3,
-		MoveSpeed = 3,
+		MoveSpeed = 4,
 		Image = "DNT_antlion", --lowercase
 		SkillList = {"DNT_AntlionAtk1"},
 		SoundLocation = "/enemy/burrower_1/",
@@ -124,7 +124,7 @@ DNT_Antlion2 = Pawn:new
 	{
 		Name = "Alpha Antlion",
 		Health = 5,
-		MoveSpeed = 3,
+		MoveSpeed = 4,
 		SkillList = {"DNT_AntlionAtk2"},
 		Image = "DNT_antlion",
 		SoundLocation = "/enemy/burrower_1/",
