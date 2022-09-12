@@ -71,7 +71,7 @@ DNT_IceCrawlerAtk1 = Skill:new {
 }
 
 DNT_IceCrawlerAtk2 = DNT_IceCrawlerAtk1:new {
-	Damage = 2,
+	Damage = 3,
 	TipImage = {
 		Unit = Point(2,3),
 		Target = Point(2,2),
@@ -155,7 +155,7 @@ DNT_IceCrawler1 = Pawn:new
 	{
 		Name = "Ice Crawler",
 		Health = 3,
-		MoveSpeed = 4,
+		MoveSpeed = 2,
 		Ranged = 1,
 		Image = "bouncer", --Image = "DNT_IceCrawler"
 		SkillList = {"DNT_IceCrawlerAtk1"},
@@ -169,7 +169,7 @@ DNT_IceCrawler2 = Pawn:new
 	{
 		Name = "Alpha Ice Crawler",
 		Health = 5,
-		MoveSpeed = 4,
+		MoveSpeed = 2,
 		Ranged = 1,
 		SkillList = {"DNT_IceCrawlerAtk2"},
 		Image = "bouncer", --Image = "DNT_IceCrawler",
