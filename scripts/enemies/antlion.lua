@@ -118,6 +118,7 @@ DNT_Antlion1 = Pawn:new
 		DefaultTeam = TEAM_ENEMY,
 		ImpactMaterial = IMPACT_INSECT,
 		Burrows = true,
+		-- Jumper = true,
 	}
 AddPawn("DNT_Antlion1")
 
@@ -134,6 +135,7 @@ DNT_Antlion2 = Pawn:new
 		ImpactMaterial = IMPACT_INSECT,
 		Tier = TIER_ALPHA,
 		Burrows = true,
+		-- Jumper = true,
 	}
 AddPawn("DNT_Antlion2")
 
@@ -183,11 +185,10 @@ AddPawn("DNT_FallAntlion3")
 -- Hooks --
 -----------
 
-local function HOOK_pawnPositionChanged(mission, pawn, oldPosition)
+local function HOOK_pawnPositionChanged(mission, pawn, oldpos) -- death fix for push to water/chasm
 	if pawn:GetType():find("^DNT_Antlion") ~= nil and not pawn:IsDead() then
 		local pos = pawn:GetSpace()
 		local n = (pawn:GetType()):sub(-1)
-		-- LOG("DNT_FallAntlion"..n)
 		if Board:GetTerrain(pos) == TERRAIN_HOLE then
 			pawn:Kill(true)
 			Board:AddPawn("DNT_FallAntlion"..n,pos)
@@ -198,11 +199,13 @@ local function HOOK_pawnPositionChanged(mission, pawn, oldPosition)
 	end
 end
 
-local function HOOK_pawnDamaged(mission, pawn, damageTaken)
+local function HOOK_pawnDamaged(mission, pawn, damageTaken) -- death fix for cracked tiles
 	if pawn:GetType():find("^DNT_Antlion") ~= nil and not pawn:IsDead() then
 		local pos = pawn:GetSpace()
 		local n = (pawn:GetType()):sub(-1)
 		if Board:GetTerrain(pos) == TERRAIN_HOLE then
+			Board:SetTerrain(pos,0)
+			Board:SetTerrain(pos,TERRAIN_HOLE)
 			pawn:Kill(true)
 			Board:AddPawn("DNT_FallAntlion"..n,pos)
 		elseif Board:GetTerrain(pos) == TERRAIN_WATER and _G[pawn:GetType()].Tier ~= TIER_BOSS then
