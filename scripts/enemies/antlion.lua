@@ -118,7 +118,7 @@ DNT_Antlion1 = Pawn:new
 		DefaultTeam = TEAM_ENEMY,
 		ImpactMaterial = IMPACT_INSECT,
 		Burrows = true,
-		-- Jumper = true,
+		Pushable = false
 	}
 AddPawn("DNT_Antlion1")
 
@@ -135,89 +135,106 @@ DNT_Antlion2 = Pawn:new
 		ImpactMaterial = IMPACT_INSECT,
 		Tier = TIER_ALPHA,
 		Burrows = true,
-		-- Jumper = true,
+		Pushable = false
 	}
 AddPawn("DNT_Antlion2")
 
--- Death effect on water/chasms
-DNT_FallAntlion1 = Pawn:new
-	{
-		Health = 1,
-		Neutral = true,
-		MoveSpeed = 0,
-		IsPortrait = false,
-		Image = "DNT_antlion",
-		SoundLocation = "/enemy/burrower_1/",
-		DefaultTeam = TEAM_NONE,
-		ImpactMaterial = IMPACT_INSECT
-	}
-AddPawn("DNT_FallAntlion1")
+-- -- Death effect on water/chasms
+-- DNT_FallAntlion1 = Pawn:new
+	-- {
+		-- Health = 1,
+		-- Neutral = true,
+		-- MoveSpeed = 0,
+		-- IsPortrait = false,
+		-- Image = "DNT_antlion",
+		-- SoundLocation = "/enemy/burrower_1/",
+		-- DefaultTeam = TEAM_NONE,
+		-- ImpactMaterial = IMPACT_INSECT
+	-- }
+-- AddPawn("DNT_FallAntlion1")
 
-DNT_FallAntlion2 = Pawn:new
-	{
-		Health = 1,
-		Neutral = true,
-		MoveSpeed = 0,
-		IsPortrait = false,
-		Image = "DNT_antlion",
-		ImageOffset = 1,
-		SoundLocation = "/enemy/burrower_1/",
-		DefaultTeam = TEAM_NONE,
-		ImpactMaterial = IMPACT_INSECT
-	}
-AddPawn("DNT_FallAntlion2")
+-- DNT_FallAntlion2 = Pawn:new
+	-- {
+		-- Health = 1,
+		-- Neutral = true,
+		-- MoveSpeed = 0,
+		-- IsPortrait = false,
+		-- Image = "DNT_antlion",
+		-- ImageOffset = 1,
+		-- SoundLocation = "/enemy/burrower_1/",
+		-- DefaultTeam = TEAM_NONE,
+		-- ImpactMaterial = IMPACT_INSECT
+	-- }
+-- AddPawn("DNT_FallAntlion2")
 
-DNT_FallAntlion3 = Pawn:new
-	{
-		Health = 1,
-		Neutral = true,
-		MoveSpeed = 0,
-		IsPortrait = false,
-		Image = "DNT_antlion",
-		ImageOffset = 2,
-		SoundLocation = "/enemy/burrower_1/",
-		DefaultTeam = TEAM_NONE,
-		ImpactMaterial = IMPACT_INSECT
-	}
-AddPawn("DNT_FallAntlion3")
+-- DNT_FallAntlion3 = Pawn:new
+	-- {
+		-- Health = 1,
+		-- Neutral = true,
+		-- MoveSpeed = 0,
+		-- IsPortrait = false,
+		-- Image = "DNT_antlion",
+		-- ImageOffset = 2,
+		-- SoundLocation = "/enemy/burrower_1/",
+		-- DefaultTeam = TEAM_NONE,
+		-- ImpactMaterial = IMPACT_INSECT
+	-- }
+-- AddPawn("DNT_FallAntlion3")
 
------------
--- Hooks --
------------
+-- -----------
+-- -- Hooks --
+-- -----------
 
-local function HOOK_pawnPositionChanged(mission, pawn, oldpos) -- death fix for push to water/chasm
-	if pawn:GetType():find("^DNT_Antlion") ~= nil and not pawn:IsDead() then
-		local pos = pawn:GetSpace()
-		local n = (pawn:GetType()):sub(-1)
-		if Board:GetTerrain(pos) == TERRAIN_HOLE then
-			pawn:Kill(true)
-			Board:AddPawn("DNT_FallAntlion"..n,pos)
-		elseif Board:GetTerrain(pos) == TERRAIN_WATER and _G[pawn:GetType()].Tier ~= TIER_BOSS then
-			pawn:Kill(true)
-			Board:AddPawn("DNT_FallAntlion"..n,pos)
-		end
-	end
-end
+-- local function HOOK_pawnPositionChanged(mission, pawn, oldpos) -- death fix for push to water/chasm/mine
+	-- if pawn:GetType():find("^DNT_Antlion") ~= nil and not pawn:IsDead() then
+		-- local pos = pawn:GetSpace()
+		-- local n = (pawn:GetType()):sub(-1)
+		-- if Board:GetTerrain(pos) == TERRAIN_HOLE then -- chasm
+			-- pawn:Kill(true)
+			-- Board:AddPawn("DNT_FallAntlion"..n,pos)
+		-- elseif Board:GetTerrain(pos) == TERRAIN_WATER and _G[pawn:GetType()].Tier ~= TIER_BOSS then -- water
+			-- pawn:Kill(true)
+			-- Board:AddPawn("DNT_FallAntlion"..n,pos)
+		-- elseif _G[Board:GetItem(pos)] ~= nil then -- mines
+			-- local dam = _G[Board:GetItem(pos)].Damage
+			-- dam.loc = pos
+			-- dam.iFire = EFFECT_NONE
+			-- Board:DamageSpace(dam)
+			-- if dam.iFrozen == EFFECT_CREATE then
+				-- pawn:SetSpace(pos)
+			-- end
+			
+			-- -- local mineDamage = _G[Board:GetItem(pos)].Damage.iDamage
+			-- -- dam = SpaceDamage(pos,mineDamage)
+			-- -- Board:DamageSpace(dam)
+			
+			-- -- if Board:IsDeadly(dam,pawn) then
+				-- -- pawn:Kill(true)
+				-- -- Board:AddPawn("DNT_FallAntlion"..n,pos)
+			-- -- end
+		-- end
+	-- end
+-- end
 
-local function HOOK_pawnDamaged(mission, pawn, damageTaken) -- death fix for cracked tiles
-	if pawn:GetType():find("^DNT_Antlion") ~= nil and not pawn:IsDead() then
-		local pos = pawn:GetSpace()
-		local n = (pawn:GetType()):sub(-1)
-		if Board:GetTerrain(pos) == TERRAIN_HOLE then
-			Board:SetTerrain(pos,0)
-			Board:SetTerrain(pos,TERRAIN_HOLE)
-			pawn:Kill(true)
-			Board:AddPawn("DNT_FallAntlion"..n,pos)
-		elseif Board:GetTerrain(pos) == TERRAIN_WATER and _G[pawn:GetType()].Tier ~= TIER_BOSS then
-			pawn:Kill(true)
-			Board:AddPawn("DNT_FallAntlion"..n,pos)
-		end
-	end
-end
+-- local function HOOK_pawnDamaged(mission, pawn, damageTaken) -- death fix for cracked tiles
+	-- if pawn:GetType():find("^DNT_Antlion") ~= nil and not pawn:IsDead() then
+		-- local pos = pawn:GetSpace()
+		-- local n = (pawn:GetType()):sub(-1)
+		-- if Board:GetTerrain(pos) == TERRAIN_HOLE then
+			-- Board:SetTerrain(pos,0)
+			-- Board:SetTerrain(pos,TERRAIN_HOLE)
+			-- pawn:Kill(true)
+			-- Board:AddPawn("DNT_FallAntlion"..n,pos)
+		-- elseif Board:GetTerrain(pos) == TERRAIN_WATER and _G[pawn:GetType()].Tier ~= TIER_BOSS then
+			-- pawn:Kill(true)
+			-- Board:AddPawn("DNT_FallAntlion"..n,pos)
+		-- end
+	-- end
+-- end
 
-local function EVENT_onModsLoaded()
-	DNT_Vextra_ModApiExt:addPawnPositionChangedHook(HOOK_pawnPositionChanged)
-	DNT_Vextra_ModApiExt:addPawnDamagedHook(HOOK_pawnDamaged)
-end
+-- local function EVENT_onModsLoaded()
+	-- DNT_Vextra_ModApiExt:addPawnPositionChangedHook(HOOK_pawnPositionChanged)
+	-- DNT_Vextra_ModApiExt:addPawnDamagedHook(HOOK_pawnDamaged)
+-- end
 
-modApi.events.onModsLoaded:subscribe(EVENT_onModsLoaded)
+-- modApi.events.onModsLoaded:subscribe(EVENT_onModsLoaded)

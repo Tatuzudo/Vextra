@@ -86,9 +86,14 @@ DNT_IceCrawlerAtk2 = DNT_IceCrawlerAtk1:new {
 function DNT_IceCrawlerAtk1:GetSkillEffect(p1,p2)
 	local ret = SkillEffect()
 	local target = GetProjectileEnd(p1,p2)
-	local damage = SpaceDamage(target,self.Damage) 
+	local damage = SpaceDamage(target,self.Damage)
+	local tpawn = Board:GetPawn(target)
+	local burrower = false
+	if tpawn and _G[tpawn:GetType()].Burrows then burrower = true end
 	
-	if not Board:IsFrozen(target) then -- do not freeze frozen things again
+	if Board:IsBlocked(target,PATH_PROJECTILE) and not Board:IsFrozen(target) and not burrower then -- do not freeze frozen things again or burrowers (they burrow anyway with damage)
+		damage.iFrozen = EFFECT_CREATE
+	elseif not Board:IsBlocked(target,PATH_PROJECTILE) and Board:GetTerrain(target) ~= TERRAIN_ICE then
 		damage.iFrozen = EFFECT_CREATE
 	end
 	
@@ -100,14 +105,16 @@ function DNT_IceCrawlerAtk1:GetSkillEffect(p1,p2)
 	
 	ret:AddQueuedProjectile(damage,self.Projectile,FULL_DELAY)
 	
-	if Board:IsFrozen(target) and self.ExplodeIce then
-		for i = DIR_START, DIR_END do
-			local curr = DIR_VECTORS[i] + target
-			if curr ~= p1 then
-				damage = SpaceDamage(curr,self.Damage)
-				-- damage.sAnimation = "IceShards"
-				-- damage.sSound = self.SoundBase.."/attack"
-				ret:AddQueuedDamage(damage)
+	if self.ExplodeIce then
+		if Board:IsFrozen(target) or (not Board:IsBlocked(target,PATH_PROJECTILE) and Board:GetTerrain(target) == TERRAIN_ICE) then
+			for i = DIR_START, DIR_END do
+				local curr = DIR_VECTORS[i] + target
+				if i ~= GetDirection(p1 - p2) then
+					damage = SpaceDamage(curr,self.Damage)
+					-- damage.sAnimation = "IceShards"
+					-- damage.sSound = self.SoundBase.."/attack"
+					ret:AddQueuedDamage(damage)
+				end
 			end
 		end
 	end
