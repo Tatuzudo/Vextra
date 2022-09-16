@@ -19,8 +19,10 @@ end
 -------------
 --   Art   --
 -------------
+--WOOO lots of animations and we can't automate cause of variable names, let's go copy pasta
+local name, base = nil
 
-local name = "name" --lowercase, I could also use this else where, but let's make it more readable elsewhere
+name = "anthill" --lowercase, I could also use this else where, but let's make it more readable elsewhere
 
 -- UNCOMMENT WHEN YOU HAVE SPRITES; you can do partial
 --modApi:appendAsset(writepath.."DNT_"..name..".png", readpath.."DNT_"..name..".png")
@@ -42,6 +44,45 @@ local name = "name" --lowercase, I could also use this else where, but let's mak
 
 
 
+name = "workerant"
+
+modApi:appendAsset(writepath.."DNT_"..name..".png", readpath.."DNT_"..name..".png")
+modApi:appendAsset(writepath.."DNT_"..name.."a.png", readpath.."DNT_"..name.."a.png")
+modApi:appendAsset(writepath.."DNT_"..name.."_death.png", readpath.."DNT_"..name.."_death.png")
+
+local base = a.EnemyUnit:new{Image = imagepath .. "DNT_"..name..".png", PosX = -26, PosY = -6, Height = 1}
+
+a.DNT_workerant = base
+a.DNT_workeranta = base:new{ Image = imagepath.."DNT_"..name.."a.png", NumFrames = 4 }
+a.DNT_workerantd = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Loop = false, NumFrames = 6, Time = .15 } --Numbers copied for now
+
+
+
+name = "flyingant"
+
+modApi:appendAsset(writepath.."DNT_"..name..".png", readpath.."DNT_"..name..".png")
+modApi:appendAsset(writepath.."DNT_"..name.."a.png", readpath.."DNT_"..name.."a.png")
+modApi:appendAsset(writepath.."DNT_"..name.."_death.png", readpath.."DNT_"..name.."_death.png")
+
+local base = a.EnemyUnit:new{Image = imagepath .. "DNT_"..name..".png", PosX = -26, PosY = -6, Height = 1}
+
+a.DNT_flyingant = base
+a.DNT_flyinganta = base:new{ Image = imagepath.."DNT_"..name.."a.png", NumFrames = 4 }
+a.DNT_flyingantd = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Loop = false, NumFrames = 6, Time = .15 } --Numbers copied for now
+
+
+
+name = "soldierant"
+
+modApi:appendAsset(writepath.."DNT_"..name..".png", readpath.."DNT_"..name..".png")
+modApi:appendAsset(writepath.."DNT_"..name.."a.png", readpath.."DNT_"..name.."a.png")
+modApi:appendAsset(writepath.."DNT_"..name.."_death.png", readpath.."DNT_"..name.."_death.png")
+
+local base = a.EnemyUnit:new{Image = imagepath .. "DNT_"..name..".png", PosX = -26, PosY = -6, Height = 1}
+
+a.DNT_soldierant = base
+a.DNT_soldieranta = base:new{ Image = imagepath.."DNT_"..name.."a.png", NumFrames = 4 }
+a.DNT_soldierantd = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Loop = false, NumFrames = 6, Time = .15 } --Numbers copied for now
 -------------
 -- Weapons --
 -------------
@@ -82,7 +123,7 @@ function DNT_AnthillAtk1:GetTargetArea(point)
 		if Board:IsValid(curr) then
 			ret:push_back(curr)
 		end
-		
+
 		local dir = GetDirection(curr - point)
 		local dir2 = dir+1 > 3 and 0 or dir+1
 		local curr2 = curr + DIR_VECTORS[dir2]
@@ -90,25 +131,25 @@ function DNT_AnthillAtk1:GetTargetArea(point)
 			ret:push_back(curr2)
 		end
 	end
-	
+
 	return ret
 	-- return general_SquareTarget(point, 0)
 end
 
 function DNT_AnthillAtk1:GetSkillEffect(p1,p2)
 	local ret = SkillEffect()
-	
+
 	local spawn = math.min(Pawn:GetHealth(), 5)
 
 	local damage = SpaceDamage(p2)
 	damage.sPawn = self.Spawns[spawn]
 
 	ret:AddArtillery(damage,self.Projectile,NO_DELAY)
-	
+
 	if IsTipImage() then
 		ret:AddDelay(4)
 	end
-	
+
 	return ret
 end
 
@@ -222,11 +263,12 @@ DNT_WorkerAnt1 = Pawn:new
 		Health = 1,
 		MoveSpeed = 3,
 		SpawnLimit = false,
-		Image = "spiderling", --lowercase
+		Image = "DNT_workerant", --lowercase
 		SkillList = {"DNT_WorkerAntAtk"},
 		SoundLocation = "/enemy/spiderling_1//",
 		DefaultTeam = TEAM_ENEMY,
 		ImpactMaterial = IMPACT_INSECT,
+		Minor = true,
 	}
 AddPawn("DNT_WorkerAnt1")
 
@@ -253,11 +295,12 @@ DNT_FlyingAnt1 = Pawn:new
 		MoveSpeed = 3,
 		Flying = true,
 		SpawnLimit = false,
-		Image = "hornet", --lowercase
+		Image = "DNT_flyingant", --lowercase
 		SkillList = {"DNT_FlyingAntAtk"},
 		SoundLocation = "/enemy/spiderling_1//",
 		DefaultTeam = TEAM_ENEMY,
 		ImpactMaterial = IMPACT_INSECT,
+		Minor = true,
 	}
 AddPawn("DNT_FlyingAnt1")
 
@@ -284,11 +327,12 @@ DNT_SoldierAnt1 = Pawn:new
 		Health = 2,
 		MoveSpeed = 3,
 		SpawnLimit = false,
-		Image = "leaper",
+		Image = "DNT_soldierant",
 		SkillList = {"DNT_SoldierAntAtk"},
 		SoundLocation = "/enemy/spiderling_1//",
 		DefaultTeam = TEAM_ENEMY,
 		ImpactMaterial = IMPACT_INSECT,
+		Minor = true,
 	}
 AddPawn("DNT_SoldierAnt1")
 
