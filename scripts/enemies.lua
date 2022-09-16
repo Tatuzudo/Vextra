@@ -99,6 +99,7 @@ elseif exclusiveElements then --1.2.79+
 			table.insert(list, "DNT_Silkworm")
 		end
 	end
+	table.insert(exclusiveElements, {"DNT_IceCrawler", "Burrower", "DNT_Antlion", "DNT_Anthill"}) --Ice Crawers and Burrowers act weird because of the damage + freeze
 end
 
 if FlyingEnemies then --Flying table, seperate from Exlcuisve Elements
