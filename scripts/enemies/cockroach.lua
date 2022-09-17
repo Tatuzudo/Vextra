@@ -179,10 +179,6 @@ function DNT_CockroachAtk1:GetSkillEffect(p1,p2)
 	--damage.bHidePath = true
 	ret:AddQueuedDamage(damage)
 
---TO DO REMOVE I JUST HAD TO GO
---1. Check the hide it was hiding too much 2. Check the death flip back it's showing the wrong thing
---Finish the change list by going through the code from where it is currently scrolled to
-
 
 	--[[ OLD TARGETTING SYSTEM
 	local target = p2 + DIR_VECTORS[direction]
