@@ -23,21 +23,21 @@ end
 local name = "termites" --lowercase, I could also use this else where, but let's make it more readable elsewhere
 
 -- UNCOMMENT WHEN YOU HAVE SPRITES; you can do partial
---modApi:appendAsset(writepath.."DNT_"..name..".png", readpath.."DNT_"..name..".png")
---modApi:appendAsset(writepath.."DNT_"..name.."a.png", readpath.."DNT_"..name.."a.png")
---modApi:appendAsset(writepath.."DNT_"..name.."e.png", readpath.."DNT_"..name.."e.png")
---modApi:appendAsset(writepath.."DNT_"..name.."_death.png", readpath.."DNT_"..name.."_death.png")
+modApi:appendAsset(writepath.."DNT_"..name..".png", readpath.."DNT_"..name..".png")
+modApi:appendAsset(writepath.."DNT_"..name.."a.png", readpath.."DNT_"..name.."a.png")
+modApi:appendAsset(writepath.."DNT_"..name.."e.png", readpath.."DNT_"..name.."e.png")
+modApi:appendAsset(writepath.."DNT_"..name.."_death.png", readpath.."DNT_"..name.."_death.png")
 --modApi:appendAsset(writepath.."DNT_"..name.."_Bw.png", readpath.."DNT_"..name.."_Bw.png")
 
---local base = a.EnemyUnit:new{Image = imagepath .. "DNT_"..name..".png", PosX = -23, PosY = -5}
---local baseEmerge = a.BaseEmerge:new{Image = imagepath .. "DNT_"..name.."e.png", PosX = 0, PosY = 0}
+local base = a.EnemyUnit:new{Image = imagepath .. "DNT_"..name..".png", PosX = -23, PosY = -5}
+local baseEmerge = a.BaseEmerge:new{Image = imagepath .. "DNT_"..name.."e.png", PosX = -23, PosY = -5, NumFrames = 12}
 
 -- REPLACE "name" with the name
 -- UNCOMENT WHEN YOU HAVE SPRITES
---a.DNT_name = base
---a.DNT_namee = baseEmerge
---a.DNT_namea = base:new{ Image = imagepath.."DNT_"..name.."a.png", NumFrames = 8 }
---a.DNT_named = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Loop = false, NumFrames = 8, Time = .04 } --Numbers copied for now
+a.DNT_termites = base
+a.DNT_termitese = baseEmerge
+a.DNT_termitesa = base:new{ Image = imagepath.."DNT_"..name.."a.png", NumFrames = 4 }
+a.DNT_termitesd = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Loop = false, NumFrames = 8, Time = .14 } --Numbers copied for now
 --a.DNT_namew = base:new{ Image = imagepath.."DNT_"..name.."_Bw.png"} --Only if there's a boss
 
 
@@ -144,7 +144,7 @@ DNT_Termites1 = Pawn:new
 		Name = "Termites",
 		Health = 3,
 		MoveSpeed = 3,
-		Image = "spiderling", --lowercase
+		Image = "DNT_termites", --lowercase
 		SkillList = {"DNT_TermitesAtk1"},
 		SoundLocation = "/enemy/centipede_1/",
 		DefaultTeam = TEAM_ENEMY,
@@ -158,7 +158,7 @@ DNT_Termites2 = Pawn:new
 		Health = 5,
 		MoveSpeed = 3,
 		SkillList = {"DNT_TermitesAtk2"},
-		Image = "spiderling",
+		Image = "DNT_termites",
 		SoundLocation = "/enemy/centipede_1/",
 		ImageOffset = 1,
 		DefaultTeam = TEAM_ENEMY,
