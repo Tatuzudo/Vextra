@@ -162,15 +162,19 @@ function DNT_CockroachAtk1:GetSkillEffect(p1,p2)
 	--local backdir = GetDirection(p1 - p2)
 
 	local target = p2
+
 	local damage = SpaceDamage(target, self.Damage)
 	damage.sAnimation = "ExploArt1",
-
-	ret:AddQueuedArtillery(damage,self.Projectile, NO_DELAY)
+	if Board:IsValid(target) then
+		ret:AddQueuedArtillery(damage,self.Projectile, NO_DELAY)
+	end
 
 	target = p2 + DIR_VECTORS[direction]*2
 	damage.loc = target
 
-	ret:AddQueuedArtillery(damage,self.Projectile, NO_DELAY)
+	if Board:IsValid(target) then
+		ret:AddQueuedArtillery(damage,self.Projectile, NO_DELAY)
+	end
 
 	damage = SpaceDamage(p1,self.SelfDamage)
 	--Hide the self damage, we don't want people to misunderstand the red ground on it (doesn't work how I want)
@@ -348,7 +352,7 @@ local function NextTurn(mission)
 			end
 		end
 		Board:AddEffect(effect)
-		resetVars(mission)
+		--resetVars(mission)
 	end
 end
 
