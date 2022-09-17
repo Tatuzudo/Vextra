@@ -164,7 +164,7 @@ function DNT_CockroachAtk1:GetSkillEffect(p1,p2)
 	local target = p2
 
 	local damage = SpaceDamage(target, self.Damage)
-	damage.sAnimation = "ExploArt1",
+	damage.sAnimation = "ExploArt1"
 	if Board:IsValid(target) then
 		ret:AddQueuedArtillery(damage,self.Projectile, NO_DELAY)
 	end
