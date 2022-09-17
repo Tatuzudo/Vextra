@@ -24,22 +24,22 @@ end
 local name = "icecrawler" --lowercase, I could also use this else where, but let's make it more readable elsewhere
 
 -- UNCOMMENT WHEN YOU HAVE SPRITES; you can do partial
---modApi:appendAsset(writepath.."DNT_"..name..".png", readpath.."DNT_"..name..".png")
---modApi:appendAsset(writepath.."DNT_"..name.."a.png", readpath.."DNT_"..name.."a.png")
---modApi:appendAsset(writepath.."DNT_"..name.."e.png", readpath.."DNT_"..name.."e.png")
---modApi:appendAsset(writepath.."DNT_"..name.."_death.png", readpath.."DNT_"..name.."_death.png")
+modApi:appendAsset(writepath.."DNT_"..name..".png", readpath.."DNT_"..name..".png")
+modApi:appendAsset(writepath.."DNT_"..name.."a.png", readpath.."DNT_"..name.."a.png")
+modApi:appendAsset(writepath.."DNT_"..name.."e.png", readpath.."DNT_"..name.."e.png")
+modApi:appendAsset(writepath.."DNT_"..name.."_death.png", readpath.."DNT_"..name.."_death.png")
 --modApi:appendAsset(writepath.."DNT_"..name.."_Bw.png", readpath.."DNT_"..name.."_Bw.png")
 
---local base = a.EnemyUnit:new{Image = imagepath .. "DNT_"..name..".png", PosX = -23, PosY = -5}
---local baseEmerge = a.BaseEmerge:new{Image = imagepath .. "DNT_"..name.."e.png", PosX = 0, PosY = 0}
+local base = a.EnemyUnit:new{Image = imagepath .. "DNT_"..name..".png", PosX = -26, PosY = -5}
+local baseEmerge = a.BaseEmerge:new{Image = imagepath .. "DNT_"..name.."e.png", PosX = -26, PosY = -5, NumFrames = 9}
 
 -- REPLACE "name" with the name
 -- UNCOMENT WHEN YOU HAVE SPRITES
---a.DNT_name = base
---a.DNT_namee = baseEmerge
---a.DNT_ladybuga = base:new{ Image = imagepath.."DNT_"..name.."a.png", NumFrames = 8 }
---a.DNT_named = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Loop = false, NumFrames = 8, Time = .04 } --Numbers copied for now
---a.DNT_namew = base:new{ Image = imagepath.."DNT_"..name.."_Bw.png"} --Only if there's a boss
+a.DNT_icecrawler = base
+a.DNT_icecrawlere = baseEmerge
+a.DNT_icecrawlera = base:new{ Image = imagepath.."DNT_"..name.."a.png", NumFrames = 9 }
+a.DNT_icecrawlerd = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Loop = false, NumFrames = 12, Time = .14 } --Numbers copied for now
+--a.DNT_icecrawlerw = base:new{ Image = imagepath.."DNT_"..name.."_Bw.png"} --Only if there's a boss
 
 
 -------------
@@ -90,21 +90,21 @@ function DNT_IceCrawlerAtk1:GetSkillEffect(p1,p2)
 	local tpawn = Board:GetPawn(target)
 	local burrower = false
 	if tpawn and _G[tpawn:GetType()].Burrows then burrower = true end
-	
+
 	if Board:IsBlocked(target,PATH_PROJECTILE) and not Board:IsFrozen(target) and not burrower then -- do not freeze frozen things again or burrowers (they burrow anyway with damage)
 		damage.iFrozen = EFFECT_CREATE
 	elseif not Board:IsBlocked(target,PATH_PROJECTILE) and Board:GetTerrain(target) ~= TERRAIN_ICE then
 		damage.iFrozen = EFFECT_CREATE
 	end
-	
+
 	if self.FreezeSelf then
 		selfdamage = SpaceDamage(p1)
 		selfdamage.iFrozen = EFFECT_CREATE
 		ret:AddQueuedDamage(selfdamage)
 	end
-	
+
 	ret:AddQueuedProjectile(damage,self.Projectile,FULL_DELAY)
-	
+
 	if self.ExplodeIce then
 		if Board:IsFrozen(target) or (not Board:IsBlocked(target,PATH_PROJECTILE) and Board:GetTerrain(target) == TERRAIN_ICE) then
 			for i = DIR_START, DIR_END do
@@ -118,7 +118,7 @@ function DNT_IceCrawlerAtk1:GetSkillEffect(p1,p2)
 			end
 		end
 	end
-	
+
 	-- Unfreeze mech corpse because it's weird (invisible ice). Also unfreeze shielded targets.
 	local defrost = Board:GetPawn(target)
 	if defrost then
@@ -129,7 +129,7 @@ function DNT_IceCrawlerAtk1:GetSkillEffect(p1,p2)
 		damage.iFrozen = EFFECT_REMOVE
 		ret:AddQueuedDamage(damage)
 	end
-	
+
 	return ret
 end
 
@@ -137,7 +137,7 @@ end
 	-- local ret = Skill.GetTargetScore(self, p1, p2)
 	-- local dir = GetDirection(p2 - p1)
 	-- local target = GetProjectileEnd(p1,p2)
-	
+
 	-- local pawn = Board:GetPawn(target)
 	-- if pawn then
 		-- if pawn:IsFrozen() then
@@ -150,7 +150,7 @@ end
 			-- -- end
 		-- end
 	-- end
-	
+
     -- return ret
 -- end
 
@@ -164,7 +164,7 @@ DNT_IceCrawler1 = Pawn:new
 		Health = 3,
 		MoveSpeed = 2,
 		Ranged = 1,
-		Image = "bouncer", --Image = "DNT_IceCrawler"
+		Image = "DNT_icecrawler", --Image = "DNT_IceCrawler"
 		SkillList = {"DNT_IceCrawlerAtk1"},
 		SoundLocation = "/enemy/beetle_1/",
 		DefaultTeam = TEAM_ENEMY,
@@ -179,7 +179,7 @@ DNT_IceCrawler2 = Pawn:new
 		MoveSpeed = 2,
 		Ranged = 1,
 		SkillList = {"DNT_IceCrawlerAtk2"},
-		Image = "bouncer", --Image = "DNT_IceCrawler",
+		Image = "DNT_icecrawler", --Image = "DNT_IceCrawler",
 		SoundLocation = "/enemy/beetle_2/",
 		ImageOffset = 1,
 		DefaultTeam = TEAM_ENEMY,
