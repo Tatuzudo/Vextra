@@ -72,6 +72,7 @@ for _, suffix in pairs(corpseNames) do
 		Location[imagepath.."DNT_cockroach_corpse_"..suffix..".png"] = Point(-23,-5)
 
 	modApi:appendAsset(writepath.."DNT_cockroach_explosion_"..suffix..".png", readpath.."DNT_cockroach_explosion_"..suffix..".png")
+	modApi:appendAsset(writepath.."DNT_cockroach_death_reverse_"..suffix..".png", readpath.."DNT_cockroach_death_reverse_"..suffix..".png")
 end
 
 
@@ -99,6 +100,23 @@ a.DNT_cockroach_explosion_alpha = a.DNT_cockroach_explosion_beta:new{
 a.DNT_cockroach_explosion_leader = a.DNT_cockroach_explosion_beta:new{
 	Image = imagepath.."DNT_cockroach_explosion_leader.png",
 }
+
+--These aren't actually the revere direction from the death, but they are used to play the reverse animation because they need to be seperate
+a.DNT_cockroachd_reverse_beta = a.DNT_cockroachd:new{
+	Image = imagepath.."DNT_cockroach_death_reverse_beta.png",
+	NumFrames = 4,
+	Height = 1,
+}
+a.DNT_cockroachd_reverse_alpha = a.DNT_cockroachd_reverse_beta:new{
+	Image = imagepath.."DNT_cockroach_death_reverse_alpha.png",
+}
+
+a.DNT_cockroachd_reverse_leader = a.DNT_cockroachd_reverse_beta:new{
+	Image = imagepath.."DNT_cockroach_death_reverse_leader.png",
+}
+
+
+
 -------------
 -- Weapons --
 -------------
@@ -154,7 +172,17 @@ function DNT_CockroachAtk1:GetSkillEffect(p1,p2)
 
 	ret:AddQueuedArtillery(damage,self.Projectile, NO_DELAY)
 
-	ret:AddQueuedDamage(SpaceDamage(p1,self.SelfDamage))
+	damage = SpaceDamage(p1,self.SelfDamage)
+	--Hide the self damage, we don't want people to misunderstand the red ground on it (doesn't work how I want)
+	--damage.bHide = true
+	--damage.bHideIcon = true This hides damage numbers on hover (I assume)
+	--damage.bHidePath = true
+	ret:AddQueuedDamage(damage)
+
+--TO DO REMOVE I JUST HAD TO GO
+--1. Check the hide it was hiding too much 2. Check the death flip back it's showing the wrong thing
+--Finish the change list by going through the code from where it is currently scrolled to
+
 
 	--[[ OLD TARGETTING SYSTEM
 	local target = p2 + DIR_VECTORS[direction]
@@ -192,7 +220,8 @@ DNT_Cockroach1 = Pawn:new
 	}
 AddPawn("DNT_Cockroach1")
 
-DNT_Cockroach2 = Pawn:new
+
+DNT_Cockroach2 = DNT_Cockroach1:new
 	{
 		Name = "Alpha Cockroach",
 		Health = 3,
@@ -210,44 +239,36 @@ DNT_Cockroach2 = Pawn:new
 	}
 AddPawn("DNT_Cockroach2")
 
-function DNT_Cockroach1:GetDeathEffect(p1)
-	local ret = SkillEffect()
+------------------
+-- Death Effect --
+------------------
 
+local function DNT_Cockroach_Effect(p1, corpse)
+	local ret = SkillEffect()
 	ret:AddDelay(3*.15)
 	ret:AddScript(string.format("Board:GetPawn(%s):SetSpace(Point(-1,-1))",p1:GetString()))
-
 	local terrain = Board:GetTerrain(p1)
 	if terrain ~= TERRAIN_WATER and terrain ~= TERRAIN_LAVA then
-		local corpse = self.DroppedCorpse
 		local damage = SpaceDamage(p1,0)
 		damage.sItem = corpse
 		--ret:AddDelay(0.016)
 		ret:AddDamage(damage)--Wait a frame?
-		ret:AddScript(string.format("table.insert(GetCurrentMission().CockroachCorpses,%s)",p1:GetString()))
+		--ret:AddScript(string.format("table.insert(GetCurrentMission().CockroachCorpses,%s)",p1:GetString())) --BAD
 		--ret:AddDelay(9*.15) --1.35
 	end
 	return ret
 end
 
-function DNT_Cockroach2:GetDeathEffect(p1)
-	local ret = SkillEffect()
-
-	ret:AddDelay(3*.15)
-	ret:AddScript(string.format("Board:GetPawn(%s):SetSpace(Point(-1,-1))",p1:GetString()))
-
-	local terrain = Board:GetTerrain(p1)
-	if terrain ~= TERRAIN_WATER and terrain ~= TERRAIN_LAVA then
-		local corpse = self.DroppedCorpse
-		local damage = SpaceDamage(p1,0)
-		damage.sItem = corpse
-		--ret:AddDelay(0.016)
-		ret:AddDamage(damage)--Wait a frame?
-		ret:AddScript(string.format("table.insert(GetCurrentMission().AlphaCockroachCorpses,%s)",p1:GetString()))
-		--ret:AddDelay(9*.15) --1.35
-	end
-
-	return ret
+function DNT_Cockroach1:GetDeathEffect(p1) --Death Effects aren't inheritable apparently
+	local corpse = self.DroppedCorpse
+	return DNT_Cockroach_Effect(p1, corpse)
 end
+
+function DNT_Cockroach2:GetDeathEffect(p1) --Death Effects aren't inheritable apparently
+	local corpse = self.DroppedCorpse
+	return DNT_Cockroach_Effect(p1, corpse)
+end
+
 
 -----------
 -- Mines --
@@ -259,12 +280,14 @@ TILE_TOOLTIPS = {
 }
 
 local mine_damage_beta = SpaceDamage(0)
-mine_damage_beta.sAnimation = "DNT_cockroach_explosion_beta"
-mine_damage_beta.sScript = "LOG(mine_damage_beta.loc)"
+--mine_damage_beta.sAnimation = "DNT_cockroach_explosion_beta"
+--ANIMATIONS ARE HIDDEN FOR NOW, AT LEAST UNTIL WE FIND A WAY TO NOT MAKE THEM PLAY WITH A PAWN
+--mine_damage_beta.sScript = "LOG(mine_damage_beta.loc)"
 --mine_damage_beta.sScript = string.format("Board:AddAnimation(%s,%q,ANIM_NO_DELAY)",self.loc,"DNT_cockroach_explosion_beta")
 
 local mine_damage_alpha = SpaceDamage(0)
-mine_damage_alpha.sAnimation = "DNT_cockroach_explosion_alpha"
+--ANIMATIONS ARE HIDDEN FOR NOW, AT LEAST UNTIL WE FIND A WAY TO NOT MAKE THEM PLAY WITH A PAWN
+--mine_damage_alpha.sAnimation = "DNT_cockroach_explosion_alpha"
 
 DNT_Corpse_Mine = {
 	Image = imagepath.."DNT_cockroach_corpse_beta.png",
@@ -297,36 +320,35 @@ local function PawnKilled(mission, pawn)
 end
 ]]
 
+--[[
 local function resetVars(mission)
 	mission.CockroachCorpses = {}
 	mission.AlphaCockroachCorpses = {}
 end
+--]]
 
 local function NextTurn(mission)
-	mission.CockroachCorpses = mission.CockroachCorpses or {}
-	mission.AlphaCockroachCorpses = mission.AlphaCockroachCorpses or {}
 	if Game:GetTeamTurn() == TEAM_ENEMY then
 		local point = nil
 		local effect = SkillEffect()
 		effect:AddDelay(4*.15) --1.35
-		for i = 1, #mission.CockroachCorpses do
-			point = mission.CockroachCorpses[i]
-			if Board:IsItem(point) then
-				--local damage = SpaceDamage(point,0)
-				--damage.sPawn = "DNT_Cockroach1"
-				--effect:AddDamage(damage)
-				effect:AddScript(string.format("Board:AddPawn(%q,%s)","DNT_Cockroach1",point:GetString()))
-				Board:AddAnimation(point,"DNT_cockroachd",ANIM_REVERSE)
-			end
-		end
-		for i = 1, #mission.AlphaCockroachCorpses do
-			point = mission.AlphaCockroachCorpses[i]
-			if Board:IsItem(point) then
-				--local damage = SpaceDamage(point,0)
-				--damage.sPawn = "DNT_Cockroach2"
-				--effect:AddDamage(damage)
-				effect:AddScript(string.format("Board:AddPawn(%q,%s)","DNT_Cockroach2",point:GetString()))
-				Board:AddAnimation(point,"DNT_cockroachd",ANIM_REVERSE)
+		local board_size = Board:GetSize()
+		for i = 1, board_size.x - 1 do
+			for j = 1, board_size.y - 1 do
+				local point = Point(i,j)
+				if Board:GetItem(point) == DNT_Cockroach1.DroppedCorpse then
+					--local damage = SpaceDamage(point,0)
+					--damage.sPawn = "DNT_Cockroach1"
+					--effect:AddDamage(damage)
+					effect:AddScript(string.format("Board:AddPawn(%q,%s)","DNT_Cockroach1",point:GetString()))
+					Board:AddAnimation(point,"DNT_cockroachd_reverse_beta",ANIM_REVERSE)
+				elseif Board:GetItem(point) == DNT_Cockroach2.DroppedCorpse then
+					--local damage = SpaceDamage(point,0)
+					--damage.sPawn = "DNT_Cockroach2"
+					--effect:AddDamage(damage)
+					effect:AddScript(string.format("Board:AddPawn(%q,%s)","DNT_Cockroach2",point:GetString()))
+					Board:AddAnimation(point,"DNT_cockroachd_reverse_alpha",ANIM_REVERSE)
+				end
 			end
 		end
 		Board:AddEffect(effect)
@@ -349,13 +371,14 @@ for i = 0, board_size.x - 1 do
 	end
 	--]]
 
-
+--[[
 local function MissionStart(mission)
 	resetVars(mission)
 end
 local function PhaseStart(_, mission)
 	resetVars(mission)
 end
+--]]
 
 local this = {}
 
@@ -363,8 +386,8 @@ function this:load(NAH_Vextra_ModApiExt)
 	local options = mod_loader.currentModContent[mod.id].options
 	--NAH_Vextra_ModApiExt:addPawnKilledHook(PawnKilled) --EXAMPLE
 	modApi:addNextTurnHook(NextTurn)
-	modApi:addMissionStartHook(MissionStart)
-	modApi:addMissionNextPhaseCreatedHook(PhaseStart)
+	--modApi:addMissionStartHook(MissionStart)
+	--modApi:addMissionNextPhaseCreatedHook(PhaseStart)
 end
 
 return this
