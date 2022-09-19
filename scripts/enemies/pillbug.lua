@@ -171,19 +171,29 @@ function DNT_PillbugLeap1:GetTargetScore(p1, p2)
 	if ret > 5 then
 	  ret = 5
 	end
-
+	
 	local p3 = p2
-	for i = 1, 8 do
-		if not Board:IsBlocked(p3,PATH_PROJECTILE) or p3 == p1 then
-			p3 = p3 - DIR_VECTORS[dir]
+	while Board:IsBlocked(p3,PATH_PROJECTILE) do
+		if p3 == p1 then
 			break
 		end
 		p3 = p3 - DIR_VECTORS[dir]
 	end
-	if Board:GetTerrain(p3) == TERRAIN_WATER or Board:GetTerrain(p3) == TERRAIN_HOLE then -- less priority to suicide attacks
+	
+	if Board:GetTerrain(p3) == TERRAIN_HOLE then -- less priority to suicide attacks
+		ret = ret - 4
+	elseif Board:GetTerrain(p3) == TERRAIN_WATER and not _G[Board:GetPawn(p1):GetType()].Massive then
 		ret = ret - 4
 	end
-
+	
+	-- don't target your friends.
+	local targetPawn = Board:GetPawn(p2)
+	if targetPawn then
+		if targetPawn:GetTeam() == TEAM_ENEMY then
+			ret = 0
+		end
+	end
+	
     return ret
 end
 
@@ -217,6 +227,7 @@ DNT_Pillbug2 = Pawn:new{
 	SoundLocation = "/enemy/digger_2/",
 	DefaultTeam = TEAM_ENEMY,
 	ImpactMaterial = IMPACT_FLESH,
+	Tier = TIER_ALPHA,
 }
 AddPawn("DNT_Pillbug2")
 

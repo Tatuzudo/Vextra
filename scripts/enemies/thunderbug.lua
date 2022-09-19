@@ -79,6 +79,20 @@ DNT_VekLightning2 = DNT_VekLightning1:new{
 	}
 }
 
+DNT_VekLightning3 = DNT_VekLightning1:new{
+	Damage = 3,
+	MaxSpread = 3,
+	DistRed = 1,
+	TipImage = {
+		Unit = Point(2,3),
+		Target = Point(2,2),
+		Enemy1 = Point(2,2),
+		Building = Point(2,1),
+		Enemy2 = Point(3,1),
+		Building2 = Point(1,2),
+		CustomPawn = "DNT_Thunderbug2",
+	}
+}
 
 function DNT_VekLightning1:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
@@ -161,5 +175,20 @@ DNT_Thunderbug2 = Pawn:new{
 	SoundLocation = "/enemy/beetle_2/",
 	DefaultTeam = TEAM_ENEMY,
 	ImpactMaterial = IMPACT_INSECT,
+	Tier = TIER_ALPHA,
 }
 AddPawn("DNT_Thunderbug2")
+
+DNT_Thunderbug3 = Pawn:new{
+	Name = "Thunderbug Leader",
+	Health = 6,
+	MoveSpeed = 3,
+	Image = "DNT_thunderbug",
+	ImageOffset = 2,
+	SkillList = { "DNT_VekLightning3" },
+	SoundLocation = "/enemy/beetle_2/",
+	DefaultTeam = TEAM_ENEMY,
+	ImpactMaterial = IMPACT_INSECT,
+	Tier = TIER_BOSS,
+}
+AddPawn("DNT_Thunderbug3")
