@@ -80,6 +80,7 @@ DNT_VekLightning2 = DNT_VekLightning1:new{
 }
 
 DNT_VekLightning3 = DNT_VekLightning1:new{
+	Description = "Damage the target and chained units and buildings. Deals less damage with distance.",
 	Damage = 3,
 	MaxSpread = 3,
 	DistRed = 1,
@@ -190,5 +191,20 @@ DNT_Thunderbug3 = Pawn:new{
 	DefaultTeam = TEAM_ENEMY,
 	ImpactMaterial = IMPACT_INSECT,
 	Tier = TIER_BOSS,
+	Massive = true,
 }
 AddPawn("DNT_Thunderbug3")
+
+Mission_ThunderbugBoss = Mission_Boss:new{
+	Name = "Thunderbug Leader",
+	islandLock = 3,
+	BossPawn = "DNT_Thunderbug3",
+	SpawnStartMod = -1,
+	BossText = "Destroy the Thunderbug Leader",
+}
+IslandLocks.Mission_ThunderbugBoss = 3
+
+-- -- local bossList = modApi.bossList:add("Vextra")
+-- local bossList = modApi.bossList.Vextra
+
+-- bossList:addBoss("Mission_ThunderbugBoss")

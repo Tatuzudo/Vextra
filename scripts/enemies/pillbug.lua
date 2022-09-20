@@ -24,6 +24,10 @@ modApi:appendAsset("img/effects/DNT_upshot_pillbug2.png", resourcePath.."img/eff
 modApi:appendAsset("img/effects/DNT_effect1_pillbug2.png", resourcePath.."img/effects/DNT_effect1_pillbug2.png")
 modApi:appendAsset("img/effects/DNT_effect2_pillbug2.png", resourcePath.."img/effects/DNT_effect2_pillbug2.png")
 
+modApi:appendAsset("img/effects/DNT_upshot_pillbug3.png", resourcePath.."img/effects/DNT_upshot_pillbug3.png")
+modApi:appendAsset("img/effects/DNT_effect1_pillbug3.png", resourcePath.."img/effects/DNT_effect1_pillbug3.png")
+modApi:appendAsset("img/effects/DNT_effect2_pillbug3.png", resourcePath.."img/effects/DNT_effect2_pillbug3.png")
+
 -------------
 --   Art   --
 -------------
@@ -85,6 +89,21 @@ DNT_PillbugLeap2 = DNT_PillbugLeap1:new{
 		Mountain = Point(2,1),
 		Building = Point(2,2),
 		CustomPawn = "DNT_Pillbug2",
+	}
+}
+
+DNT_PillbugLeap3 = DNT_PillbugLeap1:new{
+	Damage = 3,
+	Projectile = "effects/DNT_upshot_pillbug3.png",
+	Effect1 = "effects/DNT_effect1_pillbug3.png",
+	Effect2 = "effects/DNT_effect2_pillbug3.png",
+	TipImage = {
+		Unit = Point(2,4),
+		Target = Point(2,0),
+		Enemy1 = Point(2,0),
+		Mountain = Point(2,1),
+		Building = Point(2,2),
+		CustomPawn = "DNT_Pillbug3",
 	}
 }
 
@@ -231,21 +250,33 @@ DNT_Pillbug2 = Pawn:new{
 }
 AddPawn("DNT_Pillbug2")
 
------------
--- Hooks --
------------
+DNT_Pillbug3 = Pawn:new{
+	Name = "Pillbug Leader",
+	Health = 4,
+	MoveSpeed = 2,
+	Ranged = 1,
+	Image = "DNT_pillbug",
+	ImageOffset = 2,
+	Armor = true,
+	SkillList = { "DNT_PillbugLeap3" },
+	SoundLocation = "/enemy/digger_2/",
+	DefaultTeam = TEAM_ENEMY,
+	ImpactMaterial = IMPACT_FLESH,
+	Tier = TIER_BOSS,
+	Massive = true
+}
+AddPawn("DNT_Thunderbug3")
 
--- local HOOK_pawnFocused = function(pawnType)
-	-- LOGF("PawnType %s is now being focused!", pawnType)
--- end
+Mission_PillbugBoss = Mission_Boss:new{
+	Name = "Pillbug Leader",
+	islandLock = 3,
+	BossPawn = "DNT_Pillbug3",
+	SpawnStartMod = -1,
+	BossText = "Destroy the Pillbug Leader",
+}
+IslandLocks.Mission_ThunderbugBoss = 3
 
--- local HOOK_pawnUnfocused = function(pawnType)
-	-- LOGF("PawnType %s is now being focused!", pawnType)
--- end
+-- local bossList = modApi.bossList:add("Vextra")
+-- -- local bossList = modApi.bossList.Vextra
 
--- local function EVENT_onModsLoaded()
-	-- modApi:addPawnFocusedHook(HOOK_pawnFocused)
-	-- modApi:addPawnUnfocusedHook(HOOK_pawnUnfocused)
--- end
-
--- modApi.events.onModsLoaded:subscribe(EVENT_onModsLoaded)
+-- bossList:addBoss("Mission_PillbugBoss")

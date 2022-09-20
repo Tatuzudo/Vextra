@@ -83,6 +83,12 @@ local base = a.EnemyUnit:new{Image = imagepath .. "DNT_"..name..".png", PosX = -
 a.DNT_soldierant = base
 a.DNT_soldieranta = base:new{ Image = imagepath.."DNT_"..name.."a.png", NumFrames = 4 }
 a.DNT_soldierantd = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Loop = false, NumFrames = 6, Time = .15 } --Numbers copied for now
+
+--projectiles
+modApi:appendAsset("img/effects/DNT_WorkerAnt1_upshot.png", resourcePath .. "img/effects/DNT_WorkerAnt1_upshot.png")
+modApi:appendAsset("img/effects/DNT_FlyingAnt1_upshot.png", resourcePath .. "img/effects/DNT_FlyingAnt1_upshot.png")
+modApi:appendAsset("img/effects/DNT_SoldierAnt1_upshot.png", resourcePath .. "img/effects/DNT_SoldierAnt1_upshot.png")
+
 -------------
 -- Weapons --
 -------------
@@ -90,13 +96,11 @@ a.DNT_soldierantd = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Loo
 -- Anthill
 DNT_AnthillAtk1 = Skill:new {
 	Name = "Breeding Ground",
-	-- Description = "Spawn soldier, flying or worker ants depending on the current health of the Anthill.",
-	Description = "Spawn stronger ants the more health it haves.",
+	Description = "Spawn soldier, flying or worker ants. Spawn stronger ants at higher health.",
 	Damage = 0,
 	Class = "Enemy",
 	LaunchSound = "",
 	ImpactSound = "/enemy/spider_boss_1/attack_egg_land",
-	Projectile = "effects/shotup_webling.png",--"effects/shotup_crab1.png",
 	Spawns = {"DNT_WorkerAnt1","DNT_FlyingAnt1","DNT_SoldierAnt1","DNT_SoldierAnt1","DNT_SoldierAnt1"},
 	TipImage = {
 		Unit = Point(2,2),
@@ -144,7 +148,7 @@ function DNT_AnthillAtk1:GetSkillEffect(p1,p2)
 	local damage = SpaceDamage(p2)
 	damage.sPawn = self.Spawns[spawn]
 
-	ret:AddArtillery(damage,self.Projectile,NO_DELAY)
+	ret:AddArtillery(damage,"effects/"..self.Spawns[spawn].."_upshot.png",NO_DELAY)
 
 	if IsTipImage() then
 		ret:AddDelay(4)
@@ -155,7 +159,7 @@ end
 
 function DNT_AnthillAtk1:GetTargetScore(p1, p2)
     local ret = 1
-	if Board:IsBlocked(p2,PATH_GROUND) or Board:IsPod(p2) then -- Board:GetTerrain(p2) == TERRAIN_WATER or Board:GetTerrain(p2) == TERRAIN_HOLE or
+	if Board:IsBlocked(p2,PATH_GROUND) or Board:IsPod(p2) then
 		ret = 0
 	else
 		local bonus = 0
