@@ -11,6 +11,7 @@ DNT_MantisSlash1 = Skill:new{
 	Icon = "weapons/enemy_leaper1.png",
 	PathSize = 1,
 	Damage = 1,
+	Range = 1,
 	TipImage = {
 		Unit = Point(2,3),
 		Target = Point(2,2),
@@ -21,7 +22,7 @@ DNT_MantisSlash1 = Skill:new{
 }
 
 DNT_MantisSlash2 = DNT_MantisSlash1:new{
-	Damage = 3,
+	Damage = 2,
 	TipImage = {
 		Unit = Point(2,3),
 		Target = Point(2,2),
@@ -31,24 +32,37 @@ DNT_MantisSlash2 = DNT_MantisSlash1:new{
 	}
 }
 
+DNT_MantisSlash3 = DNT_MantisSlash1:new{
+	Damage = 2,
+	Range = 2,
+	TipImage = {
+		Unit = Point(2,3),
+		Target = Point(2,2),
+		Enemy1 = Point(1,2),
+		Enemy2 = Point(3,2),
+		Building = Point(3,1),
+		CustomPawn = "DNT_Mantis3",
+	}
+}
 
 function DNT_MantisSlash1:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	local dir = GetDirection(p2 - p1)
-	
-	local dir2 = dir+1 > 3 and 0 or dir+1
-	local p3 = p2 + DIR_VECTORS[dir2]
-	
-	local dir3 = dir-1 < 0 and 3 or dir-1
-	local p4 = p2 + DIR_VECTORS[dir3]
+	local dirA = dir+1 > 3 and 0 or dir+1
+	local dirB = dir-1 < 0 and 3 or dir-1
 	
 	ret:AddQueuedMelee(p1,SpaceDamage(p2 + DIR_VECTORS[dir]*10))
-	local damage = SpaceDamage(p3,self.Damage)
-	damage.sAnimation = "SwipeClaw2"
-	ret:AddQueuedDamage(damage)
-	damage.loc = p4
-	damage.sSound = self.SoundBase.."/attack"
-	ret:AddQueuedDamage(damage)
+	
+	for i = 1, self.Range do
+		local pA = p1 + DIR_VECTORS[dirA] + DIR_VECTORS[dir]*i
+		local pB = p1 + DIR_VECTORS[dirB] + DIR_VECTORS[dir]*i
+		local damage = SpaceDamage(pA,self.Damage)
+		damage.sAnimation = "SwipeClaw2"
+		ret:AddQueuedDamage(damage)
+		damage.loc = pB
+		damage.sSound = self.SoundBase.."/attack"
+		ret:AddQueuedDamage(damage) 
+	end
 	
 	return ret
 end
@@ -84,3 +98,19 @@ DNT_Mantis2 = Pawn:new{
 	Tier = TIER_ALPHA,
 }
 AddPawn("DNT_Mantis2")
+
+DNT_Mantis3 = Pawn:new{
+	Name = "Mantis Leader",
+	Health = 6,
+	MoveSpeed = 3,
+	Image = "leaper",
+	ImageOffset = 2,
+	Jumper = true,
+	SkillList = { "DNT_MantisSlash3" },
+	SoundLocation = "/enemy/leaper_2/",
+	DefaultTeam = TEAM_ENEMY,
+	ImpactMaterial = IMPACT_FLESH,
+	Tier = TIER_BOSS,
+	Massive = true
+}
+AddPawn("DNT_Mantis3")
