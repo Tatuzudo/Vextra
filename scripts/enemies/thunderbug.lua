@@ -54,7 +54,7 @@ DNT_VekLightning1 = Skill:new{
 	PathSize = 1,
 	Damage = 1,
 	MaxSpread = 2,
-	DistRed = 0,
+	DistRed = 0, -- increase to reduce damage with distance
 	TipImage = {
 		Unit = Point(2,3),
 		Target = Point(2,2),
@@ -112,7 +112,7 @@ function DNT_VekLightning1:GetSkillEffect(p1, p2)
 			explored[hash(current)] = true
 
 			local direction = GetDirection(current - origin[hash(current)])
-			local damage = SpaceDamage(current,self.Damage - (self.MaxSpread + spread) * self.DistRed)
+			local damage = SpaceDamage(current,self.Damage - (self.MaxSpread - spread) * self.DistRed)
 			damage.sAnimation = "Lightning_Attack_"..direction
 			ret:AddQueuedDamage(damage)
 			ret:AddQueuedAnimation(current,"Lightning_Hit")
@@ -194,17 +194,3 @@ DNT_Thunderbug3 = Pawn:new{
 	Massive = true,
 }
 AddPawn("DNT_Thunderbug3")
-
-Mission_ThunderbugBoss = Mission_Boss:new{
-	Name = "Thunderbug Leader",
-	islandLock = 3,
-	BossPawn = "DNT_Thunderbug3",
-	SpawnStartMod = -1,
-	BossText = "Destroy the Thunderbug Leader",
-}
-IslandLocks.Mission_ThunderbugBoss = 3
-
--- -- local bossList = modApi.bossList:add("Vextra")
--- local bossList = modApi.bossList.Vextra
-
--- bossList:addBoss("Mission_ThunderbugBoss")

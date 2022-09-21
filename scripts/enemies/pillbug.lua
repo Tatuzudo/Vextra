@@ -265,18 +265,4 @@ DNT_Pillbug3 = Pawn:new{
 	Tier = TIER_BOSS,
 	Massive = true
 }
-AddPawn("DNT_Thunderbug3")
-
-Mission_PillbugBoss = Mission_Boss:new{
-	Name = "Pillbug Leader",
-	islandLock = 3,
-	BossPawn = "DNT_Pillbug3",
-	SpawnStartMod = -1,
-	BossText = "Destroy the Pillbug Leader",
-}
-IslandLocks.Mission_ThunderbugBoss = 3
-
--- local bossList = modApi.bossList:add("Vextra")
--- -- local bossList = modApi.bossList.Vextra
-
--- bossList:addBoss("Mission_PillbugBoss")
+AddPawn("DNT_Pillbug3")
