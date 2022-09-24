@@ -21,4 +21,11 @@ Mission_MantisBoss = Mission_Boss:new{
 	BossText = "Destroy the Mantis Leader",
 }
 
+Mission_SilkwormBoss = Mission_Boss:new{
+	Name = "Silkworm Leader",
+	BossPawn = "DNT_Silkworm3",
+	SpawnStartMod = -1,
+	BossText = "Destroy the Silkworm Leader",
+}
+
 -- IslandLocks.Mission_ThunderbugBoss = 3

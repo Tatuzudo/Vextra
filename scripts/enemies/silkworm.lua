@@ -57,6 +57,7 @@ DNT_SilkwormAtk1 = Skill:new {
 	ImpactSound = "/impact/dynamic/enemy_projectile",
 	Projectile = "effects/shot_firefly",
 	SoundBase = "/enemy/scorpion_soldier_1",
+	ExtraWebs = false,
 	TipImage = { --This is all tempalate and probably needs to change
 		Building = Point(2,3),
 		Enemy = Point(2,0),
@@ -69,21 +70,33 @@ DNT_SilkwormAtk1 = Skill:new {
 -- Web Something and attack > Web Mech > Shoot Something > Web Buidling, shoot void (shoot should always happen first) > nothing
 function DNT_SilkwormAtk1:GetTargetScore(p1, p2)
 	local ret = Skill.GetTargetScore(self, p1, p2)
+	local oldret = ret
 
 	local backdir = GetDirection(p1 - p2)
-	local target = p1 + DIR_VECTORS[backdir]
-	local pawn = Board:GetPawn(target)
-	if ret > 5 then
-		if (pawn and pawn:GetTeam() == TEAM_PLAYER and not pawn:IsTempUnit()) and pawn:IsMech() or Board:IsBuilding(target) then
-			ret = ret + 4 --The score for hitting something, -1. We want to web, but we'd rather attack
-		end
-	else
-		if (pawn and pawn:GetTeam() == TEAM_PLAYER and not pawn:IsTempUnit() and pawn:IsMech()) then
-			ret = ret + 6
-		elseif Board:IsBuilding(target) then
-			ret = ret + 2
+	local targets = {p1 + DIR_VECTORS[backdir]}
+	if self.ExtraWebs then
+		for i=-1, 1, 2 do
+			table.insert(targets, p1 + DIR_VECTORS[(backdir+i)%4])
 		end
 	end
+
+	for _, target in pairs(targets) do
+		local pawn = Board:GetPawn(target)
+		if oldret > 5 or self.ExtraWebs then --If extra webs we don't want to add too much for webbing
+			if (pawn and pawn:GetTeam() == TEAM_PLAYER and not pawn:IsTempUnit() and pawn:IsMech()) then
+				ret = ret + 4 --The score for hitting something, -1. We want to web, but we'd rather attack
+			elseif Board:IsBuilding(target) then
+				ret = ret + 2
+			end
+		else
+			if (pawn and pawn:GetTeam() == TEAM_PLAYER and not pawn:IsTempUnit() and pawn:IsMech()) then
+				ret = ret + 6
+			elseif Board:IsBuilding(target) then
+				ret = ret + 1
+			end
+		end
+	end
+
 	return ret
 end
 
@@ -109,18 +122,44 @@ function DNT_SilkwormAtk1:GetSkillEffect(p1,p2)
 		ret:AddDamage(SoundEffect(target,self.SoundBase.."/attack_web"))
 		ret:AddGrapple(p1,target,"hold")
 	end
+	if self.ExtraWebs then
+		for i=-1, 1, 2 do
+			target = p1 + DIR_VECTORS[(backdir+i)%4]
+			local pawn = Board:GetPawn(target)
+			if pawn or Board:IsBuilding(target) then --only play the sound if there's a pawn to web, or a building
+				local sound = SpaceDamage(target)
+				sound.sAnimation = ""
+				ret:AddDamage(SoundEffect(target,self.SoundBase.."/attack_web"))
+				ret:AddGrapple(p1,target,"hold")
+			end
+		end
+	end
 
 	return ret
 end
 
-DNT_SilkwormAtk2 = DNT_SilkwormAtk1:new { --Just an example
+DNT_SilkwormAtk2 = DNT_SilkwormAtk1:new {
 	Damage = 3,
-	TipImage = { --This is all tempalate and probably needs to change
+	TipImage = {
 		Building = Point(2,3),
 		Enemy = Point(2,0),
 		Target = Point(2,2),
 		Unit = Point(2,1),
 		CustomPawn = "DNT_Silkworm2",
+	}
+}
+
+DNT_SilkwormAtk3 = DNT_SilkwormAtk1:new {
+	Description = "Send a projectile attack forward while webbing the other three directions.",
+	Damage = 4,
+	ExtraWebs = true,
+	TipImage = {
+		Building = Point(2,3),
+		Enemy = Point(2,0),
+		Enemy2 = Point(1,1),
+		Target = Point(2,2),
+		Unit = Point(2,1),
+		CustomPawn = "DNT_Silkworm3",
 	}
 }
 
@@ -156,6 +195,21 @@ DNT_Silkworm2 = Pawn:new
 	}
 AddPawn("DNT_Silkworm2")
 
+DNT_Silkworm3 = Pawn:new
+	{
+		Name = "Boss Silkworm",
+		Health = 6,
+		MoveSpeed = 5,
+		SkillList = {"DNT_SilkwormAtk3"},
+		Image = "DNT_silkworm", --change
+		SoundLocation = "/enemy/scorpion_soldier_2/",
+		ImageOffset = 1,
+		DefaultTeam = TEAM_ENEMY,
+		ImpactMaterial = IMPACT_INSECT,
+		Tier = TIER_BOSS,
+		Massive = true,
+	}
+AddPawn("DNT_Silkworm3")
 
 
 -----------
