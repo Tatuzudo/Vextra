@@ -22,6 +22,7 @@ DNT_MantisSlash1 = Skill:new{
 }
 
 DNT_MantisSlash2 = DNT_MantisSlash1:new{
+	Name = "Razor Claws",
 	Damage = 2,
 	TipImage = {
 		Unit = Point(2,3),
@@ -33,6 +34,8 @@ DNT_MantisSlash2 = DNT_MantisSlash1:new{
 }
 
 DNT_MantisSlash3 = DNT_MantisSlash1:new{
+	Name = "Vorpal Claws",
+	Description = "Slash two diagonal tiles and the tiles in front of them.",
 	Damage = 2,
 	Range = 2,
 	TipImage = {

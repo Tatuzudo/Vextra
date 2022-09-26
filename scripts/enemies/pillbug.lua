@@ -78,6 +78,7 @@ DNT_PillbugLeap1 = Skill:new{
 }
 
 DNT_PillbugLeap2 = DNT_PillbugLeap1:new{
+	Name = "Carapace Leap",
 	Damage = 2,
 	Projectile = "effects/DNT_upshot_pillbug2.png",
 	Effect1 = "effects/DNT_effect1_pillbug2.png",
@@ -93,6 +94,7 @@ DNT_PillbugLeap2 = DNT_PillbugLeap1:new{
 }
 
 DNT_PillbugLeap3 = DNT_PillbugLeap1:new{
+	Name = "Crushing Leap",
 	Damage = 3,
 	Projectile = "effects/DNT_upshot_pillbug3.png",
 	Effect1 = "effects/DNT_effect1_pillbug3.png",

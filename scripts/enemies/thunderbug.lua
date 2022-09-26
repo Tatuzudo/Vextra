@@ -47,7 +47,7 @@ a.DNT_thunderbugd = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Loo
 -------------
 
 DNT_VekLightning1 = Skill:new{
-	Name = "Lightning Bolt",
+	Name = "Static Prongs",
 	Description = "Damage the target and adjacent units and buildings.",
 	Class = "Enemy",
 	Icon = "weapons/prime_lightning.png",
@@ -67,6 +67,7 @@ DNT_VekLightning1 = Skill:new{
 }
 
 DNT_VekLightning2 = DNT_VekLightning1:new{
+	Name = "Galvanic Prongs",
 	Damage = 2,
 	TipImage = {
 		Unit = Point(2,3),
@@ -80,6 +81,7 @@ DNT_VekLightning2 = DNT_VekLightning1:new{
 }
 
 DNT_VekLightning3 = DNT_VekLightning1:new{
+	Name = "Lightning Prongs",
 	Description = "Damage the target and chained units and buildings. Deals less damage with distance.",
 	Damage = 3,
 	MaxSpread = 3,
