@@ -197,13 +197,13 @@ AddPawn("DNT_Silkworm2")
 
 DNT_Silkworm3 = Pawn:new
 	{
-		Name = "Boss Silkworm",
+		Name = "Silkworm Leader",
 		Health = 6,
 		MoveSpeed = 5,
 		SkillList = {"DNT_SilkwormAtk3"},
 		Image = "DNT_silkworm", --change
 		SoundLocation = "/enemy/scorpion_soldier_2/",
-		ImageOffset = 1,
+		ImageOffset = 2,
 		DefaultTeam = TEAM_ENEMY,
 		ImpactMaterial = IMPACT_INSECT,
 		Tier = TIER_BOSS,
