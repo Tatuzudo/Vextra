@@ -26,21 +26,21 @@ end
 local name = "stinkbug" --lowercase, I could also use this else where, but let's make it more readable elsewhere
 
 -- UNCOMMENT WHEN YOU HAVE SPRITES; you can do partial
---modApi:appendAsset(writepath.."DNT_"..name..".png", readpath.."DNT_"..name..".png")
---modApi:appendAsset(writepath.."DNT_"..name.."a.png", readpath.."DNT_"..name.."a.png")
---modApi:appendAsset(writepath.."DNT_"..name.."e.png", readpath.."DNT_"..name.."e.png")
---modApi:appendAsset(writepath.."DNT_"..name.."_death.png", readpath.."DNT_"..name.."_death.png")
+modApi:appendAsset(writepath.."DNT_"..name..".png", readpath.."DNT_"..name..".png")
+modApi:appendAsset(writepath.."DNT_"..name.."a.png", readpath.."DNT_"..name.."a.png")
+modApi:appendAsset(writepath.."DNT_"..name.."_emerge.png", readpath.."DNT_"..name.."_emerge.png")
+modApi:appendAsset(writepath.."DNT_"..name.."_death.png", readpath.."DNT_"..name.."_death.png")
 --modApi:appendAsset(writepath.."DNT_"..name.."_Bw.png", readpath.."DNT_"..name.."_Bw.png")
 
---local base = a.EnemyUnit:new{Image = imagepath .. "DNT_"..name..".png", PosX = -23, PosY = -5}
---local baseEmerge = a.BaseEmerge:new{Image = imagepath .. "DNT_"..name.."e.png", PosX = 0, PosY = 0}
+local base = a.EnemyUnit:new{Image = imagepath .. "DNT_"..name..".png", PosX = -26, PosY = -3}
+local baseEmerge = a.BaseEmerge:new{Image = imagepath .. "DNT_"..name.."_emerge.png", PosX = -26, PosY = -3, NumFrames = 10}
 
 -- REPLACE "name" with the name
 -- UNCOMENT WHEN YOU HAVE SPRITES
---a.DNT_name = base
---a.DNT_namee = baseEmerge
---a.DNT_ladybuga = base:new{ Image = imagepath.."DNT_"..name.."a.png", NumFrames = 8 }
---a.DNT_named = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Loop = false, NumFrames = 8, Time = .04 } --Numbers copied for now
+a.DNT_stinkbug = base
+a.DNT_stinkbuge = baseEmerge
+a.DNT_stinkbuga = base:new{ Image = imagepath.."DNT_"..name.."a.png", NumFrames = 4 }
+a.DNT_stinkbugd = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Loop = false, NumFrames = 9, Time = .14 } --Numbers copied for now
 --a.DNT_namew = base:new{ Image = imagepath.."DNT_"..name.."_Bw.png"} --Only if there's a boss
 
 
@@ -112,22 +112,22 @@ function DNT_StinkbugAtk1:GetSkillEffect(p1,p2)
 	local dir = GetDirection(p2 - p1)
 	local mission = GetCurrentMission()
     if not mission.DNT_FartList then mission.DNT_FartList = {} end
-	
+
 	local dir2 = dir+1 > 3 and 0 or dir+1
 	local p3 = p1 + DIR_VECTORS[dir2]
 	ret:AddScript(string.format("table.insert(GetCurrentMission().DNT_FartList,%s)",p3:GetString())) -- insert point in fart list
-	
+
 	local dir3 = dir-1 < 0 and 3 or dir-1
 	local p4 = p1 + DIR_VECTORS[dir3]
 	ret:AddScript(string.format("table.insert(GetCurrentMission().DNT_FartList,%s)",p4:GetString())) -- insert other fart point
-	
+
 	-- ret:AddScript(string.format("Board:AddAnimation(p3,'DNT_FartFront')",p4:GetString())) -- add fart animation
-	
+
 	local damage = SpaceDamage(p2,self.Damage) -- attack
 	damage.sAnimation = "SwipeClaw2"
 	damage.sSound = self.SoundBase.."/attack"
 	ret:AddQueuedMelee(p1,damage)
-	
+
 	damage = SpaceDamage(p3,0) -- smoke
 	-- damage.sAnimation = "airpush_"..dir2
 	damage.sAnimation = "DNT_FartAppear"
@@ -136,9 +136,9 @@ function DNT_StinkbugAtk1:GetSkillEffect(p1,p2)
 	damage.loc = p4
 	-- damage.sAnimation = "airpush_"..dir3
 	ret:AddDamage(damage)
-	
+
 	ret:AddDelay(0.24) -- delay for adding smoke anim (hook)
-	
+
 	return ret
 end
 
@@ -214,19 +214,19 @@ function DNT_StinkbugAtk_Tip:GetSkillEffect(p1,p2)
 	ret:AddDamage(damage)
 	damage.loc = p4
 	ret:AddDamage(damage)
-	
+
 	ret:AddDelay(0.24) -- delay for adding smoke anim
 	damage = SpaceDamage(p3,0) -- smoke
 	damage.sAnimation = "DNT_FartFront"
 	ret:AddDamage(damage)
 	damage.loc = p4
 	ret:AddDamage(damage)
-	
+
 	ret:AddDelay(0.4) -- prolong the animation for Tip
 	ret:AddDamage(damage)
 	damage.loc = p3
 	ret:AddDamage(damage)
-	
+
 	return ret
 end
 
@@ -240,7 +240,7 @@ DNT_Stinkbug1 = Pawn:new
 		Description = "Description",
 		Health = 2,
 		MoveSpeed = 3,
-		Image = "blobber", --Image = "DNT_stinkbug" --lowercase
+		Image = "DNT_stinkbug", --Image = "DNT_stinkbug" --lowercase
 		SkillList = {"DNT_StinkbugAtk1"},
 		SoundLocation = "/enemy/beetle_1/",
 		DefaultTeam = TEAM_ENEMY,
@@ -254,7 +254,7 @@ DNT_Stinkbug2 = Pawn:new
 		Health = 4,
 		MoveSpeed = 3,
 		SkillList = {"DNT_StinkbugAtk2"},
-		Image = "blobber", --Image = "DNT_stinkbug",
+		Image = "DNT_stinkbug", --Image = "DNT_stinkbug",
 		SoundLocation = "/enemy/beetle_2/",
 		ImageOffset = 1,
 		DefaultTeam = TEAM_ENEMY,
