@@ -223,7 +223,7 @@ end
 -----------
 
 DNT_Pillbug1 = Pawn:new{
-	Name = "Pillbug",
+	Name = "Isopod",
 	Health = 1,
 	MoveSpeed = 2,
 	Ranged = 1,
@@ -237,7 +237,7 @@ DNT_Pillbug1 = Pawn:new{
 AddPawn("DNT_Pillbug1")
 
 DNT_Pillbug2 = Pawn:new{
-	Name = "Alpha Pillbug",
+	Name = "Alpha Isopod",
 	Health = 3,
 	MoveSpeed = 2,
 	Ranged = 1,
@@ -253,7 +253,7 @@ DNT_Pillbug2 = Pawn:new{
 AddPawn("DNT_Pillbug2")
 
 DNT_Pillbug3 = Pawn:new{
-	Name = "Pillbug Leader",
+	Name = "Isopod Leader",
 	Health = 4,
 	MoveSpeed = 2,
 	Ranged = 1,
