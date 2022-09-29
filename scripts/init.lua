@@ -24,7 +24,7 @@ local function init(self)
 		{"Mantis",false,"Core",false},
 		{"Pillbug",false,"Core",true},
 		{"Thunderbug",false,"Unique",false},
-		{"Silkworm",false,"Core",true},
+		{"Silkworm",false,"Core",false},
 		{"Dragonfly",false,"Unique",false},
 		{"Antlion",false,"Core",false},
 		{"Termites",false,"Unique",false},

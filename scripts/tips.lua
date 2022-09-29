@@ -60,19 +60,19 @@ tips:Add{
 tips:Add{
 	id = "Tip_DNT_Cockroach",
 	title = "Cockroachs",
-	text = "COCKROACH TIP!"
+	text = "The Cockroach has an artillery attack, and revive if killed right before Vek spawn. Stomp them or damage them again to kill them for good!"
 }
 
 tips:Add{
 	id = "Tip_DNT_Anthill",
 	title = "Anthills",
-	text = "ANTHILL TIP!"
+	text = "The Anthill spawns ants based on its health. The more health, the stronger the ants that spawn."
 }
 
 tips:Add{
 	id = "Tip_DNT_IceCrawler",
 	title = "Ice Crawlers",
-	text = "ICE CRAWLER TIP!"
+	text = "The Ice Crawler shoots a projectile that damages, then freezes. If the target is already frozen, it explodes, dealing damage to adjacent tiles."
 }
 
 --Put the hooks in here for pawn creation
