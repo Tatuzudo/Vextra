@@ -248,7 +248,7 @@ local function DNT_Cockroach_Effect(p1, corpse)
 	ret:AddDelay(3*.15)
 	ret:AddScript(string.format("Board:GetPawn(%s):SetSpace(Point(-1,-1))",p1:GetString()))
 	local terrain = Board:GetTerrain(p1)
-	if terrain ~= TERRAIN_WATER and terrain ~= TERRAIN_LAVA then
+	if terrain ~= TERRAIN_WATER and terrain ~= TERRAIN_LAVA and terrain ~= TERRAIN_HOLE then
 		local damage = SpaceDamage(p1,0)
 		damage.sItem = corpse
 		--ret:AddDelay(0.016)
