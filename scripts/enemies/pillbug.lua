@@ -39,7 +39,7 @@ modApi:appendAsset(writepath.."DNT_"..name..".png", readpath.."DNT_"..name..".pn
 modApi:appendAsset(writepath.."DNT_"..name.."a.png", readpath.."DNT_"..name.."a.png")
 modApi:appendAsset(writepath.."DNT_"..name.."_emerge.png", readpath.."DNT_"..name.."_emerge.png")
 modApi:appendAsset(writepath.."DNT_"..name.."_death.png", readpath.."DNT_"..name.."_death.png")
---modApi:appendAsset(writepath.."DNT_"..name.."_Bw.png", readpath.."DNT_"..name.."_Bw.png")
+modApi:appendAsset(writepath.."DNT_"..name.."_Bw.png", readpath.."DNT_"..name.."_Bw.png")
 
 local base = a.EnemyUnit:new{Image = imagepath .. "DNT_"..name..".png", PosX = -23, PosY = -5}
 local baseEmerge = a.BaseEmerge:new{Image = imagepath .. "DNT_"..name.."_emerge.png", PosX = -26, PosY = -10, NumFrames = 12}
@@ -50,7 +50,7 @@ a.DNT_pillbug = base
 a.DNT_pillbuge = baseEmerge
 a.DNT_pillbuga = base:new{ Image = imagepath.."DNT_"..name.."a.png", NumFrames = 8, Time = .15}
 a.DNT_pillbugd = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Loop = false, NumFrames = 8, Time = .14 } --Numbers copied for now
---a.DNT_pillbugw = base:new{ Image = imagepath.."DNT_"..name.."_Bw.png"} --Only if there's a boss
+a.DNT_pillbugw = base:new{ Image = imagepath.."DNT_"..name.."_Bw.png", PosY = -3} --Only if there's a boss
 
 
 -------------
@@ -128,13 +128,13 @@ function DNT_PillbugLeap1:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	local dir = GetDirection(p2 - p1)
 	local p3 = p2
-	
+
 	if self.Crack then
 		local dam = SpaceDamage(p1)
 		dam.iCrack = EFFECT_CREATE
 		ret:AddQueuedDamage(dam)
 	end
-	
+
 	ret:AddQueuedScript(string.format("Board:GetPawn(%s):SetInvisible(true)", p1:GetString())) -- hide pawn
 	if Board:IsBlocked(p2,PATH_PROJECTILE) then
 		ret:AddQueuedArtillery(SpaceDamage(p2, self.Damage),self.Projectile,NO_DELAY) -- jump effect
