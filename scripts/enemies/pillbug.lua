@@ -67,6 +67,7 @@ DNT_PillbugLeap1 = Skill:new{
 	Effect2 = "effects/DNT_effect2_pillbug1.png",
 	Range = 5,
 	Damage = 1,
+	Crack = false,
 	TipImage = {
 		Unit = Point(2,4),
 		Target = Point(2,0),
@@ -99,6 +100,7 @@ DNT_PillbugLeap3 = DNT_PillbugLeap1:new{
 	Projectile = "effects/DNT_upshot_pillbug3.png",
 	Effect1 = "effects/DNT_effect1_pillbug3.png",
 	Effect2 = "effects/DNT_effect2_pillbug3.png",
+	Crack = true,
 	TipImage = {
 		Unit = Point(2,4),
 		Target = Point(2,0),
@@ -126,7 +128,13 @@ function DNT_PillbugLeap1:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	local dir = GetDirection(p2 - p1)
 	local p3 = p2
-
+	
+	if self.Crack then
+		local dam = SpaceDamage(p1)
+		dam.iCrack = EFFECT_CREATE
+		ret:AddQueuedDamage(dam)
+	end
+	
 	ret:AddQueuedScript(string.format("Board:GetPawn(%s):SetInvisible(true)", p1:GetString())) -- hide pawn
 	if Board:IsBlocked(p2,PATH_PROJECTILE) then
 		ret:AddQueuedArtillery(SpaceDamage(p2, self.Damage),self.Projectile,NO_DELAY) -- jump effect
