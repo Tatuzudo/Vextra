@@ -30,7 +30,7 @@ modApi:appendAsset(writepath.."DNT_"..name..".png", readpath.."DNT_"..name..".pn
 modApi:appendAsset(writepath.."DNT_"..name.."a.png", readpath.."DNT_"..name.."a.png")
 modApi:appendAsset(writepath.."DNT_"..name.."_emerge.png", readpath.."DNT_"..name.."_emerge.png")
 modApi:appendAsset(writepath.."DNT_"..name.."_death.png", readpath.."DNT_"..name.."_death.png")
---modApi:appendAsset(writepath.."DNT_"..name.."_Bw.png", readpath.."DNT_"..name.."_Bw.png")
+modApi:appendAsset(writepath.."DNT_"..name.."_Bw.png", readpath.."DNT_"..name.."_Bw.png")
 
 local base = a.EnemyUnit:new{Image = imagepath .. "DNT_"..name..".png", PosX = -26, PosY = -3}
 local baseEmerge = a.BaseEmerge:new{Image = imagepath .. "DNT_"..name.."_emerge.png", PosX = -26, PosY = -3, NumFrames = 10}
@@ -41,7 +41,7 @@ a.DNT_stinkbug = base
 a.DNT_stinkbuge = baseEmerge
 a.DNT_stinkbuga = base:new{ Image = imagepath.."DNT_"..name.."a.png", NumFrames = 4 }
 a.DNT_stinkbugd = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Loop = false, NumFrames = 9, Time = .14 } --Numbers copied for now
---a.DNT_namew = base:new{ Image = imagepath.."DNT_"..name.."_Bw.png"} --Only if there's a boss
+a.DNT_stinkbugw = base:new{ Image = imagepath.."DNT_"..name.."_Bw.png", PosY = 2} --Only if there's a boss
 
 
 local effectsPath = resourcePath .."img/effects/"
