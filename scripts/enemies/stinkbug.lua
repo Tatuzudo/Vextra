@@ -347,11 +347,13 @@ end
 
 local HOOK_PawnUndoMove = function(mission, pawn, undonePosition) -- recreate farts after undo move (mist eaters passive)
 	local farts = mission.DNT_TurnFartList
-	for i = 1, #farts do
-		if Board:IsSmoke(farts[i]) then
-			if not customAnim:Is(mission,farts[i],"DNT_FartFront") then
-				customAnim:Add(mission,farts[i],"DNT_FartFront")
-				Board:AddAnimation(farts[i],"DNT_FartAppear")--,ANIM_REVERSE)
+	if farts then
+		for i = 1, #farts do
+			if Board:IsSmoke(farts[i]) then
+				if not customAnim:Is(mission,farts[i],"DNT_FartFront") then
+					customAnim:Add(mission,farts[i],"DNT_FartFront")
+					Board:AddAnimation(farts[i],"DNT_FartAppear")--,ANIM_REVERSE)
+				end
 			end
 		end
 	end
