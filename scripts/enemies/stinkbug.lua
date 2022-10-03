@@ -271,7 +271,7 @@ AddPawn("DNT_Stinkbug2")
 local reFart = true
 local HOOK_MissionUpdate = function(mission) -- local HOOK_gameLoaded
 	if mission and not IsTipImage() then -- avoid a mission var not available error
-		if reFart then
+		if reFart then -- redo animations when game is loaded
 			local farts = mission.DNT_FartList
 			if farts then
 				for i = 1, #farts do
@@ -298,7 +298,11 @@ local HOOK_MissionUpdate = function(mission) -- local HOOK_gameLoaded
 	end
 end
 
-local HOOK_skillEnd = function(mission, pawn, weaponId, p1, p2)
+local HOOK_ResetTurn = function(mission) -- redo animations when turn reset after game is loaded
+	reFart = true
+end
+
+local HOOK_skillEnd = function(mission, pawn, weaponId, p1, p2) -- add smoke animation on attack
 	if weaponId:find("^DNT_StinkbugAtk") ~= nil and not IsTipImage() then
 		local dir = GetDirection(p2 - p1)
 		local dir2 = dir+1 > 3 and 0 or dir+1
@@ -312,60 +316,71 @@ local HOOK_skillEnd = function(mission, pawn, weaponId, p1, p2)
 			customAnim:Add(mission,p4,"DNT_FartFront")
 		end
 	end
-end
---OLD
-local HOOK_vekMoveStart = function(mission, pawn) -- delete fart
-	local farts = mission.DNT_FartList
-	if farts and mission.DNT_FirstFart and not IsTipImage() then
-		for i = 1, #farts do
-			if Board:IsSmoke(farts[i]) then
-				Board:SetSmoke(farts[i],false,false)
-				if customAnim:Is(mission,farts[i],"DNT_FartFront") then
-					customAnim:Rem(mission,farts[i],"DNT_FartFront")
-				end
-				Board:AddAnimation(farts[i],"DNT_FartAppear",ANIM_REVERSE)
-			end
-		end
-		mission.DNT_FartList = {}
-		mission.DNT_FirstFart = false
+	if pawn:GetTeam() == TEAM_PLAYER then
+		mission.DNT_TurnFartList = mission.DNT_FartList
 	end
 end
 
-local HOOK_nextTurn = function(mission) -- stop delete
+local HOOK_nextTurn = function(mission) -- delete farts after all the vek attack
 	local farts = mission.DNT_FartList
-	if Game:GetTeamTurn() == TEAM_ENEMY and farts and not IsTipImage() then
+	if not IsTipImage() then
+		if Game:GetTeamTurn() == TEAM_ENEMY and farts then
+			for i = 1, #farts do
+				if Board:IsSmoke(farts[i]) then
+					if customAnim:Is(mission,farts[i],"DNT_FartFront") then -- only delete farts, not normal smoke
+						Board:SetSmoke(farts[i],false,false)
+						customAnim:Rem(mission,farts[i],"DNT_FartFront")
+						Board:AddAnimation(farts[i],"DNT_FartAppear",ANIM_REVERSE)
+					end
+				end
+			end
+			mission.DNT_FartList = {}
+		elseif Game:GetTeamTurn() == TEAM_PLAYER then -- fart record for undo move
+			if farts then
+				mission.DNT_TurnFartList = farts
+			else
+				mission.DNT_TurnFartList = {}
+			end
+		end
+	end
+end
+
+local HOOK_PawnUndoMove = function(mission, pawn, undonePosition) -- recreate farts after undo move (mist eaters passive)
+	local farts = mission.DNT_TurnFartList
+	for i = 1, #farts do
+		if Board:IsSmoke(farts[i]) then
+			if not customAnim:Is(mission,farts[i],"DNT_FartFront") then
+				customAnim:Add(mission,farts[i],"DNT_FartFront")
+				Board:AddAnimation(farts[i],"DNT_FartAppear")--,ANIM_REVERSE)
+			end
+		end
+	end
+end
+
+local HOOK_MissionEnd = function(mission) -- delete farts on mission end
+	local farts = mission.DNT_FartList
+	if farts then
 		for i = 1, #farts do
 			if Board:IsSmoke(farts[i]) then
-				Board:SetSmoke(farts[i],false,false)
-				if customAnim:Is(mission,farts[i],"DNT_FartFront") then
+				if customAnim:Is(mission,farts[i],"DNT_FartFront") then -- only delete farts, not normal smoke
+					Board:SetSmoke(farts[i],false,false)
 					customAnim:Rem(mission,farts[i],"DNT_FartFront")
 					Board:AddAnimation(farts[i],"DNT_FartAppear",ANIM_REVERSE)
 				end
 			end
 		end
-		mission.DNT_FartList = {}
 	end
 end
 
 local function EVENT_onModsLoaded()
 	-- DNT_Vextra_ModApiExt:addGameLoadedHook(HOOK_gameLoaded) -- mission var and GetCurMission not working with this :/
 	DNT_Vextra_ModApiExt:addSkillEndHook(HOOK_skillEnd)
-	--DNT_Vextra_ModApiExt:addVekMoveStartHook(HOOK_vekMoveStart)
+	DNT_Vextra_ModApiExt:addPawnUndoMoveHook(HOOK_PawnUndoMove)
+	DNT_Vextra_ModApiExt:addResetTurnHook(HOOK_ResetTurn)
 	modApi:addNextTurnHook(HOOK_nextTurn)
 	modApi:addMissionUpdateHook(HOOK_MissionUpdate)
+	modApi:addMissionEndHook(HOOK_MissionEnd)
 end
 
 modApi.events.onModsLoaded:subscribe(EVENT_onModsLoaded)
 
---UNCOMMENT if you need it
---[[
-local this = {}
-
-function this:load(NAH_MechTaunt_ModApiExt)
-	local options = mod_loader.currentModContent[mod.id].options
-	NAH_MechTaunt_ModApiExt:addSkillBuildHook(SkillBuild) --EXAMPLE
-
-end
-
-return this
---]]
