@@ -1,8 +1,18 @@
 
 -- create boss list
 local bossList = modApi.bossList:add("Vextra")
+local bossListCombined =  modApi.bossList:add("Vanilla + Vextra")
+local bossListVanilla = modApi.bossList:get("archive")
+bossListCombined:copy(bossListVanilla)
 
-bossList:addBoss("Mission_MantisBoss")
-bossList:addBoss("Mission_PillbugBoss")
-bossList:addBoss("Mission_ThunderbugBoss")
-bossList:addBoss("Mission_SilkwormBoss")
+local DNT_bosses = {
+  "Mission_MantisBoss",
+  "Mission_PillbugBoss",
+  "Mission_ThunderbugBoss",
+  "Mission_SilkwormBoss",
+}
+
+for _, boss in pairs(DNT_bosses) do
+  bossList:addBoss(boss)
+  bossListCombined:addBoss(boss)
+end
