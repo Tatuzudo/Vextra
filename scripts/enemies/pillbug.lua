@@ -96,6 +96,7 @@ DNT_PillbugLeap2 = DNT_PillbugLeap1:new{
 
 DNT_PillbugLeap3 = DNT_PillbugLeap1:new{
 	Name = "Crushing Leap",
+	Description = "Crack the current position and leap to a tile, landing on it or bouncing back on occupied tiles before it.",
 	Damage = 3,
 	Projectile = "effects/DNT_upshot_pillbug3.png",
 	Effect1 = "effects/DNT_effect1_pillbug3.png",

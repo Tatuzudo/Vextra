@@ -106,6 +106,8 @@ DNT_AnthillAtk1 = Skill:new {
 		Unit = Point(2,2),
 		Building = Point(2,1),
 		Target = Point(3,1),
+		Second_Origin = Point(3,1),
+		Second_Target = Point(2,1),
 		CustomPawn = "DNT_Anthill1",
 	}
 }
@@ -116,6 +118,8 @@ DNT_AnthillAtk2 = DNT_AnthillAtk1:new {
 		Unit = Point(2,2),
 		Building = Point(2,1),
 		Target = Point(3,1),
+		Second_Origin = Point(3,1),
+		Second_Target = Point(2,1),
 		CustomPawn = "DNT_Anthill2",
 	}
 }
@@ -185,9 +189,9 @@ DNT_WorkerAntAtk = Skill:new {
 	LaunchSound = "",
 	PathSize = 1,
 	TipImage = {
-		Unit = Point(2,3),
-		Target = Point(2,2),
-		Enemy = Point(2,2),
+		Unit = Point(2,2),
+		Target = Point(2,1),
+		Enemy = Point(2,1),
 		CustomPawn = "DNT_WorkerAnt1",
 	}
 }
@@ -196,9 +200,9 @@ DNT_FlyingAntAtk = DNT_WorkerAntAtk:new {
 	Name = "Sharp Sting",
 	Damage = 1,
 	TipImage = {
-		Unit = Point(2,3),
-		Target = Point(2,2),
-		Enemy = Point(2,2),
+		Unit = Point(2,2),
+		Target = Point(2,1),
+		Enemy = Point(2,1),
 		CustomPawn = "DNT_FlyingAnt1",
 	}
 }
@@ -207,9 +211,9 @@ DNT_SoldierAntAtk = DNT_WorkerAntAtk:new {
 	Name = "Slashing Bite",
 	Damage = 2,
 	TipImage = {
-		Unit = Point(2,3),
-		Target = Point(2,2),
-		Enemy = Point(2,2),
+		Unit = Point(2,2),
+		Target = Point(2,1),
+		Enemy = Point(2,1),
 		CustomPawn = "DNT_SoldierAnt1",
 	}
 }
