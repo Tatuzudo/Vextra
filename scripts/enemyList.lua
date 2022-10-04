@@ -1,6 +1,7 @@
 local enemyListSolo = modApi.enemyList:add("Vextra Only")
 local enemyListCombined =  modApi.enemyList:add("Vanilla + Vextra")
 local enemyListVanilla = modApi.enemyList:get("vanilla")
+--local enemyListFinale = modApi.enemyList:get("finale")
 
 enemyListSolo.categories = {"Core", "Core", "Core", "Leaders", "Unique", "Unique"}
 enemyListCombined.categories = {"Core", "Core", "Core", "Leaders", "Unique", "Unique"}
@@ -14,6 +15,7 @@ for _, table in ipairs(DNT_Vextra_VekList) do
 	--LOG(category)
 	enemyListSolo:addEnemy(name,category)
 	enemyListCombined:addEnemy(name,category)
+	--enemyListFinale:addEnemy(name, "Enemies")
 end
 
 --Add bots and psions, we only have new vek

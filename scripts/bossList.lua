@@ -1,6 +1,6 @@
 
 -- create boss list
-local bossList = modApi.bossList:add("Vextra")
+local bossList = modApi.bossList:add("Vextra Only")
 local bossListCombined =  modApi.bossList:add("Vanilla + Vextra")
 local bossListVanilla = modApi.bossList:get("archive")
 bossListCombined:copy(bossListVanilla)
