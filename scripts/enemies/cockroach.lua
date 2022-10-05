@@ -123,7 +123,7 @@ a.DNT_cockroachd_reverse_leader = a.DNT_cockroachd_reverse_beta:new{
 
 DNT_CockroachAtk1 = LineArtillery:new {
 	Name = "Organ Donor",
-	Description = "Launch artillery attack on two tiles, one tile apart.",
+	Description = "Damage itself to launch an artillery attack on two tiles, one tile apart.",
 	Damage = 1,
 	ArtillerySize = 4,
 	SelfDamage = 1,

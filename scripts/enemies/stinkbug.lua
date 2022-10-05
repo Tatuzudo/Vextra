@@ -103,6 +103,7 @@ DNT_StinkbugAtk1 = Skill:new {
 }
 
 DNT_StinkbugAtk2 = DNT_StinkbugAtk1:new {
+	Name = "Noxious Spray",
 	Damage = 3,
 	CustomTipImage = "DNT_StinkbugAtk2_Tip",
 }
