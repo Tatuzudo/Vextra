@@ -56,7 +56,7 @@ local function init(self)
 	require(self.scriptPath.."bossList")
 	require(self.scriptPath.."tips")
 	require(self.scriptPath.."spawnerfix")
-	--require(self.scriptPath.."modApiExt_fix")
+	require(self.scriptPath.."modApiExt_fix")
 
 	--Scripts
 	for _, table in ipairs(DNT_Vextra_VekList) do
