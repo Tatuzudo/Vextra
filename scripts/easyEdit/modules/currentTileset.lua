@@ -1,22 +1,19 @@
 
-local path = GetParentPath(...)
-local GAME_STATE = require(path.."gameState")
-
 -- The game automatically changes the tileset used in tipimages,
 -- missions and test mech scenario at various points.
 -- When launching Into the Breach, it starts as "grass".
 -- Exiting a run to start a new one without closing the application,
 -- will _not_ reset the current tileset.
 
--- easyEdit:getCurrentTileset returns the current tileset.
+-- modApi:getCurrentTileset returns the current tileset.
 
--- easyEdit.event.onTilesetChanged can be subscribed to, to get notified
+-- modApi.event.onTilesetChanged can be subscribed to, to get notified
 -- when the tileset changes.
 
 local currentTileset = "grass"
 local testMechTileset = "grass"
 
-function easyEdit:getCurrentTileset()
+function modApi:getCurrentTileset()
 	return currentTileset
 end
 
@@ -60,7 +57,7 @@ local function setCurrentTileset(tileset, testTileset)
 		testTileset = testTileset or tileset
 		testMechTileset = testTileset
 
-		easyEdit.events.onTilesetChanged:dispatch(tileset, oldTileset)
+		modApi.events.onTilesetChanged:dispatch(tileset, oldTileset)
 	end
 end
 
@@ -89,10 +86,10 @@ end)
 
 -- When entering an island from the map view;
 -- the enabled tileset changes to the corporation's tileset.
-easyEdit.events.onGameStateChanged:subscribe(function(newState, oldState)
+modApi.events.onGameStateChanged:subscribe(function(newState, oldState)
 	if
-		oldState == GAME_STATE.MAP     and
-		newState == GAME_STATE.ISLAND
+		oldState == GAME_STATE_MAP     and
+		newState == GAME_STATE_ISLAND
 	then
 		setCurrentTileset(getCurrentCorpTileset())
 	end
@@ -100,10 +97,10 @@ end)
 
 -- When entering an island from the main menu;
 -- the enabled tileset changes to the corporation's tileset.
-easyEdit.events.onGameStateChanged:subscribe(function(newState, oldState)
+modApi.events.onGameStateChanged:subscribe(function(newState, oldState)
 	if
-		oldState == GAME_STATE.MAIN_MENU and
-		newState == GAME_STATE.ISLAND
+		oldState == GAME_STATE_MAIN_MENU and
+		newState == GAME_STATE_ISLAND
 	then
 		setCurrentTileset(getCurrentCorpTileset())
 	end
@@ -113,11 +110,11 @@ end)
 -- when the final island is available;
 -- the enabled tileset always changes to "volcano",
 -- and the test mech scenario tileset changes to "grass".
-easyEdit.events.onGameStateChanged:subscribe(function(newState, oldState)
+modApi.events.onGameStateChanged:subscribe(function(newState, oldState)
 	if
 		isFinalIslandAvailable()      and
-		oldState == GAME_STATE.ISLAND and
-		newState == GAME_STATE.MAP
+		oldState == GAME_STATE_ISLAND and
+		newState == GAME_STATE_MAP
 	then
 		setCurrentTileset("volcano", "grass")
 	end
@@ -127,11 +124,11 @@ end)
 -- when the final island is available;
 -- the enabled tileset always changes to "volcano",
 -- and the test mech scenario tileset changes to "grass".
-easyEdit.events.onGameStateChanged:subscribe(function(newState, oldState)
+modApi.events.onGameStateChanged:subscribe(function(newState, oldState)
 	if
 		isFinalIslandAvailable()         and
-		oldState == GAME_STATE.MAIN_MENU and
-		newState == GAME_STATE.MAP
+		oldState == GAME_STATE_MAIN_MENU and
+		newState == GAME_STATE_MAP
 	then
 		setCurrentTileset("volcano", "grass")
 	end
@@ -140,9 +137,9 @@ end)
 -- When entering test mech scenario,
 -- the tileset is either changed to the corporation's tileset,
 -- or "grass" if the tileset was "volcano".
-easyEdit.events.onGameStateChanged:subscribe(function(newState, oldState)
+modApi.events.onGameStateChanged:subscribe(function(newState, oldState)
 	if
-		newState == GAME_STATE.MISSION_TEST and
+		newState == GAME_STATE_MISSION_TEST and
 		currentTileset ~= testMechTileset
 	then
 		setCurrentTileset(testMechTileset)

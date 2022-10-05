@@ -1,7 +1,4 @@
 
-local path = GetParentPath(...)
-local UiTextBox = require(path.."UiTextBox")
-
 local UiNumberBox = Class.inherit(UiTextBox)
 
 function UiNumberBox:new(minValue, maxValue)

@@ -1,9 +1,4 @@
 
-local path = GetParentPath(...)
-local path_datastructures = GetParentPath(GetParentPath(path)).."datastructures/"
-local binarySearch = require(path_datastructures.."binarySearch")
-local binarySearchMin = binarySearch.min
-
 --[[
 	A decoration designed to be paired with the UiTextBox Class,
 	or another Ui object that has been registered as a UiTextBox
@@ -12,7 +7,7 @@ local binarySearchMin = binarySearch.min
 --]]
 local nullsurface = sdl.surface("")
 local surfaceFonts = {}
-local SurfaceFont = {
+SurfaceFont = {
 	_surfaces = {},
 	font,
 	textset,
@@ -82,7 +77,7 @@ function SurfaceFont:getOrCreate(font, textset)
 	return surfaceFont
 end
 
-local DecoTextBox = Class.inherit(UiDeco)
+DecoTextBox = Class.inherit(UiDeco)
 function DecoTextBox:new(opt)
 	UiDeco.new(self)
 	opt = opt or {}
@@ -213,7 +208,7 @@ function DecoTextBox:screenToIndex(screenx, screeny)
 	elseif screeny - overshoot > y + surfaceHeight then
 		character = textLength
 	else
-		character = binarySearchMin(0, textLength, screenx, function(i)
+		character = BinarySearchMin(0, textLength, screenx, function(i)
 			return x + drawbuffer[i * 2 + 1] + (drawbuffer[i * 2]:w() + charSpacing) / 2 
 		end)
 	end
@@ -354,4 +349,3 @@ function DecoTextBox:draw(screen, widget)
 	self.drawbuffer = drawbuffer
 end
 
-return DecoTextBox, SurfaceFont

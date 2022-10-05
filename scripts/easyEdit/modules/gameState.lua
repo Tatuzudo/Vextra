@@ -16,15 +16,15 @@ modApi.events.onFrameDrawStart:subscribe(function()
 	elseif GAME.currentSector < sector then
 		GAME.currentSector = sector
 
-		easyEdit.events.onIslandLeft:dispatch(GAME.Island)
+		modApi.events.onIslandLeft:dispatch(GAME.Island)
 	end
 end)
 
-local GAME_STATE_MAIN_MENU = 0
-local GAME_STATE_MAP = 1
-local GAME_STATE_ISLAND = 2
-local GAME_STATE_MISSION = 3
-local GAME_STATE_MISSION_TEST = 4
+GAME_STATE_MAIN_MENU = 0
+GAME_STATE_MAP = 1
+GAME_STATE_ISLAND = 2
+GAME_STATE_MISSION = 3
+GAME_STATE_MISSION_TEST = 4
 
 local currentState = GAME_STATE_MAIN_MENU
 
@@ -37,7 +37,7 @@ local function setGameState(state)
 
 	if currentState ~= state then
 		currentState = state
-		easyEdit.events.onGameStateChanged:dispatch(currentState, oldState)
+		modApi.events.onGameStateChanged:dispatch(currentState, oldState)
 	end
 
 	if Game then
@@ -69,17 +69,9 @@ modApi.events.onPreIslandSelection:subscribe(function()
 	setGameState(GAME_STATE_ISLAND)
 end)
 
-easyEdit.events.onIslandLeft:subscribe(function()
+modApi.events.onIslandLeft:subscribe(function()
 	setGameState(GAME_STATE_MAP)
 end)
 
 modApi.events.onSaveDataUpdated:subscribe(updateGameState)
 modApi.events.onMissionChanged:subscribe(updateGameState)
-
-return {
-	MAIN_MENU = GAME_STATE_MAIN_MENU,
-	MAP = GAME_STATE_MAP,
-	ISLAND = GAME_STATE_ISLAND,
-	MISSION = GAME_STATE_MISSION,
-	MISSION_TEST = GAME_STATE_MISSION_TEST,
-}

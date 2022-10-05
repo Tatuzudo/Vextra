@@ -1,8 +1,6 @@
 
 -- header
 local path = GetParentPath(...)
-local path_datasturctures = GetParentPath(path).."datastructures/"
-local sort = require(path_datasturctures.."sort")
 local helpers = require(path.."helpers")
 local UiBoxLayout = require(path.."widget/UiBoxLayout")
 local UiEditBox = require(path.."widget/UiEditBox")
@@ -12,11 +10,9 @@ local UiScrollAreaExt = require(path.."widget/UiScrollAreaExt")
 local UiScrollAreaH = UiScrollAreaExt.horizontal
 local UiScrollArea = UiScrollAreaExt.vertical
 local UiPopup = require(path.."widget/UiPopup")
-local UiTextBox = require(path.."widget/UiTextBox")
 local DecoObj = require(path.."deco/DecoObj")
 local DecoEditorButton = require(path.."deco/DecoEditorButton")
 local DecoImmutable = require(path.."deco/DecoImmutable")
-local DecoTextBox = require(path.."deco/DecoTextBox")
 
 
 local addStaticContentList2x = helpers.addStaticContentList2x
@@ -56,7 +52,7 @@ local currentContent
 local islandList
 local uiEditBox
 local islandEditor = {}
-local sortLessThan = sort.get_sort_less_than("_id")
+local sortLessThan = get_sort_less_than("_id")
 
 local function format_popupWindow(self)
 	self.popupWindow
