@@ -106,11 +106,11 @@ local function metadata()
 end
 
 return {
-    id = "Djinn_NAH_Tatu_Vextra",
-    name = "Vextra",
-	-- icon = "modIcon.png",
+  id = "Djinn_NAH_Tatu_Vextra",
+  name = "Vextra",
+	icon = "modIcon.png",
 	description = "VEK + EXTRA",
-    version = "0.0.1",
+  version = "0.0.1",
 	requirements = { "kf_ModUtils" },
 	metadata = metadata,
 	load = load,
