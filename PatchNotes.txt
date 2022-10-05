@@ -1,4 +1,5 @@
 vBETA.0.0.1
 Initial Release
 vBETA.0.?.?
+Pillbug delay on death fix
 Big One Crash Fix Released
