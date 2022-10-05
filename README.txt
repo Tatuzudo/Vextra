@@ -1,6 +1,6 @@
 VEXTRA
 An Into the Breach Vek Mod By: Djinn, NamesAreHard, and Tatu
-vBETA.0.1.0
+vBETA.0.0.1
 
 We've heard your cries for more Vek, and we've delivered. Introducing "Vextra", the largest Vek mod created to date. With 5 new core Vek and 7 new unique Vek, Vextra provides a new opportunity. Vextra can be merged with the vanilla Vek, but Vextra also provides the same variety as Vanilla did (pre-AE) and can be played standalone, for a fully unique experience. 
 
@@ -11,8 +11,7 @@ The modloader is required for the mod to run. Download the latest Modloader Here
 Installing:
 Once installing the modloader, extract "Vextra" into your mods folder located in your Into the Breach directory. 
 Easy Edit:
-We have to DISCUSS (maybe with Lemon) whether we can embed easy edit directly into the mod or if we need to instruct players how to do it seperatly. 
-But I think we can embed it but I need to do that
+Easy Edit should be embeded into this mod, but it's also version specfic in some ways so let us know if you have issues
 Using the Mod In Game:
 This mod utilizes Easy Edit (by Lemonymous) to get the Vek in game. There's three main tabs you'll want to use located with the Mod Content Menu. 
 Enemy Lists Editor:
@@ -24,9 +23,14 @@ Island Editor:
 The island editor contains all 4 islands with their enemy list, boss list, mission list, and structure list. For each island, change their enemy list and boss list to the list that you would like to play with, whether that be Vextra only or the combined list. Once you've done this for all 4 islands, you're set.
 If done correctly, Vextra Vek should now show up in game. If it doesn't, double check the island editor, and if it still doesn't, feel free to @NamesAreHard or @Tatu on the Into the Breach Discord (assuming we're still active). 
 Finale:
-FINALE DOCUMENTATION NEEDED
+Currenlty for the finale, you have to make it yourself. In the enemy list editor, there's a list named Finale. Drag any Vextra Vek you'd like to see in the finale into that list and your solid. 
 
 Okay, you've read all that you have to read
+
+Playtesters:
+How to Report Bugs or Issues:
+1. Preferred Method: Add an Issue to the github, anyone can submit issues. Put your discord name in the post if it does not match with your github name. link will go here
+2. Report in the Vextras Thread on ItB or @NamesAreHard in modding-discussion
 
 List of New Vek:
 Core:
