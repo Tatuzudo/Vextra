@@ -4,6 +4,7 @@ vBETA.0.1.0
 
 We've heard your cries for more Vek, and we've delivered. Introducing "Vextra", the largest Vek mod created to date. With 5 new core Vek and 7 new unique Vek, Vextra provides a new opportunity. Vextra can be merged with the vanilla Vek, but Vextra also provides the same variety as Vanilla did (pre-AE) and can be played standalone, for a fully unique experience. 
 
+READ THIS PLEASE
 Instructions for Use:
 Modloader:
 The modloader is required for the mod to run. Download the latest Modloader Here: https://github.com/itb-community/ITB-ModLoader/releases
@@ -11,17 +12,21 @@ Installing:
 Once installing the modloader, extract "Vextra" into your mods folder located in your Into the Breach directory. 
 Easy Edit:
 We have to DISCUSS (maybe with Lemon) whether we can embed easy edit directly into the mod or if we need to instruct players how to do it seperatly. 
+But I think we can embed it but I need to do that
 Using the Mod In Game:
-This mod utilises Easy Edit (by Lemonymous) to get the Vek in game. There's three main tabs you'll want to use located with the Mod Content Menu. 
-Enemy Lists:
-The enemy lists tab contains a list of enemy lists that can be put onto islands as their spawns. You can either create your own custom list, or use the lists we've provided: "Vextra Only" and "Vanilla + Vextra". 
-Boss Lists:
+This mod utilizes Easy Edit (by Lemonymous) to get the Vek in game. There's three main tabs you'll want to use located with the Mod Content Menu. 
+Enemy Lists Editor:
+The enemy lists tab contains a list of enemy lists that can be put onto islands as their spawns. You can either create your own custom list, or use the lists we've provided: "Vextra Only" and "Vanilla + Vextra". It also contains the "Finale" list, read below for more info on the Finale.
+Note: Hitting the "Defualt" button at the bottom is a good way to make sure everything is as it should be. 
+Boss Lists Editor:
 The same as enemy lists but with bosses. 
 Island Editor: 
-The island editor contains all 4 islands with their enemy list, boss list, and mission list. For each island, change their enemy list and boss list to the list that you would like to play with, whether that be Vextra only or the combined list. Once you've done this for all 4 islands, you're set.
+The island editor contains all 4 islands with their enemy list, boss list, mission list, and structure list. For each island, change their enemy list and boss list to the list that you would like to play with, whether that be Vextra only or the combined list. Once you've done this for all 4 islands, you're set.
 If done correctly, Vextra Vek should now show up in game. If it doesn't, double check the island editor, and if it still doesn't, feel free to @NamesAreHard or @Tatu on the Into the Breach Discord (assuming we're still active). 
-
+Finale:
 FINALE DOCUMENTATION NEEDED
+
+Okay, you've read all that you have to read
 
 List of New Vek:
 Core:
@@ -31,13 +36,13 @@ Mantis- Attacks two diagonal tiles.
 Silkworm- Shoots a projectile forward while webbing backwards. 
 Antlion- Cracks the target, preparing to attack it and send the unit down a chasm. Burrows. 
 Unique:
-Ladybug-
+Ladybug- Has a simple repulse, but has a hypnosis effect, damaging mechs that can attack it but don't. 
 Ice Crawler- Shoots a projectile that deals damage and then freezes. If the target is already frozen, it explodes the ice, dealing damage to adjacent tiles. 
-Dragonfly- Smoke the target, preparing to exploode the smoke, dealing damage with fire outwards in a cone shape. If there's no smoke, it damages and lights the target on fire. 
-Termites-
-Cockroach-
-Anthill-
-
+Dragonfly- Smoke the target, preparing to exploode the smoke, dealing damage with fire outwards in a cone shape. If there's no smoke, it damages and lights the target on fire. Flies.
+Termites- Dashes through solid objects, leaving a rock in its place. 
+Cockroach- Shoots an artillery that self damages, but can revive at the end of the turn if it doens't get damaged again or stepped on. 
+Anthill- Deploys ants based on health; more health equals stronger ants. 
+Thunderbug- Damages its target and chains lightning to adjacent targets
 
 
 CREDITS:
