@@ -33,7 +33,6 @@ function list_indexof(list, element)
 	return -1
 end
 
-
 if not GetUiScale then
 	GetUiScale = function() return 1 end
 end

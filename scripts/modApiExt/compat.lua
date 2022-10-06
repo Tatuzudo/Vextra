@@ -23,6 +23,11 @@ end
 function compat:load(modApiExt, mod, options, version)
 end
 
+function compat:loadMostRecent(modApiExt)
+	self.compat:registerMoveHooks(modApiExt)
+	self:registerTipImageHooks()
+end
+
 function compat:registerMoveHooks(modApiExt)
 	modApiExt:addSkillStartHook(function(mission, pawn, skill, p1, p2)
 		if skill == "Move" then
@@ -35,6 +40,15 @@ function compat:registerMoveHooks(modApiExt)
 			modApiExt.dialog:triggerRuledDialog("MoveEnd", { main = pawn:GetId() })
 			modApiExt_internal.fireMoveEndHooks(mission, pawn, p1, p2)
 		end
+	end)
+end
+
+function compat:registerTipImageHooks()
+	modApi:addTipImageShownHook(function(skill)
+		modApiExt_internal.fireTipImageShownHooks()
+	end)
+	modApi:addTipImageHiddenHook(function(skill)
+		modApiExt_internal.fireTipImageHiddenHooks()
 	end)
 end
 
