@@ -3,3 +3,4 @@ Initial Release
 vBETA.0.?.?
 Pillbug delay on death fix
 Big One Crash Fix Released
+Bandaid Fix for Cockroach with death effect psions by excluding them
