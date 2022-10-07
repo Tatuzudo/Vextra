@@ -36,14 +36,11 @@ a.DNT_mantisa = base:new{ Image = imagepath.."DNT_"..name.."a.png", NumFrames = 
 a.DNT_mantisd = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Loop = false, NumFrames = 8, Time = .15 } --Numbers copied for now
 a.DNT_mantisw = base:new{ Image = imagepath.."DNT_"..name.."_Bw.png", PosY = 3} --Only if there's a boss
 
-
-
-
 -------------
 -- Weapons --
 -------------
 
-DNT_MantisSlash1 = Skill:new{
+DNT_MantisSlash1_StarfishAtk = Skill:new{
 	Name = "Sharp Claws",
 	Description = "Slash two diagonal tiles.",
 	Class = "Enemy",
@@ -61,7 +58,8 @@ DNT_MantisSlash1 = Skill:new{
 	}
 }
 
-DNT_MantisSlash2 = DNT_MantisSlash1:new{
+
+DNT_MantisSlash2_StarfishAtk = DNT_MantisSlash1_StarfishAtk:new{
 	Name = "Razor Claws",
 	Damage = 2,
 	TipImage = {
@@ -73,7 +71,8 @@ DNT_MantisSlash2 = DNT_MantisSlash1:new{
 	}
 }
 
-DNT_MantisSlash3 = DNT_MantisSlash1:new{
+
+DNT_MantisSlash3_StarfishAtk = DNT_MantisSlash1_StarfishAtk:new{
 	Name = "Vorpal Claws",
 	Description = "Slash two diagonal tiles and the tiles in front of them.",
 	Damage = 2,
@@ -88,25 +87,29 @@ DNT_MantisSlash3 = DNT_MantisSlash1:new{
 	}
 }
 
-function DNT_MantisSlash1:GetSkillEffect(p1, p2)
+
+function DNT_MantisSlash1_StarfishAtk:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	local dir = GetDirection(p2 - p1)
 	local dirA = dir+1 > 3 and 0 or dir+1
 	local dirB = dir-1 < 0 and 3 or dir-1
-
+	
 	ret:AddQueuedMelee(p1,SpaceDamage(p2 + DIR_VECTORS[dir]*10))
-
+	ret:AddSound(self.SoundBase.."/attack")
+	
 	for i = 1, self.Range do
 		local pA = p1 + DIR_VECTORS[dirA] + DIR_VECTORS[dir]*i
 		local pB = p1 + DIR_VECTORS[dirB] + DIR_VECTORS[dir]*i
 		local damage = SpaceDamage(pA,self.Damage)
+		
 		damage.sAnimation = "SwipeClaw2"
 		ret:AddQueuedDamage(damage)
+		
 		damage.loc = pB
-		damage.sSound = self.SoundBase.."/attack"
 		ret:AddQueuedDamage(damage)
+		
 	end
-
+	
 	return ret
 end
 
@@ -120,7 +123,7 @@ DNT_Mantis1 = Pawn:new{
 	MoveSpeed = 3,
 	Image = "DNT_mantis",
 	Jumper = true,
-	SkillList = { "DNT_MantisSlash1" },
+	SkillList = { "DNT_MantisSlash1_StarfishAtk" },
 	SoundLocation = "/enemy/leaper_1/",
 	DefaultTeam = TEAM_ENEMY,
 	ImpactMaterial = IMPACT_FLESH,
@@ -134,7 +137,7 @@ DNT_Mantis2 = Pawn:new{
 	Image = "DNT_mantis",
 	ImageOffset = 1,
 	Jumper = true,
-	SkillList = { "DNT_MantisSlash2" },
+	SkillList = { "DNT_MantisSlash2_StarfishAtk" },
 	SoundLocation = "/enemy/leaper_2/",
 	DefaultTeam = TEAM_ENEMY,
 	ImpactMaterial = IMPACT_FLESH,
@@ -149,7 +152,7 @@ DNT_Mantis3 = Pawn:new{
 	Image = "DNT_mantis",
 	ImageOffset = 2,
 	Jumper = true,
-	SkillList = { "DNT_MantisSlash3" },
+	SkillList = { "DNT_MantisSlash3_StarfishAtk" },
 	SoundLocation = "/enemy/leaper_2/",
 	DefaultTeam = TEAM_ENEMY,
 	ImpactMaterial = IMPACT_FLESH,

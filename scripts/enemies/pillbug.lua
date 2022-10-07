@@ -146,21 +146,21 @@ function DNT_PillbugLeap1:GetSkillEffect(p1, p2)
 	ret:AddQueuedScript(string.format("Board:GetPawn(%s):SetInvisible(true)", p1:GetString())) -- hide pawn
 	if Board:IsBlocked(p2,PATH_PROJECTILE) then
 		ret:DNT_AddQueuedArtillery(SpaceDamage(p2, self.Damage),self.Projectile,NO_DELAY) -- jump effect
-		ret:AddQueuedDelay(0.02)
+		ret:AddQueuedDelay(0.01)
 		ret:DNT_AddQueuedArtillery(SpaceDamage(p2),self.Effect1,NO_DELAY) -- after effect 1
-		ret:AddQueuedDelay(0.02)
+		ret:AddQueuedDelay(0.01)
 		ret:DNT_AddQueuedArtillery(SpaceDamage(p2),self.Effect2,NO_DELAY) -- after effect 2
-		ret:AddQueuedDelay(0.76)
+		ret:AddQueuedDelay(0.78)
 		
 		for i = 1, 8 do
 			local nextpoint = p3 - DIR_VECTORS[dir]
 			
 			ret:DNT_AddQueuedArtillery(p3,SpaceDamage(nextpoint),self.Projectile,NO_DELAY)
 			ret.q_effect:back().bHidePath = true
-			ret:AddQueuedDelay(0.02)
+			ret:AddQueuedDelay(0.01)
 			ret:DNT_AddQueuedArtillery(p3,SpaceDamage(nextpoint),self.Effect1,NO_DELAY)
 			ret.q_effect:back().bHidePath = true
-			ret:AddQueuedDelay(0.02)
+			ret:AddQueuedDelay(0.01)
 			ret:DNT_AddQueuedArtillery(p3,SpaceDamage(nextpoint),self.Effect2,NO_DELAY)
 			ret.q_effect:back().bHidePath = true
 
@@ -168,19 +168,19 @@ function DNT_PillbugLeap1:GetSkillEffect(p1, p2)
 			if not Board:IsBlocked(nextpoint,PATH_PROJECTILE) or nextpoint == p1 then
 				break
 			end
-			ret:AddQueuedDelay(0.76)
+			ret:AddQueuedDelay(0.78)
 			ret:AddQueuedDamage(SpaceDamage(p3,self.Damage))
 		end
 		
 		ret:AddQueuedDelay(0.02)
 	else
 		ret:DNT_AddQueuedArtillery(SpaceDamage(p2),self.Projectile,NO_DELAY) -- jump effect
-		ret:AddQueuedDelay(0.02)
+		ret:AddQueuedDelay(0.01)
 		ret:DNT_AddQueuedArtillery(SpaceDamage(p2),self.Effect1,NO_DELAY) -- after effect 1
-		ret:AddQueuedDelay(0.02)
+		ret:AddQueuedDelay(0.01)
 		ret:DNT_AddQueuedArtillery(SpaceDamage(p2),self.Effect2,NO_DELAY) -- after effect 2
 	end
-	ret:AddQueuedDelay(0.76)
+	ret:AddQueuedDelay(0.78)
 	ret:AddQueuedScript(string.format("Board:GetPawn(%s):SetSpace(%s)", p1:GetString(), p3:GetString())) --move pawn
 	ret:AddQueuedScript(string.format("Board:GetPawn(%s):SetInvisible(false)", p3:GetString())) -- show pawn
 	
