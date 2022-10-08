@@ -7,3 +7,4 @@ Big One Crash Fix Released (modApiExt 1.14)
 Bandaid Fix for Cockroach with death effect psions by excluding them
 Stinkbug console errors and visual bugs fix
 Add arrow icon to mantis attack
+Easy Edit Updated to 1.5.4

@@ -12,7 +12,7 @@
 --]]
 
 local newtext = {}
-UiTextBox = Class.inherit(Ui)
+local UiTextBox = Class.inherit(Ui)
 UiTextBox._ALPHABET_UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 UiTextBox._ALPHABET_LOWER = "abcdefghjiklmnopqrstuvwxyz"
 UiTextBox._ALPHABET_NUMBERS = "1234567890"
@@ -456,3 +456,5 @@ function UiTextBox:registerAsTextBox()
 	self.onPaste           = self.onPaste or UiTextBox.onPaste
 	self.onSelectAll       = self.onSelectAll or UiTextBox.onSelectAll
 end
+
+return UiTextBox

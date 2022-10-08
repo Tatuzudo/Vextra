@@ -1,4 +1,7 @@
 
+local path = GetParentPath(...)
+local UiTextBox = require(path.."UiTextBox")
+
 local UiEditBox = Class.inherit(Ui)
 function UiEditBox:new()
 	Ui.new(self)

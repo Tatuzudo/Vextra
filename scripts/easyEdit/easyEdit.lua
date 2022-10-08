@@ -7,7 +7,8 @@ if skipInit then
 	return easyEdit
 end
 
-local VERSION = "1.5.3"
+local VERSION = "1.5.4"
+local MOD_LOADER_TARGET = "2.7.2"
 local path = GetParentPath(...)
 
 local function finalizeInit(self)
@@ -15,12 +16,20 @@ local function finalizeInit(self)
 	Assert.Traceback = true
 
 	require(path.."ui/editor_easyEdit")
-	require(path.."modules/assets")
-	require(path.."modules/animations")
 
 	if not self.enabled then
 		LOGDF("Easy Edit %s did not initialize because it is disabled", self.version)
 		return
+	end
+
+	if self.modLoaderTarget ~= modApi.version then
+		LOGF(""
+			.."WARNING: This version of Easy Edit is specifically made for mod loader"
+			.."version %s, and may not work with properly with the current mod loader"
+			.."version %s",
+			tostring(self.modLoaderTarget),
+			tostring(modApi.version)
+		)
 	end
 
 	require(path.."debug")
@@ -54,8 +63,6 @@ local function finalizeInit(self)
 	require(path.."ui/widget/UiCustomTooltip")
 	require(path.."ui/widget/UiGroupTooltip")
 	require(path.."ui/textevent")
-	require(path.."ui/widget/UiTextBox")
-	require(path.."ui/deco/DecoTextBox")
 	require(path.."ui/menues")
 	require(path.."ui/editor_cleanProfile")
 
@@ -81,6 +88,7 @@ local isNewerVersion = false
 if isNewerVersion then
 	easyEdit = easyEdit or {}
 	easyEdit.version = VERSION
+	easyEdit.modLoaderTarget = MOD_LOADER_TARGET
 	easyEdit.path = path
 	easyEdit.finalizeInit = finalizeInit
 

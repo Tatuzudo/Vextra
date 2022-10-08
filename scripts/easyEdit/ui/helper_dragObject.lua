@@ -1,4 +1,10 @@
 
+local path = GetParentPath(...)
+local path_datastructures = GetParentPath(path).."datastructures/"
+local binarySearch = require(path_datastructures.."binarySearch")
+local binarySearchMin = binarySearch.min
+local binarySearchMax = binarySearch.max
+
 -- A ui class for moving UiDragSource children of UiBoxLayout parents.
 
 -- header
@@ -99,7 +105,7 @@ function helpers.contentListDragObject.onDropTargetEntered(dragObject, dropTarge
 		desiredIndex = #children + 1
 		screenx = lastChild.screenx + lastChild.w
 	else
-		desiredIndex = BinarySearchMin(1, #children, mouse_x, function(i)
+		desiredIndex = binarySearchMin(1, #children, mouse_x, function(i)
 			return children[i].screenx + children[i].w
 		end)
 		screenx = children[desiredIndex].screenx
@@ -159,7 +165,7 @@ function helpers.contentListDragObject.onDropTargetTraversed(dragObject, dropTar
 			desiredIndex = #children + 1
 			screenx = lastChild.screenx + lastChild.w
 		else
-			desiredIndex = BinarySearchMin(1, #children, mouse_x, function(i)
+			desiredIndex = binarySearchMin(1, #children, mouse_x, function(i)
 				return children[i].screenx + children[i].w
 			end)
 			screenx = children[desiredIndex].screenx
@@ -173,7 +179,7 @@ function helpers.contentListDragObject.onDropTargetTraversed(dragObject, dropTar
 
 		addSaveEntry(droppedObject)
 	else
-		desiredIndex = BinarySearchMax(1, #children, mouse_x, function(i)
+		desiredIndex = binarySearchMax(1, #children, mouse_x, function(i)
 			return children[i].screenx
 		end)
 		screenx = children[desiredIndex].screenx
