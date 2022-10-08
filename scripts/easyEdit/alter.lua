@@ -65,6 +65,7 @@ local MISSION_EXCLUSION = {
 	"Mission_Sandstorm",
 	"Mission_SlugBoss",
 	"Mission_LeaperBoss",
+	"Mission_DiggerBoss",
 }
 
 local STRUCTURE_EXCLUSION = {
@@ -80,16 +81,108 @@ local function updateMissingNames()
 	Jelly_Spider1.Name = "Arachnid Psion"
 	Jelly_Fire1.Name = "Smoldering Psion"
 	Jelly_Boost1.Name = "Raging Psion"
+	Shaman1.Name = "Plasmodia"
 	ShamanBoss.Name = "Plasmodia Leader"
+	Totem1.Name = "Spore"
 	BlobberBoss.Name = "Blobber Leader"
+	Burnbug1.Name = "Gastropod"
+	BurnbugBoss.Name = "Gastropod Leader"
+	Dung1.Name = "Tumblebug"
+	DungBoss.Name = "Tumblebug Leader"
+	
+	Mission_BeetleBoss.Name = "Beetle Leader"
+	Mission_BotBoss.Name = "Bot Leader"
+	Mission_FireflyBoss.Name = "Firefly Leader"
+	Mission_BlobBoss.Name = "Large Goo"
+	Mission_HornetBoss.Name = "Hornet Leader"
+	Mission_JellyBoss.Name = "Psion Abomination"
+	Mission_ScorpionBoss.Name = "Scorpion Leader"
+	Mission_SpiderBoss.Name = "Spider Leader"
+	Mission_BlobberBoss.Name = "Blobber Leader"
+	Mission_BouncerBoss.Name = "Bouncer Leader"
+	Mission_BurnbugBoss.Name = "Gastropod Leader"
+	Mission_CentipedeBoss.Name = "Centipede Leader"
+	Mission_CrabBoss.Name = "Crab Leader"
+	Mission_DungBoss.Name = "Tumblebug Leader"
+	Mission_MosquitoBoss.Name = "Mosquito Leader"
+	Mission_ScarabBoss.Name = "Scarab Leader"
+	Mission_ShamanBoss.Name = "Plasmodia Leader"
+	Mission_StarfishBoss.Name = "Starfish Leader"
+	
+	Mission_Acid.Name = "A.C.I.D."
+	Mission_AcidStorm.Name = "A.C.I.D. Storm"
+	Mission_AcidTank.Name = "A.C.I.D. Tank"
+	Mission_Airstrike.Name = "Airstrike"
+	Mission_Armored_Train.Name = "Armored Train"
+	Mission_Barrels.Name = "A.C.I.D. Vats"
+	Mission_Belt.Name = "Conveyor Belt"
+	Mission_BeltRandom.Name = "Conveyor Belt Random"
+	Mission_Bomb.Name = "Prototype Renfield Bomb"
+	Mission_BoomBots.Name = "Boom Bots"
+	Mission_BotDefense.Name = "Bot Defense"
+	Mission_Cataclysm.Name = "Cataclysm"
+	Mission_Civilians.Name = "V.I.P."
+	Mission_Crack.Name = "Seismic Activity"
+	Mission_Dam.Name = "Dam"
+	Mission_Disposal.Name = "Disposal Unit"
+	Mission_Factory.Name = "Robot Factory"
+	Mission_Fence.Name = "Barrier"
+	Mission_Filler.Name = "Earth Mover"
+	Mission_Force.Name = "Destruction"
+	Mission_ForestFire.Name = "Forest Fire"
+	Mission_FreezeBldg.Name = "Freeze Buildings"
+	Mission_FreezeBots.Name = "Freeze Tank"
+	Mission_FreezeMines.Name = "Cryo-Mines"
+	Mission_Hacking.Name = "Hacking"
+	Mission_Laser.Name = "Laser"
+	Mission_Lightning.Name = "Lightning"
+	Mission_Mines.Name = "Mines"
+	Mission_Missiles.Name = "Detritus Contraption"
+	Mission_NanoStorm.Name = "Nanostorm"
+	Mission_Piston.Name = "Trash Compactor"
+	Mission_Power.Name = "Power"
+	Mission_Reactivation.Name = "Thawing Enemies"
+	Mission_Repair.Name = "Repair Platforms"
+	Mission_Respawn.Name = "Respawning Enemies"
+	Mission_Shields.Name = "Shield Generator"
+	Mission_SnowBattle.Name = "Sentient Weapons"
+	Mission_SnowStorm.Name = "Snowstorm"
+	Mission_Solar.Name = "Solar Farms"
+	Mission_Stasis.Name = "Freese Bots"
+	Mission_Survive.Name = "Survive"
+	Mission_Tanks.Name = "Archive Tanks"
+	Mission_Teleporter.Name = "Teleporters"
+	Mission_Terraform.Name = "Terraformer"
+	Mission_Terratide.Name = "Sandstorm"
+	Mission_Tides.Name = "Tidal Waves"
+	Mission_Train.Name = "Train"
+	Mission_Trapped.Name = "Evacuated Buildings"
+	Mission_Volatile.Name = "Volatile Vek"
+	Mission_Wind.Name = "Windstorm"
+	
+	Str_Bar.Name = "Old Earth Bar"
+	Str_Battery.Name = "Emergency Batteries"
+	Str_Clinic.Name = "Clinic"
+	Str_Combat.Name = "Airfield"
+	Str_Nimbus.Name = "Power Generator"
+	Str_Power.Name = "Coal Plant"
+	Str_Research.Name = "Defense Lab"
+	Str_Robotics.Name = "Robotics Lab"
+	Str_Shield.Name = "Shield Generator"
+	Str_Tower.Name = "Corporate Tower"
 end
 
 local function registerWeapon(weapon_id)
-	if list_contains(WEAPON_EXCLUSION, weapon_id) then
+	local base = _G[weapon_id]
+
+	if false
+		or list_contains(WEAPON_EXCLUSION, weapon_id)
+		or base == nil
+		or base.ExcludeFromEasyEdit == true
+	then
 		return
 	end
 
-	local base = _G[weapon_id]
 	local weapon = modApi.weapons:get(weapon_id)
 
 	weapon = weapon or modApi.weapons:add(weapon_id)
@@ -110,11 +203,16 @@ local units = modApi.units
 local unitImages = modApi.unitImage
 local isValidUnit = units._class.isValid
 local function registerUnit(unit_id)
-	if list_contains(UNIT_EXCLUSION, unit_id) then
+	local base = _G[unit_id]
+
+	if false
+		or list_contains(UNIT_EXCLUSION, unit_id)
+		or base == nil
+		or base.ExcludeFromEasyEdit == true
+	then
 		return
 	end
 
-	local base = _G[unit_id]
 	local unit = units:get(unit_id)
 
 	if base.Name == "Unnamed Pawn" or base.Name == "PawnTable" then
@@ -163,11 +261,16 @@ local function registerUnits()
 end
 
 local function registerMission(mission_id)
-	if list_contains(MISSION_EXCLUSION, mission_id) then
+	local base = _G[mission_id]
+
+	if false
+		or list_contains(MISSION_EXCLUSION, mission_id)
+		or base == nil
+		or base.ExcludeFromEasyEdit == true
+	then
 		return
 	end
 
-	local base = _G[mission_id]
 	local mission = modApi.missions:get(mission_id)
 
 	mission = mission or modApi.missions:add(mission_id)
@@ -179,6 +282,9 @@ local function registerMission(mission_id)
 
 	if modApi:fileExists(filename) then
 		modApi:appendAsset(appendLoc, filename)
+	else
+		filename = string.format("%simg/mission/Icon_Missing.png", path)
+		modApi:appendAsset(appendLoc, filename)
 	end
 
 	local appendLoc = string.format("img/strategy/mission/small/%s.png", mission_id)
@@ -186,10 +292,19 @@ local function registerMission(mission_id)
 
 	if modApi:fileExists(filename) then
 		modApi:appendAsset(appendLoc, filename)
+	else
+		filename = string.format("%simg/mission/small/Icon_Missing.png", path)
+		modApi:appendAsset(appendLoc, filename)
 	end
 end
 
 local function registerMissions()
+	Mission_Windmill = Mission_Critical:new{
+		Name = "Wind Farms",
+		Image = "str_wind1",
+		FlavorBase = "Mission_Wind",
+		Objectives = PowerObjective("Mission_Wind_Objective", 2)
+	}
 	for i, _ in ipairs(corporations) do
 		local corp_id = vanillaCorporations[i]
 		local base = _G[corp_id]
@@ -221,11 +336,16 @@ local function registerMissions()
 end
 
 local function registerStructure(structure_id)
-	if list_contains(STRUCTURE_EXCLUSION, structure_id) then
+	local base = _G[structure_id]
+
+	if false
+		or list_contains(STRUCTURE_EXCLUSION, structure_id)
+		or base == nil
+		or base.ExcludeFromEasyEdit == true
+	then
 		return
 	end
 
-	local base = _G[structure_id]
 	local structure = modApi.structures:get(structure_id)
 
 	structure = structure or modApi.structures:add(structure_id)
@@ -299,6 +419,7 @@ local function registerCorporations()
 		local base = _G[corp_id]
 
 		corp:copy(base)
+		base.UniqueBosses = {}
 		corp.Name = GetText(corp_id.."_Name")
 		corp.Description = GetText(corp_id.."_Description")
 		corp:lock()
@@ -331,6 +452,9 @@ local function registerTilesets()
 	modApi:appendAsset(
 		"img/strategy/corp/hologram_env.png",
 		path.."img/env/hologram_env.png")
+	modApi:appendAsset(
+		"img/strategy/corp/debris_env.png",
+		path.."img/env/debris_env.png")
 	modApi:copyAsset(
 		"img/combat/tiles_grass/building_sheet_vines.png",
 		"img/combat/tiles_vine/building_sheet.png")
@@ -531,6 +655,10 @@ function pickEnemies(categories, enemies, islandNumber, timesPicked)
 	return result
 end
 
+local function getNoNewBosses()
+	return {}
+end
+
 local function registerEnemyLists()
 	local id = "vanilla"
 	local enemyList = modApi.enemyList:add(id)
@@ -546,7 +674,13 @@ local function registerEnemyLists()
 
 	local oldStartNewGame = startNewGame
 	function startNewGame()
+		-- Give Easy Edit full control of which bosses are added
+		local getNewBossesVanilla = getNewBosses
+		getNewBosses = getNoNewBosses
+
 		oldStartNewGame()
+
+		getNewBosses = getNewBossesVanilla
 
 		local timesPicked = {}
 		for i, corp_id in ipairs(vanillaCorporations) do
@@ -564,8 +698,13 @@ local function registerBossLists()
 		local bossList = modApi.bossList:add(id)
 		local corp_id = vanillaCorporations[i]
 		local base = _G[corp_id]
-
+		
 		bossList:copy(base)
+		
+		for _, boss in ipairs(getNewBosses()) do
+			bossList:addBoss(boss)
+		end
+		
 		bossList.name = base.Bark_Name
 		bossList:lock()
 	end
