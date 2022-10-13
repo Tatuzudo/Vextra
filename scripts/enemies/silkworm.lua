@@ -82,18 +82,10 @@ function DNT_SilkwormAtk1:GetTargetScore(p1, p2)
 
 	for _, target in pairs(targets) do
 		local pawn = Board:GetPawn(target)
-		if oldret > 5 or self.ExtraWebs then --If extra webs we don't want to add too much for webbing
-			if (pawn and pawn:GetTeam() == TEAM_PLAYER and not pawn:IsTempUnit() and pawn:IsMech()) then
-				ret = ret + 4 --The score for hitting something, -1. We want to web, but we'd rather attack
-			elseif Board:IsBuilding(target) then
-				ret = ret + 2
-			end
-		else
-			if (pawn and pawn:GetTeam() == TEAM_PLAYER and not pawn:IsTempUnit() and pawn:IsMech()) then
-				ret = ret + 6
-			elseif Board:IsBuilding(target) then
-				ret = ret + 1
-			end
+		if (pawn and pawn:GetTeam() == TEAM_PLAYER and not pawn:IsTempUnit() and pawn:IsMech()) then
+			ret = ret + 5 --The score for hitting something, it is equal between webbing and shooting now
+		elseif Board:IsBuilding(target) then
+			ret = ret + 2 --Just because we like to see webs, and keep it away from what it's attacking
 		end
 	end
 
