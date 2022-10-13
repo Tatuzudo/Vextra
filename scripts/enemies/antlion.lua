@@ -55,6 +55,7 @@ DNT_AntlionAtk1 = Skill:new {
 	Class = "Enemy",
 	LaunchSound = "",
 	Crack = 1,
+	ExtraTiles = false,
 	TipImage = {
 		Unit = Point(2,2),
 		Target = Point(2,1),
@@ -77,17 +78,32 @@ function DNT_AntlionAtk1:GetSkillEffect(p1,p2)
 	if IsTipImage() then
 		ret:AddDelay(0.3) --I want to see the crack happen
 	end
-	local damage = SpaceDamage(p2,0)
-	damage.iCrack = self.Crack
-	ret:AddDamage(damage)
-	ret:AddBurst(p2,"Emitter_Crack_Start2",DIR_NONE)
-	ret:AddBounce(p2,2)
 
+	local targets = {}
+	if not self.ExtraTiles then
+		table.insert(targets, p2)
+	else
+		for i=DIR_START, DIR_END do
+			table.insert(targets, p1 + DIR_VECTORS[i])
+		end
+	end
 
-	damage = SpaceDamage(p2,self.Damage)
-	damage.sSound = "/enemy/burrower_1/attack"
-	damage.sAnimation = "SwipeClaw2"
-	ret:AddQueuedDamage(damage)
+	for _, target in pairs(targets) do
+		--crack
+		local damage = SpaceDamage(target,0)
+		damage.iCrack = self.Crack
+		ret:AddDamage(damage)
+		ret:AddBurst(target,"Emitter_Crack_Start2",DIR_NONE)
+		ret:AddBounce(target,2)
+		ret:AddDelay(0.2)
+
+		--HOOK_pawnDamaged
+		damage = SpaceDamage(target,self.Damage)
+		damage.sSound = "/enemy/burrower_1/attack"
+		damage.sAnimation = "SwipeClaw2"
+		ret:AddQueuedMelee(p1, damage, NO_DELAY)
+		ret:AddQueuedDelay(0.2)
+	end
 
 	return ret
 end
@@ -102,6 +118,19 @@ DNT_AntlionAtk2 = DNT_AntlionAtk1:new { --Just an example
 	}
 }
 
+DNT_AntlionAtk3 = DNT_AntlionAtk1:new { --Just an example
+	Description = "Crack all adjacent tiles, preparing to strike it.",
+	ExtraTiles = true,
+	Damage = 2,
+	TipImage = { --This is all tempalate and probably needs to change
+		Unit = Point(2,2),
+		Target = Point(2,1),
+		Enemy = Point(2,1),
+		Enemy2 = Point(1,2),
+		Building = Point(2,3),
+		CustomPawn = "DNT_Antlion2",
+	}
+}
 
 -----------
 -- Pawns --
@@ -138,6 +167,24 @@ DNT_Antlion2 = Pawn:new
 		Pushable = false
 	}
 AddPawn("DNT_Antlion2")
+
+DNT_Antlion3 = Pawn:new
+	{
+		Name = "Antlion Leader",
+		Health = 6,
+		MoveSpeed = 3,
+		SkillList = {"DNT_AntlionAtk3"},
+		Image = "DNT_antlion",
+		SoundLocation = "/enemy/burrower_1/",
+		ImageOffset = 2,
+		DefaultTeam = TEAM_ENEMY,
+		ImpactMaterial = IMPACT_INSECT,
+		Tier = TIER_BOSS,
+		Burrows = true,
+		Pushable = false,
+		Massive = true
+	}
+AddPawn("DNT_Antlion3")
 
 -- -- Death effect on water/chasms
 -- DNT_FallAntlion1 = Pawn:new

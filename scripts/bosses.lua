@@ -28,4 +28,10 @@ Mission_SilkwormBoss = Mission_Boss:new{
 	BossText = "Destroy the Silkworm Leader",
 }
 
+Mission_AntlionBoss = Mission_Boss:new{
+	Name = "Antlion Leader",
+	BossPawn = "DNT_Antlion3",
+	SpawnStartMod = -1,
+	BossText = "Destroy the Antlion Leader",
+}
 -- IslandLocks.Mission_ThunderbugBoss = 3
