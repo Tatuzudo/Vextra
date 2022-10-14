@@ -41,4 +41,11 @@ Mission_FlyBoss = Mission_Boss:new{
 	SpawnStartMod = -1,
 	BossText = "Destroy the Fly Leader",
 }
+
+Mission_TermitesBoss = Mission_Boss:new{
+	Name = "Termites Leader",
+	BossPawn = "DNT_Termites3",
+	SpawnStartMod = -1,
+	BossText = "Destroy the Termite Leaders",
+}
 -- IslandLocks.Mission_ThunderbugBoss = 3

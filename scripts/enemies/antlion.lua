@@ -128,7 +128,7 @@ DNT_AntlionAtk3 = DNT_AntlionAtk1:new { --Just an example
 		Enemy = Point(2,1),
 		Enemy2 = Point(1,2),
 		Building = Point(2,3),
-		CustomPawn = "DNT_Antlion2",
+		CustomPawn = "DNT_Antlion3",
 	}
 }
 

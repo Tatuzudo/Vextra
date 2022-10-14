@@ -76,6 +76,20 @@ DNT_TermitesAtk2 = DNT_TermitesAtk1:new { --Just an example
 	}
 }
 
+DNT_TermitesAtk3 = DNT_TermitesAtk1:new { --Just an example
+	Damage = 3,
+	Description = "Create a rock in front, rushing forward through all solid objects till an empty space, dealing damage, and leaving a rock on the starting space. If it can't dash, do a basic melee strike instead.",
+	TipImage = { --This is all tempalate and probably needs to change
+		Unit = Point(2,4),
+		Target = Point(2,3),
+		Enemy = Point(2,2),
+		Building = Point(0,1),
+		Second_Origin = Point(2,1),
+		Second_Target = Point(1,1), --Can also do 2,2
+		CustomPawn = "DNT_Termites3",
+	}
+}
+
 --[[
 function DNT_TermitesAtk1:GetTargetArea(p1)
 	local ret = PointList()
@@ -86,7 +100,7 @@ end
 function DNT_TermitesAtk1:GetSkillEffect(p1,p2)
 	local ret = SkillEffect()
 	local dir = GetDirection(p2-p1)
-	local target = p2
+	local target = p1
 	local fullyBlocked = true
 
 	for i=1,8 do
@@ -101,6 +115,74 @@ function DNT_TermitesAtk1:GetSkillEffect(p1,p2)
 
 	local damage = nil
 	if not Board:IsBlocked(p2, PATH_PROJECTILE) or fullyBlocked then
+		damage = SpaceDamage(p2,self.Damage)
+		damage.sAnimation = "explomosquito_"..dir
+		damage.sSound = "/enemy/mosquito_1/attack"
+		ret:AddQueuedMelee(p1, damage)
+	else
+		local move = PointList()
+		move:push_back(p1)
+		move:push_back(target)
+		ret:AddQueuedCharge(move,NO_DELAY)
+
+		damage = SpaceDamage(p1)
+		damage.sPawn = "Wall"
+		damage.sSound = "/enemy/digger_1/attack_queued"
+		ret:AddQueuedDamage(damage)
+
+		local curr = p2
+		for i=1, 8 do
+			if curr ~= target then
+				ret:AddQueuedDelay(.1)
+				damage = SpaceDamage(curr,self.Damage)
+				damage.sAnimation = "explomosquito_"..dir
+				damage.sSound = "/enemy/mosquito_1/attack"
+				ret:AddQueuedDamage(damage)
+			else break end
+			curr = curr + DIR_VECTORS[dir]
+		end
+		ret:AddQueuedDelay(.1)
+		damage = SpaceDamage(target)
+		damage.sSound = "/enemy/beetle_1/attack_impact"
+		ret:AddDamage(damage)
+	end
+	return ret
+end
+
+-- BOSS weapon is complicated enough it needs a seperate skill effect
+function DNT_TermitesAtk3:GetSkillEffect(p1,p2)
+	local ret = SkillEffect()
+	local dir = GetDirection(p2-p1)
+	local target = p1
+	local fullyBlocked = true
+
+	for i=1,8 do
+		target = target + DIR_VECTORS[dir]
+		if not Board:IsValid(target) then
+			break
+		end
+		if i == 1 then
+			if Board:IsBlocked(target, PATH_GROUND) and not Board:IsBlocked(target, PATH_PROJECTILE) then
+				break
+			end
+		else
+			if not Board:IsBlocked(target, PATH_PROJECTILE) then
+				fullyBlocked = false
+				break --target is now stored as the first unblocked tile
+			end
+		end
+	end
+
+	local damage = nil
+
+	if not Board:IsBlocked(p2, PATH_PROJECTILE) then
+		damage = SpaceDamage(p2, self.Damage)
+		damage.sPawn = "Wall"
+		ret:AddQueuedDamage(damage)
+		ret:AddQueuedDelay(0.5)
+	end
+
+	if Board:IsTerrain(p2, TERRAIN_WATER) or Board:IsTerrain(p2, TERRAIN_HOLE) or fullyBlocked then
 		damage = SpaceDamage(p2,self.Damage)
 		damage.sAnimation = "explomosquito_"..dir
 		damage.sSound = "/enemy/mosquito_1/attack"
@@ -166,6 +248,22 @@ DNT_Termites2 = Pawn:new
 		Tier = TIER_ALPHA,
 	}
 AddPawn("DNT_Termites2")
+
+DNT_Termites3 = Pawn:new
+	{
+		Name = "Termite Leaders",
+		Health = 6,
+		MoveSpeed = 3,
+		SkillList = {"DNT_TermitesAtk3"},
+		Image = "DNT_termites",
+		SoundLocation = "/enemy/centipede_1/",
+		ImageOffset = 2,
+		DefaultTeam = TEAM_ENEMY,
+		ImpactMaterial = IMPACT_INSECT,
+		Tier = TIER_BOSS,
+		Massive = true,
+	}
+AddPawn("DNT_Termites3")
 
 
 
