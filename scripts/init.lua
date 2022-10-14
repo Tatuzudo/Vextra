@@ -36,6 +36,7 @@ local function init(self)
 		{"Cockroach",true,"Unique",true},
 		{"Anthill",false,"Unique",true},
 		{"IceCrawler",false,"Unique",false},
+		{"Fly",false,"Core",false},
 	}
 
 	--ModApiExt

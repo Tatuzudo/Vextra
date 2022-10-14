@@ -11,6 +11,7 @@ local DNT_bosses = {
   "Mission_ThunderbugBoss",
   "Mission_SilkwormBoss",
   "Mission_AntlionBoss",
+  "Mission_FlyBoss",
 }
 
 for _, boss in pairs(DNT_bosses) do

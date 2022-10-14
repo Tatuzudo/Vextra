@@ -1,5 +1,10 @@
 
 local enemies = {
+	DNT_Fly = {
+		weakpawn = true,
+		--ExclusiveElement = "Scarab",
+		max_pawns = 3,
+	},
 	DNT_Mantis = {
 		weakpawn = true,
 		ExclusiveElement = "Starfish",
@@ -90,6 +95,8 @@ if ExclusiveElements then --1.2.76b  I also do not know if this actually works.
 		DNT_Cockroach = "Jelly_Explode",
 		DNT_Cockroach = "Jelly_Spider",
 		DNT_Cockroach = "Jelly_Fire",
+		DNT_Fly = "Moth",
+		DNT_Fly = "Scarab",
 	}
 elseif exclusiveElements then --1.2.79+
 	for _, list in pairs(exclusiveElements) do
