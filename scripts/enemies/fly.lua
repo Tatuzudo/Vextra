@@ -18,23 +18,21 @@ end
 
 local name = "fly" --lowercase, I could also use this else where, but let's make it more readable elsewhere
 
--- -- UNCOMMENT WHEN YOU HAVE SPRITES; you can do partial
--- modApi:appendAsset(writepath.."DNT_"..name..".png", readpath.."DNT_"..name..".png")
--- modApi:appendAsset(writepath.."DNT_"..name.."a.png", readpath.."DNT_"..name.."a.png")
--- modApi:appendAsset(writepath.."DNT_"..name.."_emerge.png", readpath.."DNT_"..name.."_emerge.png")
--- modApi:appendAsset(writepath.."DNT_"..name.."_death.png", readpath.."DNT_"..name.."_death.png")
--- modApi:appendAsset(writepath.."DNT_"..name.."_Bw.png", readpath.."DNT_"..name.."_Bw.png")
+-- UNCOMMENT WHEN YOU HAVE SPRITES; you can do partial
+modApi:appendAsset(writepath.."DNT_"..name..".png", readpath.."DNT_"..name..".png")
+modApi:appendAsset(writepath.."DNT_"..name.."a.png", readpath.."DNT_"..name.."a.png")
+modApi:appendAsset(writepath.."DNT_"..name.."_emerge.png", readpath.."DNT_"..name.."_emerge.png")
+modApi:appendAsset(writepath.."DNT_"..name.."_death.png", readpath.."DNT_"..name.."_death.png")
 
--- local base = a.EnemyUnit:new{Image = imagepath .. "DNT_"..name..".png", PosX = -23, PosY = -5}
--- local baseEmerge = a.BaseEmerge:new{Image = imagepath .. "DNT_"..name.."_emerge.png", PosX = -23, PosY = -5, NumFrames = 10}
+local base = a.EnemyUnit:new{Image = imagepath .. "DNT_"..name..".png", PosX = -23, PosY = -5}
+local baseEmerge = a.BaseEmerge:new{Image = imagepath .. "DNT_"..name.."_emerge.png", PosX = -23, PosY = -5, NumFrames = 7}
 
--- -- REPLACE "name" with the name
--- -- UNCOMENT WHEN YOU HAVE SPRITES
--- a.DNT_mantis = base
--- a.DNT_mantise = baseEmerge
--- a.DNT_mantisa = base:new{ Image = imagepath.."DNT_"..name.."a.png", NumFrames = 4 }
--- a.DNT_mantisd = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Loop = false, NumFrames = 8, Time = .15 } --Numbers copied for now
--- a.DNT_mantisw = base:new{ Image = imagepath.."DNT_"..name.."_Bw.png", PosY = 3} --Only if there's a boss
+-- REPLACE "name" with the name
+-- UNCOMENT WHEN YOU HAVE SPRITES
+a.DNT_fly = base
+a.DNT_flye = baseEmerge
+a.DNT_flya = base:new{ Image = imagepath.."DNT_"..name.."a.png", NumFrames = 4 }
+a.DNT_flyd = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Loop = false, NumFrames = 9, Time = .15 } --Numbers copied for now
 
 -------------
 -- Weapons --
@@ -43,7 +41,8 @@ local name = "fly" --lowercase, I could also use this else where, but let's make
 DNT_FlyAtk1 = Skill:new{
 	-- Name = "Gastric Eviction",
 	Name = "Sapping Proboscis",
-	Description = "Short-range artillery attack that applies A.C.I.D.",
+	-- Description = "Short-range artillery attack that applies A.C.I.D.",
+	Description = "Drain life from its target from a distance",
 	Class = "Enemy",
 	Icon = "weapons/enemy_leaper1.png",
 	ImpactSound = "/enemy/moth_1/attack_impact",
@@ -57,7 +56,7 @@ DNT_FlyAtk1 = Skill:new{
 	-- Acid = EFFECT_CREATE,
 	TipImage = {
 		Unit = Point(2,3),
-		Target = Point(2,1),
+		Target = Point(2,2),
 		Enemy1 = Point(2,1),
 		CustomPawn = "DNT_Fly1",
 	}
@@ -71,17 +70,30 @@ DNT_FlyAtk2 = DNT_FlyAtk1:new{
 	Projectile = "effects/shotup_crab2.png",
 	Damage = 2,
 	Heal = 2,
+	TipImage = {
+		Unit = Point(2,3),
+		Target = Point(2,2),
+		Enemy1 = Point(2,1),
+		CustomPawn = "DNT_Fly2",
+	}
 }
 
 DNT_FlyAtk3 = DNT_FlyAtk1:new{
 	-- Name = "Corrosive Eviction",
 	Name = "Leech Proboscis",
+	Description = "Drain life from its target and apply A.C.I.D. from a distance",
 	ImpactSound = "/enemy/moth_2/attack_impact",
 	LaunchSound = "/enemy/moth_2/attack_launch",
 	Projectile = "effects/shotup_crab2.png",
 	Damage = 3,
-	Heal = 4,
+	Heal = 3,
 	Acid = EFFECT_CREATE,
+	TipImage = {
+		Unit = Point(2,3),
+		Target = Point(2,2),
+		Enemy1 = Point(2,1),
+		CustomPawn = "DNT_Fly3",
+	}
 }
 
 -- function DNT_FlyAtk1:GetTargetArea(point)
@@ -150,7 +162,7 @@ DNT_Fly1 = Pawn:new{
 	Health = 3,
 	StartingHealth = 1,
 	MoveSpeed = 4,
-	Image = "hornet",--"DNT_mantis",
+	Image = "DNT_fly",
 	Flying = true,
 	SkillList = { "DNT_FlyAtk1" },
 	SoundLocation = "/enemy/leaper_1/",
@@ -166,7 +178,7 @@ DNT_Fly2 = Pawn:new{
 	Health = 5,
 	StartingHealth = 3,
 	MoveSpeed = 4,
-	Image = "hornet",--"DNT_mantis",
+	Image = "DNT_fly",
 	ImageOffset = 1,
 	Flying = true,
 	SkillList = { "DNT_FlyAtk2" },
@@ -181,10 +193,10 @@ DNT_Fly3 = Pawn:new{
 	Name = "Fly Leader",
 	-- Health = 5,
 	-- MoveSpeed = 5,
-	Health = 7,
-	StartingHealth = 4,
+	Health = 8,
+	StartingHealth = 5,
 	MoveSpeed = 4,
-	Image = "hornet",--"DNT_mantis",
+	Image = "DNT_fly",--"hornet"
 	ImageOffset = 2,
 	Flying = true,
 	SkillList = { "DNT_FlyAtk3" },

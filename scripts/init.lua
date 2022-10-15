@@ -26,7 +26,7 @@ local function init(self)
 		-- {name, does it have a load (for hooks), what category it is in, does it have a tip}
 		{"Ladybug",true,"Unique",true},
 		{"Mantis",false,"Core",false},
-		{"Pillbug",false,"Core",true},
+		{"Pillbug",false,"Unique",true},
 		{"Thunderbug",false,"Unique",false},
 		{"Silkworm",false,"Core",false},
 		{"Dragonfly",false,"Unique",false},

@@ -11,7 +11,7 @@ local enemies = {
 		max_pawns = 3,
 	},
 	DNT_Pillbug = {
-		weakpawn = true,
+		weakpawn = false,
 		max_pawns = 2,
 	},
 	DNT_Silkworm = {
