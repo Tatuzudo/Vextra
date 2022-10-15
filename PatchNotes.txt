@@ -13,7 +13,8 @@ Under the hood Silkworm targetting change
 Antlion Boss Added
 New core! Fly: "Projectile attack that pulls and steals life."
 Under the hood Stinkbug targetting change and other enhancements
-Pillbug becomes Unique, and gains a health buff 1 --> 2  3 --> 4 and 4 --> 5
+Isopod (Pillbug) becomes Unique, and gains a health buff 1 --> 2  3 --> 4 and 4 --> 5
 Termites Boss Added
-
+Updated ModApiExt
+Silkworm move decreased from 5-->4
 

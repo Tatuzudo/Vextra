@@ -163,7 +163,7 @@ DNT_Silkworm1 = Pawn:new
 	{
 		Name = "Silkworm",
 		Health = 2,
-		MoveSpeed = 5,
+		MoveSpeed = 4,
 		Image = "DNT_silkworm", --change
 		SkillList = {"DNT_SilkwormAtk1"},
 		SoundLocation = "/enemy/scorpion_soldier_1/",
@@ -176,7 +176,7 @@ DNT_Silkworm2 = Pawn:new
 	{
 		Name = "Alpha Silkworm",
 		Health = 4,
-		MoveSpeed = 5,
+		MoveSpeed = 4,
 		SkillList = {"DNT_SilkwormAtk2"},
 		Image = "DNT_silkworm", --change
 		SoundLocation = "/enemy/scorpion_soldier_2/",
@@ -191,7 +191,7 @@ DNT_Silkworm3 = Pawn:new
 	{
 		Name = "Silkworm Leader",
 		Health = 6,
-		MoveSpeed = 5,
+		MoveSpeed = 4,
 		SkillList = {"DNT_SilkwormAtk3"},
 		Image = "DNT_silkworm", --change
 		SoundLocation = "/enemy/scorpion_soldier_2/",
