@@ -110,11 +110,11 @@ DNT_FlyAtk3 = DNT_FlyAtk1:new{
 
 -- function DNT_FlyAtk1:GetSkillEffect(p1, p2)
 	-- local ret = SkillEffect()
-	
+
 	-- local damage = SpaceDamage(p2,self.Damage)
 	-- damage.iAcid = self.Acid
 	-- ret:AddQueuedArtillery(damage,self.Projectile,FULL_DELAY)
-	
+
 	-- return ret
 -- end
 
@@ -128,7 +128,7 @@ function DNT_FlyAtk1:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	local p3 = GetProjectileEnd(p1,p2)
 	local dir = GetDirection(p1 - p2)
-	
+
 	local damage = SpaceDamage(p3,self.Damage,dir)
 	damage.iAcid = self.Acid
 	ret:AddQueuedDamage(damage)
@@ -139,7 +139,7 @@ function DNT_FlyAtk1:GetSkillEffect(p1, p2)
 	if Board:IsBlocked(p3, PATH_PROJECTILE) and Board:GetTerrain(p3) ~= TERRAIN_MOUNTAIN then
 		ret:AddQueuedDamage(heal)
 	end
-	
+
 	return ret
 end
 
@@ -164,6 +164,7 @@ DNT_Fly1 = Pawn:new{
 	MoveSpeed = 4,
 	Image = "DNT_fly",
 	Flying = true,
+	Ranged = 1,
 	SkillList = { "DNT_FlyAtk1" },
 	SoundLocation = "/enemy/leaper_1/",
 	DefaultTeam = TEAM_ENEMY,
@@ -181,6 +182,7 @@ DNT_Fly2 = Pawn:new{
 	Image = "DNT_fly",
 	ImageOffset = 1,
 	Flying = true,
+	Ranged = 1,
 	SkillList = { "DNT_FlyAtk2" },
 	SoundLocation = "/enemy/leaper_2/",
 	DefaultTeam = TEAM_ENEMY,
@@ -199,6 +201,7 @@ DNT_Fly3 = Pawn:new{
 	Image = "DNT_fly",--"hornet"
 	ImageOffset = 2,
 	Flying = true,
+	Ranged = 1,
 	SkillList = { "DNT_FlyAtk3" },
 	SoundLocation = "/enemy/leaper_2/",
 	DefaultTeam = TEAM_ENEMY,
