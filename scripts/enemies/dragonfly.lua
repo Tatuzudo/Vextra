@@ -86,7 +86,7 @@ function DNT_DragonflyAtk1:GetTargetScore(p1,p2)
 
 	local pawn = Board:GetPawn(p2)
 	if pawn and pawn:GetTeam() == TEAM_ENEMY then
-		ret = ret - 2
+		ret = 0
 	elseif pawn and pawn:GetTeam() == TEAM_PLAYER then
 		ret = ret + 1
 	end

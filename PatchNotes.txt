@@ -17,4 +17,4 @@ Isopod (Pillbug) becomes Unique, and gains a health buff 1 --> 2  3 --> 4 and 4 
 Termites Boss Added
 Updated ModApiExt
 Silkworm move decreased from 5-->4
-
+Dragonfly will no longer smoke and attack friendlies
