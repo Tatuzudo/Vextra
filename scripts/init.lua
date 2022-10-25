@@ -37,8 +37,9 @@ local function init(self)
 		{"Anthill",false,"Unique",true},
 		{"IceCrawler",false,"Unique",false},
 		{"Fly",false,"Core",false},
+		{"Haste",false,"Leaders",false},
 	}
-
+	
 	--ModApiExt
 	if modApiExt then
 		-- modApiExt already defined. This means that the user has the complete
@@ -50,7 +51,7 @@ local function init(self)
 		DNT_Vextra_ModApiExt = require(extDir.."modApiExt")
 		DNT_Vextra_ModApiExt:init(extDir)
 	end
-
+	
 	require(self.scriptPath.."enemies")
 	require(self.scriptPath.."enemyList")
 	require(self.scriptPath.."bosses")
@@ -58,7 +59,7 @@ local function init(self)
 	require(self.scriptPath.."tips")
 	require(self.scriptPath.."spawnerfix")
 	-- require(self.scriptPath.."modApiExt_fix")
-
+	
 	--Scripts
 	for _, table in ipairs(DNT_Vextra_VekList) do
 		local name = table[1]
