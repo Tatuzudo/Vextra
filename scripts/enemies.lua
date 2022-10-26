@@ -62,10 +62,11 @@ local enemies = {
 		max_pawns = 3,
 		IslandLocks = 2,
 	},
-	DNT_HastePsion = {
+	DNT_Haste = {
 		weakpawn = false,
 		max_pawns = 1,
 		IslandLocks = 2,
+		max_level = 1,
 	},
 }
 
