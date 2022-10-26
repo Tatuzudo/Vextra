@@ -58,7 +58,7 @@ local baseEmerge = a.BaseEmerge:new{Image = imagepath .. "DNT_"..name.."_emerge.
 a.DNT_cockroach = base
 a.DNT_cockroache = baseEmerge
 a.DNT_cockroacha = base:new{ Image = imagepath.."DNT_"..name.."a.png", NumFrames = 4 }
-a.DNT_cockroachd = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Loop = false, NumFrames = 4, Time = .15 } --Numbers copied for now
+--a.DNT_cockroachd = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Loop = false, NumFrames = 4, Time = .15 } --Numbers copied for now
 a.DNT_cockroachw = base:new{ Image = imagepath.."DNT_"..name.."_Bw.png", PosY = 0} --Only if there's a boss
 
 --MINE
@@ -102,16 +102,19 @@ a.DNT_cockroach_explosion_leader = a.DNT_cockroach_explosion_beta:new{
 }
 
 --These aren't actually the revere direction from the death, but they are used to play the reverse animation because they need to be seperate
-a.DNT_cockroachd_reverse_beta = a.DNT_cockroachd:new{
-	Image = imagepath.."DNT_cockroach_death_reverse_beta.png",
+a.DNT_cockroachd_beta = base:new{
+  Image = imagepath.."DNT_cockroach_death_reverse_beta.png",
+	Loop = false,
+	NumFrames = 4,
+  Time = .15,
 	NumFrames = 4,
 	Height = 1,
 }
-a.DNT_cockroachd_reverse_alpha = a.DNT_cockroachd_reverse_beta:new{
+a.DNT_cockroachd_alpha = a.DNT_cockroachd_beta:new{
 	Image = imagepath.."DNT_cockroach_death_reverse_alpha.png",
 }
 
-a.DNT_cockroachd_reverse_leader = a.DNT_cockroachd_reverse_beta:new{
+a.DNT_cockroachd_leader = a.DNT_cockroachd_beta:new{
 	Image = imagepath.."DNT_cockroach_death_reverse_leader.png",
 }
 
@@ -216,7 +219,8 @@ DNT_Cockroach1 = Pawn:new
 		DefaultTeam = TEAM_ENEMY,
 		ImpactMaterial = IMPACT_INSECT,
 		DroppedCorpse = "DNT_Corpse_Mine",
-		Corpse = true,
+		DeathAnimation = "DNT_cockroachd_beta",
+		--Corpse = true,
 	}
 AddPawn("DNT_Cockroach1")
 
@@ -235,7 +239,8 @@ DNT_Cockroach2 = DNT_Cockroach1:new
 		ImpactMaterial = IMPACT_INSECT,
 		Tier = TIER_ALPHA,
 		DroppedCorpse = "DNT_Corpse2_Mine",
-		Corpse = true,
+		DeathAnimation = "DNT_cockroachd_alpha",
+		--Corpse = true,
 	}
 AddPawn("DNT_Cockroach2")
 
@@ -243,12 +248,13 @@ AddPawn("DNT_Cockroach2")
 -- Death Effect --
 ------------------
 
-local function DNT_Cockroach_Effect(p1, corpse)
+local function DNT_Cockroach_Effect(p1, corpse, animation)
 	local ret = SkillEffect()
-	ret:AddDelay(3*.15)
-	ret:AddScript(string.format("Board:GetPawn(%s):SetSpace(Point(-1,-1))",p1:GetString()))
+	--ret:AddScript(string.format("Board:GetPawn(%s):SetInvisible(true)",p1:GetString()))
 	local terrain = Board:GetTerrain(p1)
 	if terrain ~= TERRAIN_WATER and terrain ~= TERRAIN_LAVA and terrain ~= TERRAIN_HOLE then
+		Board:AddAnimation(p1,animation,ANIM_NO_DELAY)
+		ret:AddDelay(3*.15)
 		local damage = SpaceDamage(p1,0)
 		damage.sItem = corpse
 		--ret:AddDelay(0.016)
@@ -261,12 +267,14 @@ end
 
 function DNT_Cockroach1:GetDeathEffect(p1) --Death Effects aren't inheritable apparently
 	local corpse = self.DroppedCorpse
-	return DNT_Cockroach_Effect(p1, corpse)
+	local animation = self.DeathAnimation
+	return DNT_Cockroach_Effect(p1, corpse, animation)
 end
 
 function DNT_Cockroach2:GetDeathEffect(p1) --Death Effects aren't inheritable apparently
 	local corpse = self.DroppedCorpse
-	return DNT_Cockroach_Effect(p1, corpse)
+	local animation = self.DeathAnimation
+	return DNT_Cockroach_Effect(p1, corpse, animation)
 end
 
 
@@ -333,21 +341,21 @@ local function NextTurn(mission)
 		local effect = SkillEffect()
 		effect:AddDelay(4*.15) --1.35
 		local board_size = Board:GetSize()
-		for i = 1, board_size.x - 1 do
-			for j = 1, board_size.y - 1 do
+		for i = 0, board_size.x - 1 do
+			for j = 0, board_size.y - 1 do
 				local point = Point(i,j)
 				if Board:GetItem(point) == DNT_Cockroach1.DroppedCorpse then
 					--local damage = SpaceDamage(point,0)
 					--damage.sPawn = "DNT_Cockroach1"
 					--effect:AddDamage(damage)
 					effect:AddScript(string.format("Board:AddPawn(%q,%s)","DNT_Cockroach1",point:GetString()))
-					Board:AddAnimation(point,"DNT_cockroachd_reverse_beta",ANIM_REVERSE)
+					Board:AddAnimation(point,"DNT_cockroachd_beta",ANIM_REVERSE)
 				elseif Board:GetItem(point) == DNT_Cockroach2.DroppedCorpse then
 					--local damage = SpaceDamage(point,0)
 					--damage.sPawn = "DNT_Cockroach2"
 					--effect:AddDamage(damage)
 					effect:AddScript(string.format("Board:AddPawn(%q,%s)","DNT_Cockroach2",point:GetString()))
-					Board:AddAnimation(point,"DNT_cockroachd_reverse_alpha",ANIM_REVERSE)
+					Board:AddAnimation(point,"DNT_cockroachd_alpha",ANIM_REVERSE)
 				end
 			end
 		end

@@ -9,12 +9,18 @@ Stinkbug console errors and visual bugs and AI fix
 Add arrow icon to mantis attack
 Easy Edit Updated to 1.5.5
 	This means that the Vanilla + Vextra list now has AE enemies, hit default if it doesn't
-Under the hood Silkworm targetting change
+Under the hood Silkworm targeting change
 Antlion Boss Added
 New core! Fly: "Projectile attack that pulls and steals life."
-Under the hood Stinkbug targetting change and other enhancements
+Under the hood Stinkbug targeting change and other enhancements
 Isopod (Pillbug) becomes Unique, and gains a health buff 1 --> 2  3 --> 4 and 4 --> 5
 Termites Boss Added
 Updated ModApiExt
 Silkworm move decreased from 5-->4
 Dragonfly will no longer smoke and attack friendlies
+
+vBETA.0.2.0
+Haste Psion Added: +2 Movement
+Cockroach Bug Fixed where it wouldn't revive on the top edge of the board
+Fixed the death effect psions for Cockroach so it is no longer exclusive with them
+	Special Thanks to Lemonymous for helping with the solution

@@ -98,9 +98,9 @@ if ExclusiveElements then --1.2.76b  I also do not know if this actually works.
 		DNT_Pillbug = "Moth",
 		DNT_Pillbug = "Scarab",
 		DNT_Pillbug = "Shaman",
-		DNT_Cockroach = "Jelly_Explode",
-		DNT_Cockroach = "Jelly_Spider",
-		DNT_Cockroach = "Jelly_Fire",
+		--DNT_Cockroach = "Jelly_Explode",
+		--DNT_Cockroach = "Jelly_Spider",
+		--DNT_Cockroach = "Jelly_Fire",
 		DNT_Fly = "Moth",
 		DNT_Fly = "Scarab",
 	}
@@ -116,7 +116,7 @@ elseif exclusiveElements then --1.2.79+
 		end
 	end
 	table.insert(exclusiveElements, {"DNT_IceCrawler", "Burrower", "DNT_Antlion", "DNT_Anthill"}) --Ice Crawers and Burrowers act weird because of the damage + freeze
-	table.insert(exclusiveElements, {"DNT_Cockroach", "Jelly_Explode", "Jelly_Spider", "Jelly_Fire"}) --Cockroaches don't currently work with death effect psions
+	--table.insert(exclusiveElements, {"DNT_Cockroach", "Jelly_Explode", "Jelly_Spider", "Jelly_Fire"}) --FIXED Cockroaches don't currently work with death effect psions
 end
 
 if FlyingEnemies then --Flying table, seperate from Exlcuisve Elements
