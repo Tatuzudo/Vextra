@@ -35,6 +35,7 @@ modApi:appendAsset(writepath.."DNT_"..name.."a.png", readpath.."DNT_"..name.."a.
 modApi:appendAsset(writepath.."DNT_"..name.."_emerge.png", readpath.."DNT_"..name.."_emerge.png")
 modApi:appendAsset(writepath.."DNT_"..name.."_death.png", readpath.."DNT_"..name.."_death.png")
 modApi:appendAsset(writepath.."DNT_"..name.."_ns.png", readpath.."DNT_"..name.."_ns.png")
+modApi:appendAsset(writepath.."DNT_"..name.."_icon.png", readpath.."DNT_"..name.."_icon.png")
 
 local base = a.EnemyUnit:new{Image = imagepath .. "DNT_"..name..".png", PosX = -16, PosY = -14, Height = 10 }
 local baseEmerge = a.BaseEmerge:new{Image = imagepath .. "DNT_"..name.."_emerge.png", PosX = -23, PosY = -21, Height = 10 }
@@ -53,6 +54,13 @@ a.DNT_jellye = baseEmerge
 a.DNT_jellya = base:new{ Image = imagepath.."DNT_"..name.."a.png", NumFrames = 4 }
 a.DNT_jellyd = base:new{ Image = imagepath.."DNT_"..name.."_death.png", PosX = -18, PosY = -14, NumFrames = 8, Time = 0.14, Loop = false }
 a.DNT_jelly_ns = a.MechIcon:new{ Image = imagepath.."DNT_"..name.."_ns.png", Height = 10 }
+
+a.DNT_jelly_icon = a.EnemyUnit:new{Image = imagepath .. "DNT_"..name.."_icon.png", PosX = -16, PosY = -14, Height = 10 }
+a.DNT_jelly_icone = baseEmerge
+a.DNT_jelly_icona = base:new{ Image = imagepath.."DNT_"..name.."a.png", NumFrames = 4 }
+a.DNT_jelly_icond = base:new{ Image = imagepath.."DNT_"..name.."_death.png", PosX = -18, PosY = -14, NumFrames = 8, Time = 0.14, Loop = false }
+a.DNT_jelly_icon_ns = a.MechIcon:new{ Image = imagepath.."DNT_"..name.."_ns.png", Height = 10 }
+
 
 -------------
 -- Weapons --
@@ -87,7 +95,7 @@ DNT_Haste1 = Pawn:new{
 	Name = "Sonic Psion",--"Haste Psion",
 	Health = 2,
 	MoveSpeed = 2,
-	Image = "DNT_jelly",
+	Image = "DNT_jelly",--"DNT_jelly_icon",
 	LargeShield = true,
 	VoidShockImmune = true,
 	ImageOffset = 0,
@@ -220,6 +228,7 @@ local function HOOK_nextTurn(mission)
 	end
 end
 
+-- add / remove trait when selected / highlighted
 local HOOK_tileHighlighted = function(mission, point)
 	trait:update(point)
 end
@@ -228,6 +237,16 @@ local HOOK_pawnSelected = function(mission, pawn)
 	trait:update(pawn:GetSpace())
 end
 
+-- add / remove icon sprite
+local EVENT_onGameStateChanged = function(newGameState, oldGameState)
+	if newGameState == "Map" then
+		DNT_Haste1['Image'] = "DNT_jelly_icon"
+	else
+		DNT_Haste1['Image'] = "DNT_jelly"
+	end
+end
+
+-- add hooks
 local function EVENT_onModsLoaded()
 	DNT_Vextra_ModApiExt:addPawnTrackedHook(HOOK_pawnTracked)
 	DNT_Vextra_ModApiExt:addPawnUntrackedHook(HOOK_pawnUntracked)
@@ -240,3 +259,6 @@ local function EVENT_onModsLoaded()
 end
 
 modApi.events.onModsLoaded:subscribe(EVENT_onModsLoaded)
+
+-- add / remove icon sprite
+modApi.events.onGameStateChanged:subscribe(EVENT_onGameStateChanged)
