@@ -136,7 +136,7 @@ DNT_CockroachAtk1 = LineArtillery:new {
 	--Explosion = "ExploArt1",
 	ImpactSound = "/impact/generic/explosion",
 	LaunchSound = "",
-	ExtraTile = false,
+	ExtraTiles = false,
 	TipImage = {
 		Unit = Point(2,4),
 		Enemy = Point(2,2),
@@ -162,7 +162,7 @@ DNT_CockroachAtk3 = DNT_CockroachAtk1:new { --Just an example
 	Name = "Organ Provider",
 	Description = "Damage itself to launch an artillery attack on three tiles, one tile apart each.",
 	Damage = 3,
-	ExtraTile = true,
+	ExtraTiles = true,
 	TipImage = {
 		Unit = Point(2,4),
 		Enemy = Point(2,2),
@@ -180,24 +180,15 @@ function DNT_CockroachAtk1:GetSkillEffect(p1,p2)
 	local direction = GetDirection(p2 - p1)
 	--local backdir = GetDirection(p1 - p2)
 
-	local target = p2
-
-	local damage = SpaceDamage(target, self.Damage)
-	damage.sAnimation = "ExploArt1"
-	if Board:IsValid(target) then
-		ret:AddQueuedArtillery(damage,self.Projectile, NO_DELAY)
+	local targets = {p2, p2 + DIR_VECTORS[direction]*2}
+	if self.ExtraTiles then
+		table.insert(targets, p2+DIR_VECTORS[direction]+DIR_VECTORS[(direction+1)%4])
+		table.insert(targets, p2+DIR_VECTORS[direction]+DIR_VECTORS[(direction-1)%4])
 	end
 
-	target = p2 + DIR_VECTORS[direction]*2
-	damage.loc = target
-
-	if Board:IsValid(target) then
-		ret:AddQueuedArtillery(damage,self.Projectile, NO_DELAY)
-	end
-
-	if self.ExtraTile then
-		target = target + DIR_VECTORS[direction]*2
-		damage.loc = target
+	for _, target in pairs(targets) do
+		local damage = SpaceDamage(target, self.Damage)
+		damage.sAnimation = "ExploArt1"
 		if Board:IsValid(target) then
 			ret:AddQueuedArtillery(damage,self.Projectile, NO_DELAY)
 		end
@@ -271,7 +262,7 @@ AddPawn("DNT_Cockroach2")
 DNT_Cockroach3 = DNT_Cockroach1:new
 	{
 		Name = "Cockroach Leader",
-		Health = 5,
+		Health = 6,
 		MoveSpeed = 3,
 		Ranged = 1,
 		SkillList = {"DNT_CockroachAtk3"},
