@@ -20,9 +20,10 @@ Silkworm move decreased from 5-->4
 Dragonfly will no longer smoke and attack friendlies
 
 vBETA.0.2.0
-Fixed a bug where the fly sprite was misaligned when selecting it. 
+Fixed a bug where the fly sprite was misaligned when selecting it.
 Haste Psion Added: +2 Movement
 Cockroach Bug Fixed where it wouldn't revive on the top edge of the board
 Fixed the death effect psions for Cockroach so it is no longer exclusive with them
 	Special Thanks to Lemonymous for helping with the solution
 Added the Cockroach Leader
+Added the Dragonfly Leader

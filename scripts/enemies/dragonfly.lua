@@ -62,7 +62,7 @@ DNT_DragonflyAtk1 = Skill:new {
 		Target = Point(2,2),
 		--Smoke = Point(2,2),
 		Enemy = Point(2,2),
-		Buidling = Point(3,1),
+		Building = Point(3,1),
 		Enemy2 = Point(1,1),
 		Second_Origin = Point(2,3),
 		Second_Target = Point(3,3),
@@ -99,9 +99,7 @@ function DNT_DragonflyAtk1:GetSkillEffect(p1,p2)
 	local ret = SkillEffect()
 	local dir = GetDirection(p2-p1)
 	local backdir = GetDirection(p1-p2)
-
-
-
+	local damage = nil
 
 	--Only create smoke if it's the enemies turn (displacement replays the GetSkillEffect(), this makes it not create smoke again)
 	--and it's not getting target score. Although it is fun that way
@@ -109,12 +107,12 @@ function DNT_DragonflyAtk1:GetSkillEffect(p1,p2)
 	--If this gets pushed during the enemy turn, we're going to have problems
 
 	if not IsTipImage() then -- I want to only put down smoke for the first example attack
-		local damage = SpaceDamage(p2,0)
+		damage = SpaceDamage(p2,0)
 		damage.iSmoke = 1 --Create
 		ret:AddDamage(damage)
 	else --Tip Image Magic
 		if p2 == Point(2,2) then
-			local damage = SpaceDamage(p2,0)
+			damage = SpaceDamage(p2,0)
 			damage.iSmoke = 1 --Create
 			ret:AddDamage(damage)
 		end
@@ -126,8 +124,6 @@ function DNT_DragonflyAtk1:GetSkillEffect(p1,p2)
 		Board:SetSmoke(p2,true,false) --This might create unwanted smoke at unwanted times but we'll see YES
 	end
 	--]]
-
-
 
 	if Board:IsSmoke(p2) or this.isTargetScore or (IsTipImage() and  p2 == Point(2,2)) then -- or Game:GetTeamTurn() == TEAM_ENEMY then
 		damage = SpaceDamage(p2,self.Damage)
@@ -154,13 +150,14 @@ function DNT_DragonflyAtk1:GetSkillEffect(p1,p2)
 end
 
 DNT_DragonflyAtk2 = DNT_DragonflyAtk1:new {
+	Name = "Spark Explosion",
 	Damage = 3, --I think this upgrade could use a little omph
 	TipImage = { --This is all tempalate and probably needs to change
 		Unit = Point(2,3),
 		Target = Point(2,2),
 		--Smoke = Point(2,2),
 		Enemy = Point(2,2),
-		Buidling = Point(3,1),
+		Building = Point(3,1),
 		Enemy2 = Point(1,1),
 		Second_Origin = Point(2,3),
 		Second_Target = Point(3,3),
@@ -169,6 +166,101 @@ DNT_DragonflyAtk2 = DNT_DragonflyAtk1:new {
 	}
 }
 
+--Boss Weapon is complicated/different enough to have its own code
+DNT_DragonflyAtk3 = LineArtillery:new {
+	Name = "Launch Sparks",
+	Description = "Smoke a line to the target, preparing to launch an explosive artillery. If there's smoke, it explodes in a T shape. Otherwise, it just hits the target with fire.",
+	Damage = 2,
+	Class = "Enemy",
+	Explosion = "",
+	ArtillerySize = 3,
+	PathSize = 1,
+	LaunchSound = "",
+	Fire = 1,
+	TipImage = { --This is all tempalate and probably needs to change
+		Unit = Point(2,4),
+		Target = Point(2,2),
+		Enemy = Point(2,2),
+		Building = Point(3,1),
+		Enemy2 = Point(1,1),
+		Second_Origin = Point(2,4),
+		Second_Target = Point(2,1),
+		CustomPawn = "DNT_Dragonfly3",
+	}
+}
+
+function DNT_DragonflyAtk3:GetTargetScore(p1,p2)
+	this.isTargetScore = true
+	local ret = Skill.GetTargetScore(self, p1, p2)
+	this.isTargetScore = nil
+
+	local dir = GetDirection(p2-p1)
+	local target = p1
+	--All Smokes
+	while (target ~= p2 and Board:IsValid(target)) do --Board:IsValid just in case
+		target = target + DIR_VECTORS[dir]
+		local pawn = Board:GetPawn(target)
+		if pawn and pawn:GetTeam() == TEAM_ENEMY then
+			ret = ret - 12 --Highly discourage smoking teammates
+		elseif pawn and pawn:GetTeam() == TEAM_PLAYER then
+			ret = ret + 1
+		end
+	end
+
+	return ret
+end
+
+function DNT_DragonflyAtk3:GetSkillEffect(p1,p2)
+	local ret = SkillEffect()
+	local dir = GetDirection(p2-p1)
+	local damage = nil
+	--local backdir = GetDirection(p1-p2)
+
+	if IsTipImage() and p2 == Point(2,2) then --Tip Image Stuff
+		damage = SpaceDamage(p2,0)
+		damage.iSmoke = 1 --Create
+		ret:AddDamage(damage)
+		damage.loc = Point(2,3)
+		ret:AddDamage(damage)
+	elseif not IsTipImage() then
+		local target = p1
+		damage = SpaceDamage(target,0)
+		damage.iSmoke = 1 --Create
+		while (target ~= p2 and Board:IsValid(target)) do --Board:IsValid just in case
+			target = target + DIR_VECTORS[dir]
+			damage.loc = target
+			ret:AddDamage(damage)
+		end
+	end
+
+	if Board:IsSmoke(p2) or this.isTargetScore or (IsTipImage() and  p2 == Point(2,2)) then -- or Game:GetTeamTurn() == TEAM_ENEMY then
+		damage = SpaceDamage(p2,self.Damage)
+		damage.iSmoke = 2 --Disperse
+		damage.iFire = self.Fire
+		damage.sAnimation = "explopush2_"..dir
+		ret:AddQueuedArtillery(damage, "effects/shotup_ignite_fireball.png", NO_DELAY)
+		ret:AddQueuedDelay(0.8)
+		for i= -1, 1 do
+			local target = p2 + DIR_VECTORS[dir] + DIR_VECTORS[(dir+1)%4]*i
+			if Board:IsValid(target) then
+				damage = SpaceDamage(target,self.Damage)
+				damage.iFire = self.Fire
+				damage.sAnimation = "ExploAir1"
+				ret:AddQueuedDamage(damage)
+			end
+		end
+	else
+		damage = SpaceDamage(p2,self.Damage)
+		damage.iFire = self.Fire
+		damage.sAnimation = "ExploRaining1"
+		ret:AddQueuedArtillery(damage, "effects/shotup_ignite_fireball.png", FULL_DELAY)
+	end
+	return ret
+end
+
+
+
+
 -----------
 -- Pawns --
 -----------
@@ -176,7 +268,6 @@ DNT_DragonflyAtk2 = DNT_DragonflyAtk1:new {
 DNT_Dragonfly1 = Pawn:new
 	{
 		Name = "Dragonfly",
-		Description = "Description",--Do this
 		Health = 2,
 		MoveSpeed = 4,
 		Flying = true,
@@ -191,7 +282,6 @@ AddPawn("DNT_Dragonfly1")
 DNT_Dragonfly2 = Pawn:new
 	{
 		Name = "Alpha Dragonfly",
-		Description = "Description", --Do this
 		Health = 4,
 		MoveSpeed = 4,
 		Flying = true,
@@ -205,6 +295,23 @@ DNT_Dragonfly2 = Pawn:new
 	}
 AddPawn("DNT_Dragonfly2")
 
+DNT_Dragonfly3 = Pawn:new
+	{
+		Name = "Dragonfly Leader",
+		Health = 6,
+		MoveSpeed = 3,
+		Flying = true,
+		Ranged = 1,
+		SkillList = {"DNT_DragonflyAtk3"},
+		Image = "DNT_dragonfly", --change
+		SoundLocation = "/enemy/hornet_1/",
+		ImageOffset = 2,
+		DefaultTeam = TEAM_ENEMY,
+		ImpactMaterial = IMPACT_INSECT,
+		Tier = TIER_BOSS,
+		Massive = true,
+	}
+AddPawn("DNT_Dragonfly3")
 
 
 -----------

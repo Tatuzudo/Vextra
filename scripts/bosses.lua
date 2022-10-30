@@ -42,6 +42,14 @@ Mission_FlyBoss = Mission_Boss:new{
 	BossText = "Destroy the Fly Leader",
 }
 
+Mission_DragonflyBoss = Mission_Boss:new{
+	Name = "Dragonfly Leader",
+	BossPawn = "DNT_Dragonfly3",
+	SpawnStartMod = -1,
+	BossText = "Destroy the Dragonfly Leader",
+}
+
+
 Mission_TermitesBoss = Mission_Boss:new{
 	Name = "Termite Leaders",
 	BossPawn = "DNT_Termites3",
