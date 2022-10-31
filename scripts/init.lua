@@ -38,6 +38,7 @@ local function init(self)
 		{"IceCrawler",false,"Unique",false},
 		{"Fly",false,"Core",false},
 		{"Haste",false,"Leaders",false},
+		{"Acid",false,"Leaders",false},
 	}
 	
 	--ModApiExt

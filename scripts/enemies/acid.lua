@@ -18,13 +18,16 @@ end
 --  Icons  --
 -------------
 
+-- modApi:copyAsset("img/combat/icons/icon_acid_immune_glow.png", "img/combat/icons/DNT_acid_immune.png")
+	-- Location["combat/icons/DNT_acid_immune.png"] = Point(0,4)--Point(-17,4)
+
 -------------
 --   Art   --
 -------------
 
-local name = "jelly" --lowercase, I could also use this else where, but let's make it more readable elsewhere
+-- same sprite for all psions
+local name = "jelly"
 
--- UNCOMMENT WHEN YOU HAVE SPRITES; you can do partial
 modApi:appendAsset(writepath.."DNT_"..name..".png", readpath.."DNT_"..name..".png")
 modApi:appendAsset(writepath.."DNT_"..name.."a.png", readpath.."DNT_"..name.."a.png")
 modApi:appendAsset(writepath.."DNT_"..name.."_emerge.png", readpath.."DNT_"..name.."_emerge.png")
@@ -47,35 +50,37 @@ a.DNT_jelly_icona = base:new{ Image = imagepath.."DNT_"..name.."a.png", NumFrame
 a.DNT_jelly_icond = base:new{ Image = imagepath.."DNT_"..name.."_death.png", PosX = -18, PosY = -14, NumFrames = 8, Time = 0.14, Loop = false }
 a.DNT_jelly_icon_ns = a.MechIcon:new{ Image = imagepath.."DNT_"..name.."_ns.png", Height = 10 }
 
-
 -------------
 -- Weapons --
 -------------
 
-DNT_Haste_Passive = PassiveSkill:new{
-	Name = "Gotta Go Fast",--"Haste Hormones",
-	Description = "All other Vek receive +2 bonus movement at the start of every turn.",
+DNT_Acid_Passive = PassiveSkill:new{
+	Name = "Caustic Glands",
+	Description = "Remove A.C.I.D. from other vek and make their attacks apply A.C.I.D.",
 	Class = "Enemy",
 	Icon = "weapons/prime_lightning.png",
-	Passive = "DNT_Haste_Passive",
-	CustomTipImage = "DNT_Haste_Passive_Tip",
+	Passive = "DNT_Acid_Passive",
+	CustomTipImage = "DNT_Acid_Passive_Tip",
 	TipImage = {
 		Unit = Point(2,3),
-		CustomPawn = "DNT_Haste1",
+		CustomPawn = "DNT_Acid1",
 		Target = Point(2,2),
-		Friend = Point(1,0),
+		Friend = Point(2,2),
+		Enemy = Point(2,1),
 	}
 }
 
-function DNT_Haste_Passive:GetSkillEffect(p1,p2) -- for passive preview
+function DNT_Acid_Passive:GetSkillEffect(p1,p2) -- for passive preview
 	return SkillEffect()
 end
 
-DNT_Haste_Passive_Tip = DNT_Haste_Passive:new{}
+DNT_Acid_Passive_Tip = DNT_Acid_Passive:new{}
 
-function DNT_Haste_Passive_Tip:GetSkillEffect(p1,p2)
+function DNT_Acid_Passive_Tip:GetSkillEffect(p1,p2) -- for passive preview
 	local ret = SkillEffect()
-	ret:AddMove(Board:GetPath(Point(1,0), Point(3,3), PATH_GROUND), FULL_DELAY)
+	local damage = SpaceDamage(Point(2,1),1)
+	damage.iAcid = EFFECT_CREATE
+	ret:AddMelee(p2,damage)
 	return ret
 end
 
@@ -83,15 +88,15 @@ end
 -- Pawns --
 -----------
 
-DNT_Haste1 = Pawn:new{
-	Name = "Sonic Psion",--"Haste Psion",
+DNT_Acid1 = Pawn:new{
+	Name = "Corrosive Psion",
 	Health = 2,
 	MoveSpeed = 2,
-	Image = "DNT_jelly",--"DNT_jelly_icon",
+	Image = "DNT_jelly", -- do not change
 	LargeShield = true,
 	VoidShockImmune = true,
-	ImageOffset = 0,
-	SkillList = { "DNT_Haste_Passive" },
+	ImageOffset = 1, -- change this to the right sprite
+	SkillList = { "DNT_Acid_Passive" },
 	SoundLocation = "/enemy/jelly/",
 	Flying = true,
 	DefaultTeam = TEAM_ENEMY,
@@ -99,15 +104,15 @@ DNT_Haste1 = Pawn:new{
 	-- Leader = LEADER_VINES,--LEADER_HEALTH,
 	-- Tooltip = "Jelly_Health_Tooltip"
 }
-AddPawn("DNT_Haste1")
+AddPawn("DNT_Acid1")
 
 ------------
 -- Traits --
 ------------
 
-local hasteTrait = function(trait,pawn)
+local acidTrait = function(trait,pawn)
 	if pawn:GetSpace() == mouseTile() or pawn:IsSelected() then
-		if GetCurrentMission().DNT_Haste_Psion and pawn:GetType() ~= "DNT_Haste1" then
+		if GetCurrentMission().DNT_Acid_Psion and pawn:GetType() ~= "DNT_Acid1" then -- change the psion and variable name here
 			if pawn:GetTeam() == TEAM_ENEMY or (IsPassiveSkill("Psion_Leech") and pawn:IsMech()) then
 				if _G[pawn:GetType()].DefaultFaction ~= FACTION_BOTS and not _G[pawn:GetType()].Minor then
 					return true
@@ -118,49 +123,55 @@ local hasteTrait = function(trait,pawn)
 end 
 
 trait:add{
-	func = hasteTrait,
-	icon = "img/combat/icons/icon_kickoff.png",
-	icon_glow = "img/combat/icons/icon_kickoff_glow.png",
+	func = acidTrait, -- maybe change this name?
+	icon = "img/combat/icons/icon_acid_immune.png", --"img/combat/icons/icon_acid_immune.png",
+	icon_glow = "img/combat/icons/icon_acid_immune_glow.png", --"img/combat/icons/icon_acid_glow_immune.png",
 	icon_offset = Point(0,9),
-	desc_title = "Gotta Go Fast",
-	desc_text = "The Sonic Psion will add 2 bonus movement to all Vek at the start of every turn.",
+	desc_title = "Caustic Glands",
+	desc_text = "The Corrosive Psion remove A.C.I.D. from other vek and make their attacks apply A.C.I.D.",
 }
 
 -----------
 -- Hooks --
 -----------
 
-local SPEED = 2
+-- some interesting sounds
+--/weapons/phase_shot --/weapons/refrigerate --"/weapons/acid_shot"
 
+-- psion spawn
 local HOOK_pawnTracked = function(mission, pawn)
 	modApi:scheduleHook(1500, function()
-		if pawn:GetType() == "DNT_Haste1" then
-			mission.DNT_Haste_Psion = true
+		if pawn:GetType() == "DNT_Acid1" then
+			mission.DNT_Acid_Psion = true
 			if IsPassiveSkill("Psion_Leech") then
 				local playerList = extract_table(Board:GetPawns(TEAM_PLAYER))
 				for i = 1, #playerList do
 					currPawn = Board:GetPawn(playerList[i])
-					if currPawn:GetMoveSpeed() > 0 and currPawn:IsMech() then
-						currPawn:AddMoveBonus(SPEED)
+					if currPawn:IsMech() then
 						trait:update(currPawn:GetSpace())
+						Board:Ping(currPawn:GetSpace(),GL_Color(0,255,0))
+						-- Board:AddAnimation(currPawn:GetSpace(),"Acid")
 					end
 				end
 			end
 			local enemyList = extract_table(Board:GetPawns(TEAM_ENEMY))
 			for i = 1, #enemyList do
 				local currPawn = Board:GetPawn(enemyList[i])
-				if currPawn:GetMoveSpeed() > 0 and currPawn:GetType() ~= "DNT_Haste1" then
+				if currPawn:GetType() ~= "DNT_Acid1" then
 					if _G[currPawn:GetType()].DefaultFaction ~= FACTION_BOTS and not _G[currPawn:GetType()].Minor then
-						currPawn:AddMoveBonus(SPEED)
 						trait:update(currPawn:GetSpace())
+						Board:Ping(currPawn:GetSpace(),GL_Color(0,255,0))
+						-- Board:AddAnimation(currPawn:GetSpace(),"Acid")
 					end
 				end
 			end
-		elseif mission.DNT_Haste_Psion and pawn:GetMoveSpeed() > 0 and pawn:GetType() ~= "DNT_Haste1" then
+		elseif mission.DNT_Acid_Psion and pawn:GetType() ~= "DNT_Acid1" then
 			if pawn:GetTeam() == TEAM_ENEMY or (IsPassiveSkill("Psion_Leech") and pawn:IsMech()) then
 				if _G[pawn:GetType()].DefaultFaction ~= FACTION_BOTS and not _G[pawn:GetType()].Minor then
-					pawn:AddMoveBonus(SPEED)
 					trait:update(pawn:GetSpace())
+					Board:Ping(pawn:GetSpace(),GL_Color(0,255,0))
+					Game:TriggerSound("/props/acid_splash")
+					-- Board:AddAnimation(pawn:GetSpace(),"Acid")
 				end
 			end
 		end
@@ -168,13 +179,14 @@ local HOOK_pawnTracked = function(mission, pawn)
 end
 
 local HOOK_pawnUntracked = function(mission, pawn)
-	if pawn:GetType() == "DNT_Haste1" then
-		mission.DNT_Haste_Psion = nil
+	if pawn:GetType() == "DNT_Acid1" then
+		Game:TriggerSound("/weapons/phase_shot")
+		mission.DNT_Acid_Psion = nil
 		if IsPassiveSkill("Psion_Leech") then
 			local playerList = extract_table(Board:GetPawns(TEAM_PLAYER))
 			for i = 1, #playerList do
 				currPawn = Board:GetPawn(playerList[i])
-				if currPawn:GetMoveSpeed() > 0 and currPawn:IsMech() then
+				if currPawn:IsMech() then
 					Board:Ping(currPawn:GetSpace(),GL_Color(255,0,0))
 					trait:update(currPawn:GetSpace())
 				end
@@ -183,7 +195,7 @@ local HOOK_pawnUntracked = function(mission, pawn)
 		local enemyList = extract_table(Board:GetPawns(TEAM_ENEMY))
 		for i = 1, #enemyList do
 			local currPawn = Board:GetPawn(enemyList[i])
-			if currPawn:GetMoveSpeed() > 0 and currPawn:GetType() ~= "DNT_Haste1" then
+			if currPawn:GetType() ~= "DNT_Acid1" then
 				if _G[currPawn:GetType()].DefaultFaction ~= FACTION_BOTS and not _G[currPawn:GetType()].Minor then
 					Board:Ping(currPawn:GetSpace(),GL_Color(255,0,0))
 					trait:update(currPawn:GetSpace())
@@ -193,52 +205,69 @@ local HOOK_pawnUntracked = function(mission, pawn)
 	end
 end
 
-local function HOOK_nextTurn(mission)
-	if Board:GetTurn() ~= 0 then
-		if mission.DNT_Haste_Psion and Game:GetTeamTurn() == TEAM_ENEMY then
-			if IsPassiveSkill("Psion_Leech") then
-				local playerList = extract_table(Board:GetPawns(TEAM_PLAYER))
-				for i = 1, #playerList do
-					currPawn = Board:GetPawn(playerList[i])
-					if currPawn:GetMoveSpeed() > 0 and currPawn:IsMech() then
-						currPawn:AddMoveBonus(SPEED)
-						trait:update(currPawn:GetSpace())
-					end
-				end
-			end
-			local enemyList = extract_table(Board:GetPawns(TEAM_ENEMY))
-			for i = 1, #enemyList do
-				local currPawn = Board:GetPawn(enemyList[i])
-				if currPawn:GetMoveSpeed() > 0 and currPawn:GetType() ~= "DNT_Haste1" then
-					if _G[currPawn:GetType()].DefaultFaction ~= FACTION_BOTS and not _G[currPawn:GetType()].Minor then
-						currPawn:AddMoveBonus(SPEED)
-						trait:update(currPawn:GetSpace())
+-- psion acid attack / no friendly fire
+local DNT_AcidAttack = function(mission, pawn, skillEffect)
+	local condVek = (_G[pawn:GetType()].DefaultFaction ~= FACTION_BOTS and not _G[pawn:GetType()].Minor)
+	if mission and mission.DNT_Acid_Psion then
+		if skillEffect.q_effect ~= nil and condVek then -- and pawn:GetTeam() == TEAM_ENEMY then
+			for i = 1, skillEffect.q_effect:size() do
+				local spaceDamage = skillEffect.q_effect:index(i)
+				local damage = spaceDamage.iDamage
+				local dpawn = Board:GetPawn(spaceDamage.loc)
+				if damage > 0 then -- and dpawn then
+					spaceDamage.iAcid = EFFECT_CREATE
+					if dpawn and dpawn:GetType() ~= "DNT_Acid1" then
+						local condTarget = (_G[dpawn:GetType()].DefaultFaction ~= FACTION_BOTS and not _G[dpawn:GetType()].Minor)
+						if condTarget and (dpawn:GetTeam() == TEAM_ENEMY or (dpawn:IsMech() and IsPassiveSkill("Psion_Leech"))) then
+							spaceDamage.iAcid = EFFECT_NONE
+							-- spaceDamage.iDamage = 0
+						end
 					end
 				end
 			end
 		end
-	
-	-- quiting / loading first turn fix
-	elseif mission.DNT_Haste_Psion == nil then
-		local enemyList = extract_table(Board:GetPawns(TEAM_ENEMY))
-		for i = 1, #enemyList do
-			local currPawn = Board:GetPawn(enemyList[i])
-			if currPawn:GetType() == "DNT_Haste1" then
-				mission.DNT_Haste_Psion = true
-				break
-			end
-		end
-		if mission.DNT_Haste_Psion then
-			for i = 1, #enemyList do
-				local currPawn = Board:GetPawn(enemyList[i])
-				if currPawn:GetType() ~= "DNT_Haste1" then
-					currPawn:AddMoveBonus(SPEED)
-					trait:update(currPawn:GetSpace())
+		
+		if skillEffect.effect ~= nil and IsPassiveSkill("Psion_Leech") then -- and pawn:GetTeam() == TEAM_ENEMY then
+			for i = 1, skillEffect.effect:size() do
+				local spaceDamage = skillEffect.effect:index(i)
+				local damage = spaceDamage.iDamage
+				local dpawn = Board:GetPawn(spaceDamage.loc)
+				if damage > 0 then -- and dpawn then
+					spaceDamage.iAcid = EFFECT_CREATE
+					if dpawn and dpawn:GetType() ~= "DNT_Acid1" then
+						local condTarget = (_G[dpawn:GetType()].DefaultFaction ~= FACTION_BOTS and not _G[dpawn:GetType()].Minor)
+						if condTarget and (dpawn:GetTeam() == TEAM_ENEMY or (dpawn:IsMech() and IsPassiveSkill("Psion_Leech"))) then
+							spaceDamage.iAcid = EFFECT_NONE
+							-- spaceDamage.iDamage = 0
+						end
+					end
 				end
 			end
 		end
 	end
 end
+
+local HOOK_onSkillBuild = function(mission, pawn, weaponId, p1, p2, skillEffect)
+	DNT_AcidAttack(mission, pawn, skillEffect)
+end
+
+
+local HOOK_onFinalEffectBuild = function(mission, pawn, weaponId, p1, p2, p3, skillEffect)
+	DNT_AcidAttack(mission, pawn, skillEffect)
+end
+
+-- psion acid immune / acid heal
+local function HOOK_PawnIsAcid(mission, pawn, isAcid)
+	if mission.DNT_Acid_Psion and isAcid and pawn:GetType() ~= "DNT_Acid1" then
+		if _G[pawn:GetType()].DefaultFaction ~= FACTION_BOTS and not _G[pawn:GetType()].Minor then
+			if pawn:GetTeam() == TEAM_ENEMY or (pawn:IsMech() and IsPassiveSkill("Psion_Leech")) then
+				pawn:SetAcid(false)
+				-- Board:DamageSpace(pawn:GetSpace(), -1)
+			end
+		end
+	end
+end
+
 
 -- add / remove trait when selected / highlighted
 local HOOK_tileHighlighted = function(mission, point)
@@ -252,9 +281,9 @@ end
 -- add / remove icon sprite
 local EVENT_onGameStateChanged = function(newGameState, oldGameState)
 	if newGameState == "Map" then
-		DNT_Haste1['Image'] = "DNT_jelly_icon"
+		DNT_Acid1['Image'] = "DNT_jelly_icon"
 	else
-		DNT_Haste1['Image'] = "DNT_jelly"
+		DNT_Acid1['Image'] = "DNT_jelly"
 	end
 end
 
@@ -268,8 +297,8 @@ local HOOK_gameLoaded = function(mission)
 			local enemyList = extract_table(Board:GetPawns(TEAM_ENEMY))
 			for i = 1, #enemyList do
 				local currPawn = Board:GetPawn(enemyList[i])
-				if currPawn:GetType() == "DNT_Haste1" then
-					GetCurrentMission().DNT_Haste_Psion = true
+				if currPawn:GetType() == "DNT_Acid1" then
+					GetCurrentMission().DNT_Acid_Psion = true
 					break
 				end
 			end
@@ -277,11 +306,28 @@ local HOOK_gameLoaded = function(mission)
 	)
 end
 
+local function HOOK_nextTurn(mission)
+	if Board:GetTurn() == 0 then
+		local enemyList = extract_table(Board:GetPawns(TEAM_ENEMY))
+		for i = 1, #enemyList do
+			local currPawn = Board:GetPawn(enemyList[i])
+			if currPawn:GetType() == "DNT_Acid1" then
+				mission.DNT_Acid_Psion = true
+			end
+		end
+	end
+end
+
 -- add hooks
 local function EVENT_onModsLoaded()
+	------------------------ add your hooks here------------------------
 	DNT_Vextra_ModApiExt:addPawnTrackedHook(HOOK_pawnTracked)
 	DNT_Vextra_ModApiExt:addPawnUntrackedHook(HOOK_pawnUntracked)
-	modApi:addNextTurnHook(HOOK_nextTurn)
+	DNT_Vextra_ModApiExt:addSkillBuildHook(HOOK_onSkillBuild)
+	DNT_Vextra_ModApiExt:addFinalEffectBuildHook(HOOK_onFinalEffectBuild)
+	DNT_Vextra_ModApiExt:addPawnIsAcidHook(HOOK_PawnIsAcid)
+	
+	------------------------ do not change this -------------------------
 	-- add / remove trait when selected / highlighted
 	DNT_Vextra_ModApiExt:addTileHighlightedHook(HOOK_tileHighlighted)
 	DNT_Vextra_ModApiExt:addTileUnhighlightedHook(HOOK_tileHighlighted)
@@ -289,9 +335,12 @@ local function EVENT_onModsLoaded()
 	DNT_Vextra_ModApiExt:addPawnDeselectedHook(HOOK_pawnSelected)
 	-- for when quitting and loading first turn
 	DNT_Vextra_ModApiExt:addGameLoadedHook(HOOK_gameLoaded)
+	modApi:addNextTurnHook(HOOK_nextTurn)
 end
 
-modApi.events.onModsLoaded:subscribe(EVENT_onModsLoaded)
 
+--------------------------- do not change this --------------------------
+modApi.events.onModsLoaded:subscribe(EVENT_onModsLoaded)
 -- add / remove icon sprite
 modApi.events.onGameStateChanged:subscribe(EVENT_onGameStateChanged)
+-------------------------------------------------------------------------
