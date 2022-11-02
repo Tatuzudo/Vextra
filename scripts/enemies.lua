@@ -74,6 +74,12 @@ local enemies = {
 		IslandLocks = 2,
 		max_level = 1,
 	},
+	DNT_Reactive = {
+		weakpawn = false,
+		max_pawns = 1,
+		IslandLocks = 2,
+		max_level = 1,
+	},
 }
 
 -- config enemies

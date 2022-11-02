@@ -39,6 +39,7 @@ local function init(self)
 		{"Fly",false,"Core",false},
 		{"Haste",false,"Leaders",false},
 		{"Acid",false,"Leaders",false},
+		{"Reactive",false,"Leaders",false},
 	}
 	
 	--ModApiExt

@@ -56,7 +56,7 @@ a.DNT_jelly_icon_ns = a.MechIcon:new{ Image = imagepath.."DNT_"..name.."_ns.png"
 
 DNT_Acid_Passive = PassiveSkill:new{
 	Name = "Caustic Glands",
-	Description = "Remove A.C.I.D. from other vek and make their attacks apply A.C.I.D.",
+	Description = "Remove A.C.I.D. from other vek every turn and cause their attacks to apply A.C.I.D.",
 	Class = "Enemy",
 	Icon = "weapons/prime_lightning.png",
 	Passive = "DNT_Acid_Passive",
@@ -106,19 +106,51 @@ DNT_Acid1 = Pawn:new{
 }
 AddPawn("DNT_Acid1")
 
+----------------------
+-- Helper Functions --
+----------------------
+
+local DNT_PSION = "DNT_Acid1"
+
+local function DNT_PsionTarget(pawn)
+	if GetCurrentMission()[DNT_PSION] and pawn:GetType() ~= DNT_PSION then
+		if pawn:GetTeam() == TEAM_ENEMY or (IsPassiveSkill("Psion_Leech") and pawn:IsMech()) then
+			if _G[pawn:GetType()].DefaultFaction ~= FACTION_BOTS and not _G[pawn:GetType()].Minor then
+				return true
+			end
+		end
+	end
+end
+
+local function isGame()
+	return true
+		and Game ~= nil
+		and GAME ~= nil
+end
+
+local function isMission()
+	local mission = GetCurrentMission()
+
+	return true
+		and isGame()
+		and mission ~= nil
+		and mission ~= Mission_Test
+end
+
+local function isMissionBoard()
+	return true
+		and isMission()
+		and Board ~= nil
+		and Board:IsTipImage() == false
+end
+
 ------------
 -- Traits --
 ------------
 
 local acidTrait = function(trait,pawn)
 	if pawn:GetSpace() == mouseTile() or pawn:IsSelected() then
-		if GetCurrentMission().DNT_Acid_Psion and pawn:GetType() ~= "DNT_Acid1" then -- change the psion and variable name here
-			if pawn:GetTeam() == TEAM_ENEMY or (IsPassiveSkill("Psion_Leech") and pawn:IsMech()) then
-				if _G[pawn:GetType()].DefaultFaction ~= FACTION_BOTS and not _G[pawn:GetType()].Minor then
-					return true
-				end
-			end
-		end
+		return DNT_PsionTarget(pawn)
 	end
 end 
 
@@ -128,7 +160,7 @@ trait:add{
 	icon_glow = "img/combat/icons/icon_acid_immune_glow.png", --"img/combat/icons/icon_acid_glow_immune.png",
 	icon_offset = Point(0,9),
 	desc_title = "Caustic Glands",
-	desc_text = "The Corrosive Psion remove A.C.I.D. from other vek and make their attacks apply A.C.I.D.",
+	desc_text = "The Corrosive Psion remove A.C.I.D. from other vek every turn and cause their attacks to apply A.C.I.D.",
 }
 
 -----------
@@ -140,65 +172,44 @@ trait:add{
 
 -- psion spawn
 local HOOK_pawnTracked = function(mission, pawn)
-	modApi:scheduleHook(1500, function()
-		if pawn:GetType() == "DNT_Acid1" then
-			mission.DNT_Acid_Psion = true
-			if IsPassiveSkill("Psion_Leech") then
-				local playerList = extract_table(Board:GetPawns(TEAM_PLAYER))
-				for i = 1, #playerList do
-					currPawn = Board:GetPawn(playerList[i])
-					if currPawn:IsMech() then
+	if isMissionBoard() then
+		modApi:scheduleHook(1500, function()
+			if pawn:GetType() == DNT_PSION then
+				Game:TriggerSound("/props/acid_splash")
+				mission[DNT_PSION] = true
+				local pawnList = extract_table(Board:GetPawns(TEAM_ANY))
+				for i = 1, #pawnList do
+					local currPawn = Board:GetPawn(pawnList[i])
+					if DNT_PsionTarget(currPawn) then
 						trait:update(currPawn:GetSpace())
 						Board:Ping(currPawn:GetSpace(),GL_Color(0,255,0))
-						-- Board:AddAnimation(currPawn:GetSpace(),"Acid")
 					end
 				end
-			end
-			local enemyList = extract_table(Board:GetPawns(TEAM_ENEMY))
-			for i = 1, #enemyList do
-				local currPawn = Board:GetPawn(enemyList[i])
-				if currPawn:GetType() ~= "DNT_Acid1" then
-					if _G[currPawn:GetType()].DefaultFaction ~= FACTION_BOTS and not _G[currPawn:GetType()].Minor then
-						trait:update(currPawn:GetSpace())
-						Board:Ping(currPawn:GetSpace(),GL_Color(0,255,0))
-						-- Board:AddAnimation(currPawn:GetSpace(),"Acid")
-					end
-				end
-			end
-		elseif mission.DNT_Acid_Psion and pawn:GetType() ~= "DNT_Acid1" then
-			if pawn:GetTeam() == TEAM_ENEMY or (IsPassiveSkill("Psion_Leech") and pawn:IsMech()) then
-				if _G[pawn:GetType()].DefaultFaction ~= FACTION_BOTS and not _G[pawn:GetType()].Minor then
-					trait:update(pawn:GetSpace())
-					Board:Ping(pawn:GetSpace(),GL_Color(0,255,0))
+			elseif DNT_PsionTarget(pawn) then
+				trait:update(pawn:GetSpace())
+				Board:Ping(pawn:GetSpace(),GL_Color(0,255,0))
+				if Board:GetTurn() ~= 0 then
 					Game:TriggerSound("/props/acid_splash")
-					-- Board:AddAnimation(pawn:GetSpace(),"Acid")
 				end
+				-- Board:AddAnimation(pawn:GetSpace(),"Acid")
 			end
-		end
-	end)
+		end)
+	end
 end
 
 local HOOK_pawnUntracked = function(mission, pawn)
-	if pawn:GetType() == "DNT_Acid1" then
-		Game:TriggerSound("/weapons/phase_shot")
-		mission.DNT_Acid_Psion = nil
-		if IsPassiveSkill("Psion_Leech") then
-			local playerList = extract_table(Board:GetPawns(TEAM_PLAYER))
-			for i = 1, #playerList do
-				currPawn = Board:GetPawn(playerList[i])
-				if currPawn:IsMech() then
-					Board:Ping(currPawn:GetSpace(),GL_Color(255,0,0))
-					trait:update(currPawn:GetSpace())
-				end
-			end
-		end
-		local enemyList = extract_table(Board:GetPawns(TEAM_ENEMY))
-		for i = 1, #enemyList do
-			local currPawn = Board:GetPawn(enemyList[i])
-			if currPawn:GetType() ~= "DNT_Acid1" then
-				if _G[currPawn:GetType()].DefaultFaction ~= FACTION_BOTS and not _G[currPawn:GetType()].Minor then
-					Board:Ping(currPawn:GetSpace(),GL_Color(255,0,0))
-					trait:update(currPawn:GetSpace())
+	if isMissionBoard() then
+		if pawn:GetType() == DNT_PSION then
+			mission[DNT_PSION] = nil
+			Game:TriggerSound("/weapons/phase_shot")
+			local pawnList = extract_table(Board:GetPawns(TEAM_ANY))
+			for i = 1, #pawnList do
+				local currPawn = Board:GetPawn(pawnList[i])
+				if currPawn:GetTeam() == TEAM_ENEMY or (IsPassiveSkill("Psion_Leech") and currPawn:IsMech()) then
+					if _G[currPawn:GetType()].DefaultFaction ~= FACTION_BOTS and not _G[currPawn:GetType()].Minor then
+						Board:Ping(currPawn:GetSpace(),GL_Color(255,0,0))
+						trait:update(currPawn:GetSpace())
+					end
 				end
 			end
 		end
@@ -207,39 +218,33 @@ end
 
 -- psion acid attack / no friendly fire
 local DNT_AcidAttack = function(mission, pawn, skillEffect)
-	local condVek = (_G[pawn:GetType()].DefaultFaction ~= FACTION_BOTS and not _G[pawn:GetType()].Minor)
-	if mission and mission.DNT_Acid_Psion then
-		if skillEffect.q_effect ~= nil and condVek then -- and pawn:GetTeam() == TEAM_ENEMY then
-			for i = 1, skillEffect.q_effect:size() do
-				local spaceDamage = skillEffect.q_effect:index(i)
-				local damage = spaceDamage.iDamage
-				local dpawn = Board:GetPawn(spaceDamage.loc)
-				if damage > 0 then -- and dpawn then
-					spaceDamage.iAcid = EFFECT_CREATE
-					if dpawn and dpawn:GetType() ~= "DNT_Acid1" then
-						local condTarget = (_G[dpawn:GetType()].DefaultFaction ~= FACTION_BOTS and not _G[dpawn:GetType()].Minor)
-						if condTarget and (dpawn:GetTeam() == TEAM_ENEMY or (dpawn:IsMech() and IsPassiveSkill("Psion_Leech"))) then
-							spaceDamage.iAcid = EFFECT_NONE
-							-- spaceDamage.iDamage = 0
-						end
+	if isMissionBoard() then
+		local condVek = (_G[pawn:GetType()].DefaultFaction ~= FACTION_BOTS and not _G[pawn:GetType()].Minor)
+		if mission and mission[DNT_PSION] then
+			if skillEffect.q_effect ~= nil and condVek then -- and pawn:GetTeam() == TEAM_ENEMY then
+				for i = 1, skillEffect.q_effect:size() do
+					local spaceDamage = skillEffect.q_effect:index(i)
+					local damage = spaceDamage.iDamage
+					local dpawn = Board:GetPawn(spaceDamage.loc)
+					if damage > 0 then -- and dpawn then
+						spaceDamage.iAcid = EFFECT_CREATE
+						-- if dpawn and DNT_PsionTarget(dpawn) then
+								-- spaceDamage.iDamage = 0
+						-- end
 					end
 				end
 			end
-		end
-		
-		if skillEffect.effect ~= nil and IsPassiveSkill("Psion_Leech") then -- and pawn:GetTeam() == TEAM_ENEMY then
-			for i = 1, skillEffect.effect:size() do
-				local spaceDamage = skillEffect.effect:index(i)
-				local damage = spaceDamage.iDamage
-				local dpawn = Board:GetPawn(spaceDamage.loc)
-				if damage > 0 then -- and dpawn then
-					spaceDamage.iAcid = EFFECT_CREATE
-					if dpawn and dpawn:GetType() ~= "DNT_Acid1" then
-						local condTarget = (_G[dpawn:GetType()].DefaultFaction ~= FACTION_BOTS and not _G[dpawn:GetType()].Minor)
-						if condTarget and (dpawn:GetTeam() == TEAM_ENEMY or (dpawn:IsMech() and IsPassiveSkill("Psion_Leech"))) then
-							spaceDamage.iAcid = EFFECT_NONE
-							-- spaceDamage.iDamage = 0
-						end
+			
+			if skillEffect.effect ~= nil and IsPassiveSkill("Psion_Leech") then -- and pawn:GetTeam() == TEAM_ENEMY then
+				for i = 1, skillEffect.effect:size() do
+					local spaceDamage = skillEffect.effect:index(i)
+					local damage = spaceDamage.iDamage
+					local dpawn = Board:GetPawn(spaceDamage.loc)
+					if damage > 0 and damage ~= DAMAGE_DEATH then -- and dpawn then
+						spaceDamage.iAcid = EFFECT_CREATE
+						-- if dpawn and DNT_PsionTarget(dpawn) then
+								-- spaceDamage.iDamage = 0
+						-- end
 					end
 				end
 			end
@@ -256,26 +261,30 @@ local HOOK_onFinalEffectBuild = function(mission, pawn, weaponId, p1, p2, p3, sk
 	DNT_AcidAttack(mission, pawn, skillEffect)
 end
 
--- psion acid immune / acid heal
-local function HOOK_PawnIsAcid(mission, pawn, isAcid)
-	if mission.DNT_Acid_Psion and isAcid and pawn:GetType() ~= "DNT_Acid1" then
-		if _G[pawn:GetType()].DefaultFaction ~= FACTION_BOTS and not _G[pawn:GetType()].Minor then
-			if pawn:GetTeam() == TEAM_ENEMY or (pawn:IsMech() and IsPassiveSkill("Psion_Leech")) then
-				pawn:SetAcid(false)
-				-- Board:DamageSpace(pawn:GetSpace(), -1)
-			end
-		end
-	end
-end
+-- -- psion acid immune / acid heal
+-- local function HOOK_PawnIsAcid(mission, pawn, isAcid)
+	-- if mission[DNT_PSION] and isAcid and pawn:GetType() ~= DNT_PSION then
+		-- if _G[pawn:GetType()].DefaultFaction ~= FACTION_BOTS and not _G[pawn:GetType()].Minor then
+			-- if pawn:GetTeam() == TEAM_ENEMY or (pawn:IsMech() and IsPassiveSkill("Psion_Leech")) then
+				-- pawn:SetAcid(false)
+				-- -- Board:DamageSpace(pawn:GetSpace(), -1)
+			-- end
+		-- end
+	-- end
+-- end
 
 
 -- add / remove trait when selected / highlighted
 local HOOK_tileHighlighted = function(mission, point)
-	trait:update(point)
+	if isMissionBoard() then
+		trait:update(point)
+	end
 end
 
 local HOOK_pawnSelected = function(mission, pawn)
-	trait:update(pawn:GetSpace())
+	if isMissionBoard() then
+		trait:update(pawn:GetSpace())
+	end
 end
 
 -- add / remove icon sprite
@@ -297,8 +306,8 @@ local HOOK_gameLoaded = function(mission)
 			local enemyList = extract_table(Board:GetPawns(TEAM_ENEMY))
 			for i = 1, #enemyList do
 				local currPawn = Board:GetPawn(enemyList[i])
-				if currPawn:GetType() == "DNT_Acid1" then
-					GetCurrentMission().DNT_Acid_Psion = true
+				if currPawn:GetType() == DNT_PSION then
+					GetCurrentMission()[DNT_PSION] = true
 					break
 				end
 			end
@@ -311,8 +320,19 @@ local function HOOK_nextTurn(mission)
 		local enemyList = extract_table(Board:GetPawns(TEAM_ENEMY))
 		for i = 1, #enemyList do
 			local currPawn = Board:GetPawn(enemyList[i])
-			if currPawn:GetType() == "DNT_Acid1" then
-				mission.DNT_Acid_Psion = true
+			if currPawn:GetType() == DNT_PSION then
+				mission[DNT_PSION] = true
+			end
+		end
+	end
+	if mission[DNT_PSION] and Game:GetTeamTurn() == TEAM_ENEMY then
+		local pawnList = extract_table(Board:GetPawns(TEAM_ANY))
+		for i = 1, #pawnList do
+			local currPawn = Board:GetPawn(pawnList[i])
+			if DNT_PsionTarget(currPawn) and currPawn:IsAcid() then
+				currPawn:SetAcid(false)
+				Game:TriggerSound("/props/acid_splash")
+				Board:Ping(currPawn:GetSpace(),GL_Color(0,255,0))
 			end
 		end
 	end
@@ -325,7 +345,7 @@ local function EVENT_onModsLoaded()
 	DNT_Vextra_ModApiExt:addPawnUntrackedHook(HOOK_pawnUntracked)
 	DNT_Vextra_ModApiExt:addSkillBuildHook(HOOK_onSkillBuild)
 	DNT_Vextra_ModApiExt:addFinalEffectBuildHook(HOOK_onFinalEffectBuild)
-	DNT_Vextra_ModApiExt:addPawnIsAcidHook(HOOK_PawnIsAcid)
+	-- DNT_Vextra_ModApiExt:addPawnIsAcidHook(HOOK_PawnIsAcid)
 	
 	------------------------ do not change this -------------------------
 	-- add / remove trait when selected / highlighted

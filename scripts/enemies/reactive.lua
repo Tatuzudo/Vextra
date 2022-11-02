@@ -13,9 +13,15 @@ local function IsTipImage()
 	return Board:GetSize() == Point(6,6)
 end
 
+
 -------------
 --  Icons  --
 -------------
+
+modApi:appendAsset("img/icons/DNT_reactive_icon.png",resourcePath.."img/icons/DNT_reactive_icon.png") --TEMPORARY
+	Location["icons/DNT_reactive_icon.png"] = Point(0,0)
+modApi:appendAsset("img/icons/DNT_reactive_icon_glow.png",resourcePath.."img/icons/DNT_reactive_icon_glow.png") --TEMPORARY
+	Location["icons/DNT_reactive_icon_glow.png"] = Point(0,0)
 
 -------------
 --   Art   --
@@ -51,30 +57,46 @@ a.DNT_jelly_icon_ns = a.MechIcon:new{ Image = imagepath.."DNT_"..name.."_ns.png"
 -- Weapons --
 -------------
 
-DNT_Haste_Passive = PassiveSkill:new{
-	Name = "Gotta Go Fast",--"Haste Hormones",
-	Description = "All other Vek receive +2 bonus movement at the start of every turn.",
+DNT_Reactive_Passive = PassiveSkill:new{
+	Name = "Repulsive Decay",
+	Description = "All other Vek push adjacent tiles on death.",
 	Class = "Enemy",
 	Icon = "weapons/prime_lightning.png",
-	Passive = "DNT_Haste_Passive",
-	CustomTipImage = "DNT_Haste_Passive_Tip",
+	Passive = "DNT_Reactive_Passive",
+	CustomTipImage = "DNT_Reactive_Passive_Tip",
 	TipImage = {
 		Unit = Point(2,3),
-		CustomPawn = "DNT_Haste1",
-		Target = Point(2,2),
-		Friend = Point(1,0),
+		CustomPawn = "DNT_Reactive1",
+		Target = Point(1,1),
+		Friend = Point(1,1),
+		Enemy2 = Point(2,1),
+		Building = Point(3,1),
 	}
 }
 
-function DNT_Haste_Passive:GetSkillEffect(p1,p2) -- for passive preview
+function DNT_Reactive_Passive:GetSkillEffect(p1,p2) -- for passive tip image
 	return SkillEffect()
 end
 
-DNT_Haste_Passive_Tip = DNT_Haste_Passive:new{}
+DNT_Reactive_Passive_Tip = DNT_Reactive_Passive:new{}
 
-function DNT_Haste_Passive_Tip:GetSkillEffect(p1,p2)
+function DNT_Reactive_Passive_Tip:GetSkillEffect(p1,p2)
 	local ret = SkillEffect()
-	ret:AddMove(Board:GetPath(Point(1,0), Point(3,3), PATH_GROUND), FULL_DELAY)
+	local pos = Point(1,1)
+	
+	ret:AddDamage(SpaceDamage(pos,DAMAGE_DEATH))
+	ret.effect:back().bHide = true
+	ret:AddDelay(1)
+	ret:AddAnimation(pos,"ExploRepulse3")
+	for i = DIR_START, DIR_END do
+		damage = SpaceDamage(pos + DIR_VECTORS[i], 0)
+		damage.iPush = i
+		damage.sAnimation = "airpush_"..i
+		ret:AddDamage(damage)
+		ret.effect:back().bHide = true
+	end
+	ret:AddDelay(1.5)
+	
 	return ret
 end
 
@@ -82,15 +104,15 @@ end
 -- Pawns --
 -----------
 
-DNT_Haste1 = Pawn:new{
-	Name = "Sonic Psion",--"Haste Psion",
+DNT_Reactive1 = Pawn:new{
+	Name = "Reactive Psion",
 	Health = 2,
 	MoveSpeed = 2,
 	Image = "DNT_jelly",--"DNT_jelly_icon",
 	LargeShield = true,
 	VoidShockImmune = true,
-	ImageOffset = 0,
-	SkillList = { "DNT_Haste_Passive" },
+	ImageOffset = 2,
+	SkillList = { "DNT_Reactive_Passive" },
 	SoundLocation = "/enemy/jelly/",
 	Flying = true,
 	DefaultTeam = TEAM_ENEMY,
@@ -98,16 +120,16 @@ DNT_Haste1 = Pawn:new{
 	-- Leader = LEADER_VINES,--LEADER_HEALTH,
 	-- Tooltip = "Jelly_Health_Tooltip"
 }
-AddPawn("DNT_Haste1")
+AddPawn("DNT_Reactive1")
 
 ----------------------
 -- Helper Functions --
 ----------------------
 
-local DNT_PSION = "DNT_Haste1"
+local DNT_PSION = "DNT_Reactive1"
 
 local function DNT_PsionTarget(pawn)
-	if GetCurrentMission()[DNT_PSION] and pawn:GetMoveSpeed() > 0 and pawn:GetType() ~= DNT_PSION then
+	if GetCurrentMission()[DNT_PSION] and pawn:GetType() ~= DNT_PSION then
 		if pawn:GetTeam() == TEAM_ENEMY or (IsPassiveSkill("Psion_Leech") and pawn:IsMech()) then
 			if _G[pawn:GetType()].DefaultFaction ~= FACTION_BOTS and not _G[pawn:GetType()].Minor then
 				return true
@@ -142,43 +164,46 @@ end
 -- Traits --
 ------------
 
-local hasteTrait = function(trait,pawn)
+local ReactiveTrait = function(trait,pawn)
 	if pawn:GetSpace() == mouseTile() or pawn:IsSelected() then
 		return DNT_PsionTarget(pawn)
 	end
 end 
 
 trait:add{
-	func = hasteTrait,
-	icon = "img/combat/icons/icon_kickoff.png",
-	icon_glow = "img/combat/icons/icon_kickoff_glow.png",
+	func = ReactiveTrait,
+	icon = "img/icons/DNT_reactive_icon.png",
+	icon_glow = "img/icons/DNT_reactive_icon_glow.png",
 	icon_offset = Point(0,9),
-	desc_title = "Gotta Go Fast",
-	desc_text = "The Sonic Psion will add +2 bonus movement to all Vek at the turn start.",
+	desc_title = "Repulsive Decay",
+	desc_text = "The Reactive Psion causes other Vek to push adjacent tiles on death.",
 }
 
 -----------
 -- Hooks --
 -----------
 
-local DNT_SPEED = 2
-
+-- psion spawning / dying effects and vars
 local HOOK_pawnTracked = function(mission, pawn)
 	if isMissionBoard() then
 		modApi:scheduleHook(1500, function()
 			if pawn:GetType() == DNT_PSION then
+				Game:TriggerSound("/weapons/science_repulse")
 				mission[DNT_PSION] = true
 				local pawnList = extract_table(Board:GetPawns(TEAM_ANY))
 				for i = 1, #pawnList do
 					local currPawn = Board:GetPawn(pawnList[i])
 					if DNT_PsionTarget(currPawn) then
-						currPawn:AddMoveBonus(DNT_SPEED)
 						trait:update(currPawn:GetSpace())
+						Board:Ping(currPawn:GetSpace(),GL_Color(0,255,0))
 					end
 				end
 			elseif DNT_PsionTarget(pawn) then
-				pawn:AddMoveBonus(DNT_SPEED)
 				trait:update(pawn:GetSpace())
+				Board:Ping(pawn:GetSpace(),GL_Color(0,255,0))
+				if Board:GetTurn() ~= 0 then
+					Game:TriggerSound("/weapons/science_repulse")
+				end
 			end
 		end)
 	end
@@ -203,36 +228,33 @@ local HOOK_pawnUntracked = function(mission, pawn)
 	end
 end
 
-local function HOOK_nextTurn(mission)
-	if Board:GetTurn() ~= 0 then
-		if mission[DNT_PSION] and Game:GetTeamTurn() == TEAM_ENEMY then
-			local pawnList = extract_table(Board:GetPawns(TEAM_ANY))
-			for i = 1, #pawnList do
-				local currPawn = Board:GetPawn(pawnList[i])
-				if DNT_PsionTarget(currPawn) then
-					currPawn:AddMoveBonus(DNT_SPEED)
-					trait:update(currPawn:GetSpace())
+local HOOK_pawnKilled = function(mission, pawn)
+	if isMissionBoard() then
+		modApi:scheduleHook(1000, function()
+			if DNT_PsionTarget(pawn) then
+				local effect = SkillEffect()
+				local pos = pawn:GetSpace()
+				effect:AddAnimation(pos,"ExploRepulse3")
+				effect:AddSound("/weapons/science_repulse")
+				for i = DIR_START, DIR_END do
+					damage = SpaceDamage(pos + DIR_VECTORS[i], 0)
+					damage.iPush = i
+					damage.sAnimation = "airpush_"..i
+					effect:AddDamage(damage)
 				end
+				Board:AddEffect(effect)
 			end
-		end
-	-- quiting / loading first turn fix
-	elseif mission[DNT_PSION] == nil then
+		end)
+	end
+end
+
+local function HOOK_nextTurn(mission)
+	if Board:GetTurn() == 0 then
 		local enemyList = extract_table(Board:GetPawns(TEAM_ENEMY))
 		for i = 1, #enemyList do
 			local currPawn = Board:GetPawn(enemyList[i])
 			if currPawn:GetType() == DNT_PSION then
 				mission[DNT_PSION] = true
-				break
-			end
-		end
-		if mission[DNT_PSION] then
-			local pawnList = extract_table(Board:GetPawns(TEAM_ANY))
-			for i = 1, #pawnList do
-				local currPawn = Board:GetPawn(pawnList[i])
-				if DNT_PsionTarget(currPawn) then
-					currPawn:AddMoveBonus(DNT_SPEED)
-					trait:update(currPawn:GetSpace())
-				end
 			end
 		end
 	end
@@ -254,9 +276,9 @@ end
 -- add / remove icon sprite
 local EVENT_onGameStateChanged = function(newGameState, oldGameState)
 	if newGameState == "Map" then
-		DNT_Haste1['Image'] = "DNT_jelly_icon"
+		DNT_Reactive1['Image'] = "DNT_jelly_icon"
 	else
-		DNT_Haste1['Image'] = "DNT_jelly"
+		DNT_Reactive1['Image'] = "DNT_jelly"
 	end
 end
 
@@ -281,9 +303,11 @@ end
 
 -- add hooks
 local function EVENT_onModsLoaded()
+	-- psion effects
 	DNT_Vextra_ModApiExt:addPawnTrackedHook(HOOK_pawnTracked)
 	DNT_Vextra_ModApiExt:addPawnUntrackedHook(HOOK_pawnUntracked)
 	modApi:addNextTurnHook(HOOK_nextTurn)
+	DNT_Vextra_ModApiExt:addPawnKilledHook(HOOK_pawnKilled)
 	-- add / remove trait when selected / highlighted
 	DNT_Vextra_ModApiExt:addTileHighlightedHook(HOOK_tileHighlighted)
 	DNT_Vextra_ModApiExt:addTileUnhighlightedHook(HOOK_tileHighlighted)
