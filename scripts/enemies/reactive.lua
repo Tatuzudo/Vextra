@@ -53,6 +53,48 @@ a.DNT_jelly_icond = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Pos
 a.DNT_jelly_icon_ns = a.MechIcon:new{ Image = imagepath.."DNT_"..name.."_ns.png", Height = 10 }
 
 
+--------------
+-- Emitters --
+--------------
+
+local BURST_UP = "DNT_Reactive_Up" 
+DNT_Reactive_Up = Emitter:new{
+	image = "icons/DNT_reactive_icon.png",
+	x = -12,
+	y = 5,
+	max_alpha = 1.0,
+	min_alpha = 1.0,
+	angle = -90,
+	rot_speed = 0,
+	angle_variance = 0,
+	random_rot = false,
+	lifespan = 0.75,
+	burst_count = 1,
+	speed = 0.75,
+	birth_rate = 0,
+	gravity = false,
+	layer = LAYER_FRONT
+}
+
+local BURST_DOWN = "DNT_Reactive_Down" 
+DNT_Reactive_Down = Emitter:new{
+	image = "icons/DNT_reactive_icon.png",
+	x = -12,
+	y = -5,
+	max_alpha = 0.5,
+	min_alpha = 0.5,
+	angle = 90,
+	rot_speed = 0,
+	angle_variance = 0,
+	random_rot = false,
+	lifespan = 0.75,
+	burst_count = 1,
+	speed = 0.75,
+	birth_rate = 0,
+	gravity = false,
+	layer = LAYER_FRONT
+}
+
 -------------
 -- Weapons --
 -------------
@@ -196,6 +238,7 @@ local HOOK_pawnTracked = function(mission, pawn)
 					if DNT_PsionTarget(currPawn) then
 						trait:update(currPawn:GetSpace())
 						Board:Ping(currPawn:GetSpace(),GL_Color(0,255,0))
+						Board:AddBurst(currPawn:GetSpace(),BURST_UP,DIR_NONE)
 					end
 				end
 			elseif DNT_PsionTarget(pawn) then
@@ -203,6 +246,7 @@ local HOOK_pawnTracked = function(mission, pawn)
 				Board:Ping(pawn:GetSpace(),GL_Color(0,255,0))
 				if Board:GetTurn() ~= 0 then
 					Game:TriggerSound("/weapons/science_repulse")
+					Board:AddBurst(currPawn:GetSpace(),BURST_UP,DIR_NONE)
 				end
 			end
 		end)
@@ -213,14 +257,14 @@ local HOOK_pawnUntracked = function(mission, pawn)
 	if isMissionBoard() then
 		if pawn:GetType() == DNT_PSION then
 			mission[DNT_PSION] = nil
-			Game:TriggerSound("/weapons/phase_shot")
 			local pawnList = extract_table(Board:GetPawns(TEAM_ANY))
 			for i = 1, #pawnList do
 				local currPawn = Board:GetPawn(pawnList[i])
 				if currPawn:GetTeam() == TEAM_ENEMY or (IsPassiveSkill("Psion_Leech") and currPawn:IsMech()) then
 					if _G[currPawn:GetType()].DefaultFaction ~= FACTION_BOTS and not _G[currPawn:GetType()].Minor then
-						Board:Ping(currPawn:GetSpace(),GL_Color(255,0,0))
+						Board:Ping(currPawn:GetSpace(),GL_Color(255,50,50))
 						trait:update(currPawn:GetSpace())
+						Board:AddBurst(currPawn:GetSpace(),BURST_DOWN,DIR_NONE)
 					end
 				end
 			end
