@@ -1,8 +1,8 @@
 
 -- create boss list
-local bossList = modApi.bossList:add("Vextra Only")
-local bossListCombined =  modApi.bossList:add("Vanilla + Vextra")
-local bossListVanilla = modApi.bossList:get("archive")
+local bossList = easyEdit.bossList:add("Vextra Only")
+local bossListCombined =  easyEdit.bossList:add("Vanilla + Vextra")
+local bossListVanilla = easyEdit.bossList:get("archive")
 bossListCombined:copy(bossListVanilla)
 
 local DNT_bosses = {

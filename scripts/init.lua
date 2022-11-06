@@ -1,24 +1,15 @@
-
+--[[
 local function scriptPath()
 	return debug.getinfo(2, "S").source:sub(2):match("(.*[/\\])")
 end
 require(scriptPath().."easyEdit/easyEdit")
-
+]]--
 local function init(self)
 	--init variables
 	local mod = mod_loader.mods[modApi.currentMod]
 	local resourcePath = mod.resourcePath
 	local scriptPath = mod.scriptPath
 	local options = mod_loader.currentModContent[mod.id].options
-
-
-	--Errors
-	if not easyEdit then --Easy edit needs to exist
-		Assert.Error("Easy Edit is not found. Make sure you have Lemonymous' mod pack, or just EasyEdit")
-	elseif not easyEdit.enabled then --Easy edit needs to be enabled
-		Assert.Error("Easy Edit is disabled. Make sure it is enabled in [Mod Content] > [Configure EasyEdit] and restart the game.")
-	end
-
 
 	--A list of all the vek, to hopefully make the init process smooth. This is global
 	DNT_Vextra_VekList = {
@@ -42,8 +33,8 @@ local function init(self)
 		{"Reactive",false,"Leaders",false},
 		{"Nurse",false,"Leaders",false},
 	}
-	
-	--ModApiExt
+
+	--[[ModApiExt
 	if modApiExt then
 		-- modApiExt already defined. This means that the user has the complete
 		-- ModUtils package installed. Use that instead of loading our own one.
@@ -54,7 +45,10 @@ local function init(self)
 		DNT_Vextra_ModApiExt = require(extDir.."modApiExt")
 		DNT_Vextra_ModApiExt:init(extDir)
 	end
-	
+	]]--
+	self.libs = {}
+	self.libs.modApiExt = modapiext
+	DNT_Vextra_ModApiExt = self.libs.modApiExt --I'm assuming this is safe
 	require(self.scriptPath.."enemies")
 	require(self.scriptPath.."enemyList")
 	require(self.scriptPath.."bosses")
@@ -62,7 +56,7 @@ local function init(self)
 	require(self.scriptPath.."tips")
 	require(self.scriptPath.."spawnerfix")
 	-- require(self.scriptPath.."modApiExt_fix")
-	
+
 	--Scripts
 	for _, table in ipairs(DNT_Vextra_VekList) do
 		local name = table[1]
@@ -75,15 +69,15 @@ end
 
 
 local function load(self,options,version)
-	DNT_Vextra_ModApiExt:load(self, optoins, version)
-	require(self.scriptPath .."weaponPreview/api"):load()
-	require(self.scriptPath .. "tips"):load(DNT_Vextra_ModApiExt)
+	--DNT_Vextra_ModApiExt:load(self, optoins, version)
+	--require(self.scriptPath .."weaponPreview/api"):load()
+	require(self.scriptPath .. "tips"):load(self.libs.modApiExt)
 
 	--Hooks
 	for _, table in ipairs(DNT_Vextra_VekList) do
 		if table[2] then
 			local name = table[1]
-			require(self.scriptPath .. "enemies/" .. string.lower(name)):load(DNT_Vextra_ModApiExt)
+			require(self.scriptPath .. "enemies/" .. string.lower(name)):load(self.libs.modApiExt)
 		end
 	end
 
@@ -119,8 +113,15 @@ return {
   name = "Vextra",
 	icon = "modIcon.png",
 	description = "VEK + EXTRA",
+	modApiVersion = "2.8.0",
+	gameVersion = "1.2.83",
   version = "0.0.1",
 	requirements = { "kf_ModUtils" },
+	dependencies = {
+		modApiExt = "1.2",
+		--memedit = "0.1.0",
+		easyEdit = "2.0.1",
+	},
 	metadata = metadata,
 	load = load,
 	init = init

@@ -1,7 +1,7 @@
 local mod = mod_loader.mods[modApi.currentMod]
 local resourcePath = mod.resourcePath
 local scriptPath = mod.scriptPath
-local previewer = require(scriptPath.."weaponPreview/api")
+--local previewer = require(scriptPath.."weaponPreview/api")
 
 local writepath = "img/units/aliens/"
 local readpath = resourcePath .. writepath

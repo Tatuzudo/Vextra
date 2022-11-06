@@ -1,7 +1,7 @@
 local mod = mod_loader.mods[modApi.currentMod]
 local resourcePath = mod.resourcePath
 local scriptPath = mod.scriptPath
-local previewer = require(scriptPath.."weaponPreview/api")
+--local previewer = require(scriptPath.."weaponPreview/api")
 local trait = require(scriptPath..'libs/trait')
 
 local writepath = "img/units/aliens/"
@@ -54,7 +54,7 @@ a.DNT_jelly_icon_ns = a.MechIcon:new{ Image = imagepath.."DNT_"..name.."_ns.png"
 -- Emitters --
 --------------
 
-local BURST_UP = "DNT_Acid_Up" 
+local BURST_UP = "DNT_Acid_Up"
 DNT_Acid_Up = Emitter:new{
 	image = "combat/icons/icon_acid_immune.png",
 	x = -11,
@@ -73,7 +73,7 @@ DNT_Acid_Up = Emitter:new{
 	layer = LAYER_FRONT
 }
 
-local BURST_DOWN = "DNT_Acid_Down" 
+local BURST_DOWN = "DNT_Acid_Down"
 DNT_Acid_Down = Emitter:new{
 	image = "combat/icons/icon_acid_immune.png",
 	x = -11,
@@ -126,12 +126,12 @@ function DNT_Acid_Passive_Tip:GetSkillEffect(p1,p2) -- for passive preview
 		Board:Ping(Point(2,1),GL_Color(0,255,0))
 		Board:AddBurst(Point(2,1),BURST_UP,DIR_NONE)
 	end
-	
+
 	local damage = SpaceDamage(Point(2,1),1)
 	damage.iAcid = EFFECT_CREATE
 	ret:AddMelee(Point(1,1),damage)
 	ret:AddDelay(1)
-	
+
 	return ret
 end
 
@@ -203,7 +203,7 @@ local acidTrait = function(trait,pawn)
 	if pawn:GetSpace() == mouseTile() or pawn:IsSelected() then
 		return DNT_PsionTarget(pawn)
 	end
-end 
+end
 
 trait:add{
 	func = acidTrait, -- maybe change this name?
@@ -287,7 +287,7 @@ local DNT_AcidAttack = function(mission, p1, skillEffect)
 				end
 			end
 		end
-		
+
 		if skillEffect.effect ~= nil then -- and pawn:GetTeam() == TEAM_ENEMY then
 			for i = 1, skillEffect.effect:size() do
 				local spaceDamage = skillEffect.effect:index(i)
@@ -399,7 +399,7 @@ local function EVENT_onModsLoaded()
 	DNT_Vextra_ModApiExt:addSkillBuildHook(HOOK_onSkillBuild)
 	DNT_Vextra_ModApiExt:addFinalEffectBuildHook(HOOK_onFinalEffectBuild)
 	-- DNT_Vextra_ModApiExt:addPawnIsAcidHook(HOOK_PawnIsAcid)
-	
+
 	------------------------ do not change this -------------------------
 	-- add / remove trait when selected / highlighted
 	DNT_Vextra_ModApiExt:addTileHighlightedHook(HOOK_tileHighlighted)

@@ -1,7 +1,7 @@
 local mod = mod_loader.mods[modApi.currentMod]
 local resourcePath = mod.resourcePath
 local scriptPath = mod.scriptPath
-local previewer = require(scriptPath.."weaponPreview/api")
+--local previewer = require(scriptPath.."weaponPreview/api")
 local trait = require(scriptPath..'libs/trait')
 
 local writepath = "img/units/aliens/"
@@ -50,7 +50,7 @@ a.DNT_jelly_icon_ns = a.MechIcon:new{ Image = imagepath.."DNT_"..name.."_ns.png"
 -- Emitters --
 --------------
 
-local BURST_DOWN = "DNT_Haste_Down" 
+local BURST_DOWN = "DNT_Haste_Down"
 DNT_Haste_Down = Emitter:new{
 	image = "combat/icons/icon_kickoff.png",
 	x = -14,
@@ -96,13 +96,13 @@ DNT_Haste_Passive_Tip = DNT_Haste_Passive:new{}
 
 function DNT_Haste_Passive_Tip:GetSkillEffect(p1,p2)
 	local ret = SkillEffect()
-	
+
 	Board:Ping(Point(1,0),GL_Color(0,255,0))
 	Board:GetPawn(Point(1,0)):AddMoveBonus(2)
-	
+
 	ret:AddMove(Board:GetPath(Point(1,0), Point(3,3), PATH_GROUND), FULL_DELAY)
 	ret:AddDelay(1)
-	
+
 	return ret
 end
 
@@ -174,7 +174,7 @@ local hasteTrait = function(trait,pawn)
 	if pawn:GetSpace() == mouseTile() or pawn:IsSelected() then
 		return DNT_PsionTarget(pawn)
 	end
-end 
+end
 
 trait:add{
 	func = hasteTrait,
@@ -305,7 +305,7 @@ local HOOK_gameLoaded = function(mission)
 					break
 				end
 			end
-			
+
 			if GetCurrentMission()[DNT_PSION] then
 				local pawnList = extract_table(Board:GetPawns(TEAM_ANY))
 				for i = 1, #pawnList do

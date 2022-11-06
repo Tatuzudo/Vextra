@@ -1,7 +1,7 @@
-local enemyListSolo = modApi.enemyList:add("Vextra Only")
-local enemyListCombined =  modApi.enemyList:add("Vanilla + Vextra")
-local enemyListVanilla = modApi.enemyList:get("vanilla")
---local enemyListFinale = modApi.enemyList:get("finale")
+local enemyListSolo = easyEdit.enemyList:add("Vextra Only")
+local enemyListCombined =  easyEdit.enemyList:add("Vanilla + Vextra")
+local enemyListVanilla = easyEdit.enemyList:get("vanilla")
+--local enemyListFinale = easyEdit.enemyList:get("finale")
 
 enemyListSolo.categories = {"Core", "Core", "Core", "Leaders", "Unique", "Unique"}
 enemyListCombined.categories = {"Core", "Core", "Core", "Leaders", "Unique", "Unique"}

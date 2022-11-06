@@ -1,7 +1,7 @@
 local mod = mod_loader.mods[modApi.currentMod]
 local resourcePath = mod.resourcePath
 local scriptPath = mod.scriptPath
-local previewer = require(scriptPath.."weaponPreview/api")
+--local previewer = require(scriptPath.."weaponPreview/api")
 local trait = require(scriptPath..'libs/trait')
 
 local writepath = "img/units/aliens/"
@@ -56,7 +56,7 @@ a.DNT_jelly_icon_ns = a.MechIcon:new{ Image = imagepath.."DNT_"..name.."_ns.png"
 -- Emitters --
 --------------
 
-local BURST_UP = "DNT_Nurse_Up" 
+local BURST_UP = "DNT_Nurse_Up"
 DNT_Nurse_Up = Emitter:new{
 	image = "icons/DNT_nurse_icon.png",
 	x = -11,
@@ -75,7 +75,7 @@ DNT_Nurse_Up = Emitter:new{
 	layer = LAYER_FRONT
 }
 
-local BURST_DOWN = "DNT_Nurse_Down" 
+local BURST_DOWN = "DNT_Nurse_Down"
 DNT_Nurse_Down = Emitter:new{
 	image = "icons/DNT_nurse_icon.png",
 	x = -11,
@@ -126,16 +126,16 @@ function DNT_Nurse_Passive_Tip:GetSkillEffect(p1,p2) -- for passive preview
 	if IsPassiveSkill("Passive_FriendlyFire") then damage = damage + 1 end
 	if IsPassiveSkill("Passive_FriendlyFire_A") or IsPassiveSkill("Passive_FriendlyFire_B") then damage = damage + 1 end
 	if IsPassiveSkill("Passive_FriendlyFire_AB") then damage = damage + 1 end
-	
+
 	Board:Ping(Point(1,1),GL_Color(0,255,0))
 	Board:AddBurst(Point(1,1),BURST_UP,DIR_NONE)
 	Board:Ping(Point(2,1),GL_Color(0,255,0))
 	Board:AddBurst(Point(2,1),BURST_UP,DIR_NONE)
-	
+
 	local dam = SpaceDamage(Point(2,1),-damage)
 	ret:AddMelee(Point(1,1),dam)
 	ret:AddDelay(2)
-	
+
 	return ret
 end
 
@@ -207,7 +207,7 @@ local nurseTrait = function(trait,pawn)
 	if pawn:GetSpace() == mouseTile() or pawn:IsSelected() then
 		return DNT_PsionTarget(pawn)
 	end
-end 
+end
 
 trait:add{
 	func = nurseTrait, -- maybe change this name?
@@ -298,7 +298,7 @@ local DNT_NurseAttack = function(mission, p1, skillEffect)
 				end
 			end
 		end
-		
+
 		if skillEffect.effect ~= nil then -- and pawn:GetTeam() == TEAM_ENEMY then
 			for i = 1, skillEffect.effect:size() do
 				local spaceDamage = skillEffect.effect:index(i)
@@ -401,7 +401,7 @@ local function EVENT_onModsLoaded()
 	DNT_Vextra_ModApiExt:addPawnUntrackedHook(HOOK_pawnUntracked)
 	DNT_Vextra_ModApiExt:addSkillBuildHook(HOOK_onSkillBuild)
 	DNT_Vextra_ModApiExt:addFinalEffectBuildHook(HOOK_onFinalEffectBuild)
-	
+
 	------------------------ do not change this -------------------------
 	-- add / remove trait when selected / highlighted
 	DNT_Vextra_ModApiExt:addTileHighlightedHook(HOOK_tileHighlighted)

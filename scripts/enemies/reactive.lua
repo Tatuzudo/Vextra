@@ -1,7 +1,7 @@
 local mod = mod_loader.mods[modApi.currentMod]
 local resourcePath = mod.resourcePath
 local scriptPath = mod.scriptPath
-local previewer = require(scriptPath.."weaponPreview/api")
+--local previewer = require(scriptPath.."weaponPreview/api")
 local trait = require(scriptPath..'libs/trait')
 
 local writepath = "img/units/aliens/"
@@ -57,7 +57,7 @@ a.DNT_jelly_icon_ns = a.MechIcon:new{ Image = imagepath.."DNT_"..name.."_ns.png"
 -- Emitters --
 --------------
 
-local BURST_UP = "DNT_Reactive_Up" 
+local BURST_UP = "DNT_Reactive_Up"
 DNT_Reactive_Up = Emitter:new{
 	image = "icons/DNT_reactive_icon.png",
 	x = -12,
@@ -76,7 +76,7 @@ DNT_Reactive_Up = Emitter:new{
 	layer = LAYER_FRONT
 }
 
-local BURST_DOWN = "DNT_Reactive_Down" 
+local BURST_DOWN = "DNT_Reactive_Down"
 DNT_Reactive_Down = Emitter:new{
 	image = "icons/DNT_reactive_icon.png",
 	x = -12,
@@ -125,14 +125,14 @@ DNT_Reactive_Passive_Tip = DNT_Reactive_Passive:new{}
 function DNT_Reactive_Passive_Tip:GetSkillEffect(p1,p2)
 	local ret = SkillEffect()
 	local pos = Point(1,1)
-	
+
 	Board:Ping(pos,GL_Color(0,255,0))
 	Board:AddBurst(pos,BURST_UP,DIR_NONE)
 	if IsPassiveSkill("Psion_Leech") then
 		Board:Ping(Point(2,1),GL_Color(0,255,0))
 		Board:AddBurst(Point(2,1),BURST_UP,DIR_NONE)
 	end
-	
+
 	ret:AddMelee(Point(2,1),SpaceDamage(pos,DAMAGE_DEATH))
 	ret.effect:back().bHide = true
 	ret:AddDelay(1)
@@ -145,7 +145,7 @@ function DNT_Reactive_Passive_Tip:GetSkillEffect(p1,p2)
 		ret.effect:back().bHide = true
 	end
 	ret:AddDelay(1.5)
-	
+
 	return ret
 end
 
@@ -217,7 +217,7 @@ local ReactiveTrait = function(trait,pawn)
 	if pawn:GetSpace() == mouseTile() or pawn:IsSelected() then
 		return DNT_PsionTarget(pawn)
 	end
-end 
+end
 
 trait:add{
 	func = ReactiveTrait,

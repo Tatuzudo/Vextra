@@ -1,7 +1,7 @@
 local mod = mod_loader.mods[modApi.currentMod]
 local resourcePath = mod.resourcePath
 local scriptPath = mod.scriptPath
-local previewer = require(scriptPath.."weaponPreview/api")
+--local previewer = require(scriptPath.."weaponPreview/api")
 
 local writepath = "img/units/aliens/"
 local readpath = resourcePath .. writepath
@@ -151,10 +151,10 @@ function DNT_PillbugLeap1:GetSkillEffect(p1, p2)
 		ret:AddQueuedDelay(0.01)
 		ret:DNT_AddQueuedArtillery(SpaceDamage(p2),self.Effect2,NO_DELAY) -- after effect 2
 		ret:AddQueuedDelay(0.78)
-		
+
 		for i = 1, 8 do
 			local nextpoint = p3 - DIR_VECTORS[dir]
-			
+
 			ret:DNT_AddQueuedArtillery(p3,SpaceDamage(nextpoint),self.Projectile,NO_DELAY)
 			ret.q_effect:back().bHidePath = true
 			ret:AddQueuedDelay(0.01)
@@ -171,7 +171,7 @@ function DNT_PillbugLeap1:GetSkillEffect(p1, p2)
 			ret:AddQueuedDelay(0.78)
 			ret:AddQueuedDamage(SpaceDamage(p3,self.Damage))
 		end
-		
+
 		ret:AddQueuedDelay(0.02)
 	else
 		ret:DNT_AddQueuedArtillery(SpaceDamage(p2),self.Projectile,NO_DELAY) -- jump effect
@@ -183,7 +183,7 @@ function DNT_PillbugLeap1:GetSkillEffect(p1, p2)
 	ret:AddQueuedDelay(0.78)
 	ret:AddQueuedScript(string.format("Board:GetPawn(%s):SetSpace(%s)", p1:GetString(), p3:GetString())) --move pawn
 	ret:AddQueuedScript(string.format("Board:GetPawn(%s):SetInvisible(false)", p3:GetString())) -- show pawn
-	
+
 	-- Preview
 	local move = PointList()
 	move:push_back(p1)
@@ -191,7 +191,7 @@ function DNT_PillbugLeap1:GetSkillEffect(p1, p2)
 	ret:AddQueuedMove(move, NO_DELAY) -- charge preview
 	ret.q_effect:back().bHide = true -- hide charge arrow path
 	ret:AddQueuedDelay(0.5)
-	
+
 	return ret
 end
 

@@ -1,7 +1,7 @@
 local mod = mod_loader.mods[modApi.currentMod]
 local resourcePath = mod.resourcePath
 local scriptPath = mod.scriptPath
-local previewer = require(scriptPath.."weaponPreview/api")
+--local previewer = require(scriptPath.."weaponPreview/api")
 
 local writepath = "img/units/aliens/"
 local readpath = resourcePath .. writepath
@@ -113,49 +113,49 @@ function DNT_StinkbugAtk1:GetSkillEffect(p1,p2)
 	local dir = GetDirection(p2 - p1)
 	local mission = GetCurrentMission()
     if not mission.DNT_FartList then mission.DNT_FartList = {} end
-	
+
 	local dir2 = dir+1 > 3 and 0 or dir+1
 	local p3 = p1 + DIR_VECTORS[dir2]
 	ret:AddScript(string.format("table.insert(GetCurrentMission().DNT_FartList,%s)",p3:GetString())) -- insert point in fart list
-	
+
 	local dir3 = dir-1 < 0 and 3 or dir-1
 	local p4 = p1 + DIR_VECTORS[dir3]
 	ret:AddScript(string.format("table.insert(GetCurrentMission().DNT_FartList,%s)",p4:GetString())) -- insert other fart point
-	
+
 	local damage = SpaceDamage(p2,self.Damage) -- attack
 	damage.sAnimation = "explomosquito_"..dir
 	damage.sSound = self.SoundBase.."/attack"
 	ret:AddQueuedMelee(p1,damage)
-	
+
 	damage = SpaceDamage(p3,0) -- smoke
 	damage.sAnimation = "DNT_FartAppear"
 	damage.iSmoke = EFFECT_CREATE
 	ret:AddDamage(damage)
 	damage.loc = p4
 	ret:AddDamage(damage)
-	
+
 	ret:AddDelay(0.24) -- delay for adding smoke anim (hook)
-	
+
 	return ret
 end
 
 function DNT_StinkbugAtk1:GetTargetScore(p1,p2)
 	local ret = Skill.GetTargetScore(self, p1, p2)
 	local dir = GetDirection(p2 - p1)
-	
+
 	local dir2 = dir+1 > 3 and 0 or dir+1
 	local p3 = p1 + DIR_VECTORS[dir2]
 	local pawn3 = Board:GetPawn(p3)
-	
+
 	local dir3 = dir-1 < 0 and 3 or dir-1
 	local p4 = p1 + DIR_VECTORS[dir3]
 	local pawn4 = Board:GetPawn(p4)
-	
+
 	local order = extract_table(Board:GetPawns(TEAM_ENEMY))
 	local selfOrder = 0
 	local pawn3Order = 0
 	local pawn4Order = 0
-	
+
 	for i = 1, #order do -- get attack order
 		if Board:GetPawn(p1) and order[i] == Board:GetPawn(p1):GetId() then
 			selfOrder = i
@@ -165,7 +165,7 @@ function DNT_StinkbugAtk1:GetTargetScore(p1,p2)
 			pawn4Order = i
 		end
 	end
-	
+
 	if pawn3 then
 		if pawn3:GetTeam() == TEAM_ENEMY and pawn3Order < selfOrder then -- avoid smoke friends that already attacked.
 			ret = ret - 4
@@ -173,7 +173,7 @@ function DNT_StinkbugAtk1:GetTargetScore(p1,p2)
 			-- ret = ret + 2
 		end
 	end
-	
+
 	if pawn4 then
 		if pawn4:GetTeam() == TEAM_ENEMY and pawn4Order < selfOrder then  -- avoid smoke friends that already attacked.
 			ret = ret - 4
@@ -202,37 +202,37 @@ DNT_StinkbugAtk2_Tip = DNT_StinkbugAtk_Tip:new {
 function DNT_StinkbugAtk_Tip:GetSkillEffect(p1,p2)
 	local ret = SkillEffect()
 	local dir = GetDirection(p2 - p1)
-	
+
 	local dir2 = dir+1 > 3 and 0 or dir+1
 	local p3 = p1 + DIR_VECTORS[dir2]
-	
+
 	local dir3 = dir-1 < 0 and 3 or dir-1
 	local p4 = p1 + DIR_VECTORS[dir3]
-	
+
 	local damage = SpaceDamage(p2,self.Damage) -- attack
 	damage.sAnimation = "explomosquito_"..dir
 	damage.sSound = self.SoundBase.."/attack"
 	ret:AddQueuedMelee(p1,damage)
-	
+
 	damage = SpaceDamage(p3,0) -- smoke
 	damage.sAnimation = "DNT_FartAppear"
 	damage.iSmoke = EFFECT_CREATE
 	ret:AddDamage(damage)
 	damage.loc = p4
 	ret:AddDamage(damage)
-	
+
 	ret:AddDelay(0.24) -- delay for adding smoke anim
 	damage = SpaceDamage(p3,0) -- smoke
 	damage.sAnimation = "DNT_FartFront"
 	ret:AddDamage(damage)
 	damage.loc = p4
 	ret:AddDamage(damage)
-	
+
 	ret:AddDelay(0.4) -- prolong the animation for Tip
 	ret:AddDamage(damage)
 	damage.loc = p3
 	ret:AddDamage(damage)
-	
+
 	return ret
 end
 
@@ -343,4 +343,3 @@ local function EVENT_onModsLoaded()
 end
 
 modApi.events.onModsLoaded:subscribe(EVENT_onModsLoaded)
-

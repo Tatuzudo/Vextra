@@ -1,7 +1,7 @@
 
-local VERSION = "2.2.0"
+local VERSION = "2.2.1"
 ---------------------------------------------------------------------
--- Trait v2.2.0 - code library
+-- Trait v2.2.1 - code library
 --
 -- by Lemonymous
 ---------------------------------------------------------------------
@@ -10,7 +10,7 @@ local VERSION = "2.2.0"
 -- Only one trait can be visible on a unit at the same time.
 --
 --    Requires libraries:
--- LApi
+-- memedit
 -- modApiExt
 --
 --    Fetch library:
@@ -35,15 +35,9 @@ local VERSION = "2.2.0"
 -- first created > last created
 --
 
-local isLApiAvailable = LApi ~= nil
 local mod = modApi:getCurrentMod()
-local modApiExt
-
-if isLApiAvailable then
-	modApiExt = LApi.library:fetch("modApiExt/modApiExt", nil, "ITB-ModUtils")
-else
-	modApiExt = require(mod.scriptPath.."modApiExt/modApiExt")
-end
+local modApiExt = modapiext or require(mod.scriptPath.."modApiExt/modApiExt")
+local isMemeditAvailable = memedit ~= nil
 
 local function isManagedTrait(id)
 	local prefix = id:sub(1,5)
@@ -99,7 +93,7 @@ local function getTraitIcon(loc)
 end
 
 local function updateLoc(loc)
-	if not isLApiAvailable then
+	if not isMemeditAvailable then
 		Board:SetTerrainIcon(loc, getTraitIcon(loc))
 
 		return
@@ -226,7 +220,6 @@ local function add(self, trait)
 			if modApi:fileExists(icon) then
 				modApi:appendAsset("img/"..path, icon)
 			end
-			--Location[path] = icon_offset
 		end
 	else
 		modApi:copyAsset("img/empty.png", "img/"..path)
