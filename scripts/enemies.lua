@@ -80,6 +80,12 @@ local enemies = {
 		IslandLocks = 2,
 		max_level = 1,
 	},
+	DNT_Nurse = {
+		weakpawn = false,
+		max_pawns = 1,
+		IslandLocks = 2,
+		max_level = 1,
+	},
 }
 
 -- config enemies
@@ -142,39 +148,39 @@ end
 
 
 -- Exclude Psions from boss Psion mission
-function Mission_JellyBoss:StartMission()
-	self:StartBoss()
-	self:GetSpawner():BlockPawns({
-		"Jelly_Health",
-		"Jelly_Explode",
-		"Jelly_Regen",
-		"Jelly_Armor",
-		"Jelly_Fire",
-		"Jelly_Spider",
-		"Jelly_Boost",
-		-- our psions
-		"DNT_Haste",
-		"DNT_Acid",
-		"DNT_Reactive",
-	})
-end
+-- function Mission_JellyBoss:StartMission()
+	-- self:StartBoss()
+	-- self:GetSpawner():BlockPawns({
+		-- "Jelly_Health",
+		-- "Jelly_Explode",
+		-- "Jelly_Regen",
+		-- "Jelly_Armor",
+		-- "Jelly_Fire",
+		-- "Jelly_Spider",
+		-- "Jelly_Boost",
+		-- -- our psions
+		-- "DNT_Haste",
+		-- "DNT_Acid",
+		-- "DNT_Reactive",
+	-- })
+-- end
 
 
--- local myPsions = {
-	-- "DNT_Haste",
-	-- "DNT_Acid",
-	-- "DNT_Reactive",
--- }
+local myPsions = {
+	"DNT_Haste",
+	"DNT_Acid",
+	"DNT_Reactive",
+}
 
--- modApi.events.onMissionStart:subscribe(function(mission)
-    -- if true
-        -- and mission.BossPawn ~= nil
-        -- and _G[mission.BossPawn] ~= nil
-        -- and _G[mission.BossPawn].Leader ~= LEADER_NONE
-    -- then
-        -- -- for _, myPsion in ipairs(myPsions) do
-            -- -- mission:GetSpawner():BlockPawns(myPsion)
-        -- -- end
-		-- mission:GetSpawner():BlockPawns(myPsions)
-    -- end
--- end)
+modApi.events.onPreMissionAvailable:subscribe(function(mission)
+    if true
+        and mission.BossPawn ~= nil
+        and _G[mission.BossPawn] ~= nil
+        and _G[mission.BossPawn].Leader ~= LEADER_NONE
+    then
+        -- for _, myPsion in ipairs(myPsions) do
+            -- mission:GetSpawner():BlockPawns(myPsion)
+        -- end
+		mission:GetSpawner():BlockPawns(myPsions)
+    end
+end)

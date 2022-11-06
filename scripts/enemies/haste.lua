@@ -50,25 +50,6 @@ a.DNT_jelly_icon_ns = a.MechIcon:new{ Image = imagepath.."DNT_"..name.."_ns.png"
 -- Emitters --
 --------------
 
-local BURST_UP = "DNT_Haste_Up" 
-DNT_Haste_Up = Emitter:new{
-	image = "combat/icons/icon_kickoff.png",
-	x = -14,
-	y = 5,
-	max_alpha = 1.0,
-	min_alpha = 1.0,
-	angle = -90,
-	rot_speed = 0,
-	angle_variance = 0,
-	random_rot = false,
-	lifespan = 0.75,
-	burst_count = 1,
-	speed = 0.75,
-	birth_rate = 0,
-	gravity = false,
-	layer = LAYER_FRONT
-}
-
 local BURST_DOWN = "DNT_Haste_Down" 
 DNT_Haste_Down = Emitter:new{
 	image = "combat/icons/icon_kickoff.png",
@@ -115,7 +96,13 @@ DNT_Haste_Passive_Tip = DNT_Haste_Passive:new{}
 
 function DNT_Haste_Passive_Tip:GetSkillEffect(p1,p2)
 	local ret = SkillEffect()
+	
+	Board:Ping(Point(1,0),GL_Color(0,255,0))
+	Board:GetPawn(Point(1,0)):AddMoveBonus(2)
+	
 	ret:AddMove(Board:GetPath(Point(1,0), Point(3,3), PATH_GROUND), FULL_DELAY)
+	ret:AddDelay(1)
+	
 	return ret
 end
 
@@ -198,9 +185,9 @@ trait:add{
 	desc_text = "The Sonic Psion will add +2 bonus movement to all Vek at the turn start.",
 }
 
------------
--- Hooks --
------------
+------------------------
+-- Hooks and Function --
+------------------------
 
 local DNT_SPEED = 2
 
@@ -215,13 +202,11 @@ local HOOK_pawnTracked = function(mission, pawn)
 					if DNT_PsionTarget(currPawn) then
 						currPawn:AddMoveBonus(DNT_SPEED)
 						trait:update(currPawn:GetSpace())
-						Board:AddBurst(currPawn:GetSpace(),BURST_UP,DIR_NONE)
 					end
 				end
 			elseif DNT_PsionTarget(pawn) then
 				pawn:AddMoveBonus(DNT_SPEED)
 				trait:update(pawn:GetSpace())
-				Board:AddBurst(currPawn:GetSpace(),BURST_UP,DIR_NONE)
 			end
 		end)
 	end
@@ -231,7 +216,7 @@ local HOOK_pawnUntracked = function(mission, pawn)
 	if isMissionBoard() then
 		if pawn:GetType() == DNT_PSION then
 			mission[DNT_PSION] = nil
-			-- Game:TriggerSound("/weapons/phase_shot")
+			Game:TriggerSound("/ui/battle/buff_removed")
 			local pawnList = extract_table(Board:GetPawns(TEAM_ANY))
 			for i = 1, #pawnList do
 				local currPawn = Board:GetPawn(pawnList[i])
@@ -259,8 +244,9 @@ local function HOOK_nextTurn(mission)
 				end
 			end
 		end
+	end
 	-- quiting / loading first turn fix
-	elseif mission[DNT_PSION] == nil then
+	if mission[DNT_PSION] == nil then
 		local enemyList = extract_table(Board:GetPawns(TEAM_ENEMY))
 		for i = 1, #enemyList do
 			local currPawn = Board:GetPawn(enemyList[i])
@@ -317,6 +303,17 @@ local HOOK_gameLoaded = function(mission)
 				if currPawn:GetType() == DNT_PSION then
 					GetCurrentMission()[DNT_PSION] = true
 					break
+				end
+			end
+			
+			if GetCurrentMission()[DNT_PSION] then
+				local pawnList = extract_table(Board:GetPawns(TEAM_ANY))
+				for i = 1, #pawnList do
+					local currPawn = Board:GetPawn(pawnList[i])
+					if DNT_PsionTarget(currPawn) then
+						currPawn:AddMoveBonus(DNT_SPEED)
+						trait:update(currPawn:GetSpace())
+					end
 				end
 			end
 		end

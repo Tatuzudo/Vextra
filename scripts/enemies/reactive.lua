@@ -111,7 +111,7 @@ DNT_Reactive_Passive = PassiveSkill:new{
 		CustomPawn = "DNT_Reactive1",
 		Target = Point(1,1),
 		Friend = Point(1,1),
-		Enemy2 = Point(2,1),
+		Enemy = Point(2,1),
 		Building = Point(3,1),
 	}
 }
@@ -126,7 +126,14 @@ function DNT_Reactive_Passive_Tip:GetSkillEffect(p1,p2)
 	local ret = SkillEffect()
 	local pos = Point(1,1)
 	
-	ret:AddDamage(SpaceDamage(pos,DAMAGE_DEATH))
+	Board:Ping(pos,GL_Color(0,255,0))
+	Board:AddBurst(pos,BURST_UP,DIR_NONE)
+	if IsPassiveSkill("Psion_Leech") then
+		Board:Ping(Point(2,1),GL_Color(0,255,0))
+		Board:AddBurst(Point(2,1),BURST_UP,DIR_NONE)
+	end
+	
+	ret:AddMelee(Point(2,1),SpaceDamage(pos,DAMAGE_DEATH))
 	ret.effect:back().bHide = true
 	ret:AddDelay(1)
 	ret:AddAnimation(pos,"ExploRepulse3")
@@ -221,16 +228,23 @@ trait:add{
 	desc_text = "The Reactive Psion causes other Vek to push adjacent tiles on death.",
 }
 
------------
--- Hooks --
------------
+------------------------
+-- Hooks and Function --
+------------------------
+
+-- some interesting sounds
+--"/impact/generic/tractor_beam" "/impact/generic/control" "/weapons/bomb_strafe"
+local function DNT_Sound_Buff()
+	Game:TriggerSound("/ui/battle/buff_armor")
+	Game:TriggerSound("/impact/generic/control")
+end
 
 -- psion spawning / dying effects and vars
 local HOOK_pawnTracked = function(mission, pawn)
 	if isMissionBoard() then
 		modApi:scheduleHook(1500, function()
 			if pawn:GetType() == DNT_PSION then
-				Game:TriggerSound("/weapons/science_repulse")
+				DNT_Sound_Buff()
 				mission[DNT_PSION] = true
 				local pawnList = extract_table(Board:GetPawns(TEAM_ANY))
 				for i = 1, #pawnList do
@@ -245,8 +259,8 @@ local HOOK_pawnTracked = function(mission, pawn)
 				trait:update(pawn:GetSpace())
 				Board:Ping(pawn:GetSpace(),GL_Color(0,255,0))
 				if Board:GetTurn() ~= 0 then
-					Game:TriggerSound("/weapons/science_repulse")
-					Board:AddBurst(currPawn:GetSpace(),BURST_UP,DIR_NONE)
+					DNT_Sound_Buff()
+					Board:AddBurst(pawn:GetSpace(),BURST_UP,DIR_NONE)
 				end
 			end
 		end)
@@ -257,6 +271,7 @@ local HOOK_pawnUntracked = function(mission, pawn)
 	if isMissionBoard() then
 		if pawn:GetType() == DNT_PSION then
 			mission[DNT_PSION] = nil
+			Game:TriggerSound("/ui/battle/buff_removed")
 			local pawnList = extract_table(Board:GetPawns(TEAM_ANY))
 			for i = 1, #pawnList do
 				local currPawn = Board:GetPawn(pawnList[i])

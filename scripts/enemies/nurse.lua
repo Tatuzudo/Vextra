@@ -18,8 +18,10 @@ end
 --  Icons  --
 -------------
 
--- modApi:copyAsset("img/combat/icons/icon_acid_immune_glow.png", "img/combat/icons/DNT_acid_immune.png")
-	-- Location["combat/icons/DNT_acid_immune.png"] = Point(0,4)--Point(-17,4)
+modApi:appendAsset("img/icons/DNT_nurse_icon.png",resourcePath.."img/icons/DNT_nurse_icon.png")
+	Location["icons/DNT_nurse_icon.png"] = Point(0,0)
+modApi:appendAsset("img/icons/DNT_nurse_icon_glow.png",resourcePath.."img/icons/DNT_nurse_icon_glow.png")
+	Location["icons/DNT_nurse_icon_glow.png"] = Point(0,0)
 
 -------------
 --   Art   --
@@ -54,11 +56,11 @@ a.DNT_jelly_icon_ns = a.MechIcon:new{ Image = imagepath.."DNT_"..name.."_ns.png"
 -- Emitters --
 --------------
 
-local BURST_UP = "DNT_Acid_Up" 
-DNT_Acid_Up = Emitter:new{
-	image = "combat/icons/icon_acid_immune.png",
+local BURST_UP = "DNT_Nurse_Up" 
+DNT_Nurse_Up = Emitter:new{
+	image = "icons/DNT_nurse_icon.png",
 	x = -11,
-	y = 5,
+	y = 6,
 	max_alpha = 1.0,
 	min_alpha = 1.0,
 	angle = -90,
@@ -73,11 +75,11 @@ DNT_Acid_Up = Emitter:new{
 	layer = LAYER_FRONT
 }
 
-local BURST_DOWN = "DNT_Acid_Down" 
-DNT_Acid_Down = Emitter:new{
-	image = "combat/icons/icon_acid_immune.png",
+local BURST_DOWN = "DNT_Nurse_Down" 
+DNT_Nurse_Down = Emitter:new{
+	image = "icons/DNT_nurse_icon.png",
 	x = -11,
-	y = -5,
+	y = 6,
 	max_alpha = 0.5,
 	min_alpha = 0.5,
 	angle = 90,
@@ -96,41 +98,43 @@ DNT_Acid_Down = Emitter:new{
 -- Weapons --
 -------------
 
-DNT_Acid_Passive = PassiveSkill:new{
-	Name = "Caustic Glands",
-	Description = "Remove A.C.I.D. from other vek every turn and cause their attacks to apply A.C.I.D.",
+DNT_Nurse_Passive = PassiveSkill:new{
+	Name = "Healing Strikes",
+	Description = "All other Vek heal instead of damaging allies.",
 	Class = "Enemy",
 	Icon = "weapons/prime_lightning.png",
-	Passive = "DNT_Acid_Passive",
-	CustomTipImage = "DNT_Acid_Passive_Tip",
+	Passive = "DNT_Nurse_Passive",
+	CustomTipImage = "DNT_Nurse_Passive_Tip",
 	TipImage = {
 		Unit = Point(2,3),
-		CustomPawn = "DNT_Acid1",
+		CustomPawn = "DNT_Nurse1",
 		Target = Point(2,2),
 		Friend = Point(1,1),
-		Enemy = Point(2,1),
+		Friend2 = Point(2,1),
 	}
 }
 
-function DNT_Acid_Passive:GetSkillEffect(p1,p2) -- for passive preview
+function DNT_Nurse_Passive:GetSkillEffect(p1,p2) -- for passive preview
 	return SkillEffect()
 end
 
-DNT_Acid_Passive_Tip = DNT_Acid_Passive:new{}
+DNT_Nurse_Passive_Tip = DNT_Nurse_Passive:new{}
 
-function DNT_Acid_Passive_Tip:GetSkillEffect(p1,p2) -- for passive preview
+function DNT_Nurse_Passive_Tip:GetSkillEffect(p1,p2) -- for passive preview
 	local ret = SkillEffect()
+	local damage = 1
+	if IsPassiveSkill("Passive_FriendlyFire") then damage = damage + 1 end
+	if IsPassiveSkill("Passive_FriendlyFire_A") or IsPassiveSkill("Passive_FriendlyFire_B") then damage = damage + 1 end
+	if IsPassiveSkill("Passive_FriendlyFire_AB") then damage = damage + 1 end
+	
 	Board:Ping(Point(1,1),GL_Color(0,255,0))
 	Board:AddBurst(Point(1,1),BURST_UP,DIR_NONE)
-	if IsPassiveSkill("Psion_Leech") then
-		Board:Ping(Point(2,1),GL_Color(0,255,0))
-		Board:AddBurst(Point(2,1),BURST_UP,DIR_NONE)
-	end
+	Board:Ping(Point(2,1),GL_Color(0,255,0))
+	Board:AddBurst(Point(2,1),BURST_UP,DIR_NONE)
 	
-	local damage = SpaceDamage(Point(2,1),1)
-	damage.iAcid = EFFECT_CREATE
-	ret:AddMelee(Point(1,1),damage)
-	ret:AddDelay(1)
+	local dam = SpaceDamage(Point(2,1),-damage)
+	ret:AddMelee(Point(1,1),dam)
+	ret:AddDelay(2)
 	
 	return ret
 end
@@ -139,15 +143,15 @@ end
 -- Pawns --
 -----------
 
-DNT_Acid1 = Pawn:new{
-	Name = "Corrosive Psion",
+DNT_Nurse1 = Pawn:new{
+	Name = "Nurse Psion",
 	Health = 2,
 	MoveSpeed = 2,
 	Image = "DNT_jelly", -- do not change
 	LargeShield = true,
 	VoidShockImmune = true,
-	ImageOffset = 1, -- change this to the right sprite
-	SkillList = { "DNT_Acid_Passive" },
+	ImageOffset = 3, -- change this to the right sprite
+	SkillList = { "DNT_Nurse_Passive" },
 	SoundLocation = "/enemy/jelly/",
 	Flying = true,
 	DefaultTeam = TEAM_ENEMY,
@@ -155,13 +159,13 @@ DNT_Acid1 = Pawn:new{
 	-- Leader = LEADER_VINES,--LEADER_HEALTH,
 	-- Tooltip = "Jelly_Health_Tooltip"
 }
-AddPawn("DNT_Acid1")
+AddPawn("DNT_Nurse1")
 
 ----------------------
 -- Helper Functions --
 ----------------------
 
-local DNT_PSION = "DNT_Acid1"
+local DNT_PSION = "DNT_Nurse1"
 
 local function DNT_PsionTarget(pawn)
 	if GetCurrentMission()[DNT_PSION] and pawn:GetType() ~= DNT_PSION then
@@ -199,19 +203,19 @@ end
 -- Traits --
 ------------
 
-local acidTrait = function(trait,pawn)
+local nurseTrait = function(trait,pawn)
 	if pawn:GetSpace() == mouseTile() or pawn:IsSelected() then
 		return DNT_PsionTarget(pawn)
 	end
 end 
 
 trait:add{
-	func = acidTrait, -- maybe change this name?
-	icon = "img/combat/icons/icon_acid_immune.png", --"img/combat/icons/icon_acid_immune.png",
-	icon_glow = "img/combat/icons/icon_acid_immune_glow.png", --"img/combat/icons/icon_acid_glow_immune.png",
-	icon_offset = Point(0,9),
-	desc_title = "Caustic Glands",
-	desc_text = "The Corrosive Psion remove A.C.I.D. from other vek every turn and cause their attacks to apply A.C.I.D.",
+	func = nurseTrait, -- maybe change this name?
+	icon = "img/icons/DNT_nurse_icon.png",
+	icon_glow = "img/icons/DNT_nurse_icon_glow.png",
+	icon_offset = Point(2,10),
+	desc_title = "Healing Strikes",
+	desc_text = "The Nurse Psion causes vek to heal instead of damaging allies.",
 }
 
 ------------------------
@@ -221,8 +225,8 @@ trait:add{
 -- some interesting sounds
 --/weapons/phase_shot /weapons/refrigerate "/weapons/acid_shot" "/impact/generic/acid_canister"
 local function DNT_Sound_Buff()
-	Game:TriggerSound("/ui/battle/buff_explode")
-	Game:TriggerSound("/props/acid_splash")
+	Game:TriggerSound("/ui/battle/buff_regen")
+	Game:TriggerSound("/impact/generic/tractor_beam")
 end
 
 -- psion spawn
@@ -274,16 +278,23 @@ local HOOK_pawnUntracked = function(mission, pawn)
 end
 
 -- psion acid attack / no friendly fire
-
-local DNT_AcidAttack = function(mission, p1, skillEffect)
+local DNT_NurseAttack = function(mission, p1, skillEffect)
 	local pawn = Board:GetPawn(p1)
 	if mission and mission[DNT_PSION] and pawn and DNT_PsionTarget(pawn) then
 		if skillEffect.q_effect ~= nil then -- and pawn:GetTeam() == TEAM_ENEMY then
 			for i = 1, skillEffect.q_effect:size() do
 				local spaceDamage = skillEffect.q_effect:index(i)
 				local damage = spaceDamage.iDamage
-				if damage > 0 then -- and dpawn then
-					spaceDamage.iAcid = EFFECT_CREATE
+				local dpawn = Board:GetPawn(spaceDamage.loc)
+				if dpawn and dpawn:GetTeam() == pawn:GetTeam() and _G[dpawn:GetType()].DefaultFaction ~= FACTION_BOTS then
+					if damage > 0 and damage ~= DAMAGE_DEATH then -- and dpawn then
+						if pawn:GetTeam() == TEAM_ENEMY and not IsTipImage() then
+							if IsPassiveSkill("Passive_FriendlyFire") then damage = damage + 1 end
+							if IsPassiveSkill("Passive_FriendlyFire_A") or IsPassiveSkill("Passive_FriendlyFire_B") then damage = damage + 1 end
+							if IsPassiveSkill("Passive_FriendlyFire_AB") then damage = damage + 1 end
+						end
+						spaceDamage.iDamage = -damage
+					end
 				end
 			end
 		end
@@ -292,8 +303,16 @@ local DNT_AcidAttack = function(mission, p1, skillEffect)
 			for i = 1, skillEffect.effect:size() do
 				local spaceDamage = skillEffect.effect:index(i)
 				local damage = spaceDamage.iDamage
-				if damage > 0 and damage ~= DAMAGE_DEATH then
-					spaceDamage.iAcid = EFFECT_CREATE
+				local dpawn = Board:GetPawn(spaceDamage.loc)
+				if dpawn and dpawn:GetTeam() == pawn:GetTeam() and _G[dpawn:GetType()].DefaultFaction ~= FACTION_BOTS then
+					if damage > 0 and damage ~= DAMAGE_DEATH then -- and dpawn then
+						if pawn:GetTeam() == TEAM_ENEMY and not IsTipImage() then
+							if IsPassiveSkill("Passive_FriendlyFire") then damage = damage + 1 end
+							if IsPassiveSkill("Passive_FriendlyFire_A") or IsPassiveSkill("Passive_FriendlyFire_B") then damage = damage + 1 end
+							if IsPassiveSkill("Passive_FriendlyFire_AB") then damage = damage + 1 end
+						end
+						spaceDamage.iDamage = -damage
+					end
 				end
 			end
 		end
@@ -301,12 +320,12 @@ local DNT_AcidAttack = function(mission, p1, skillEffect)
 end
 
 local HOOK_onSkillBuild = function(mission, pawn, weaponId, p1, p2, skillEffect)
-	DNT_AcidAttack(mission, p1, skillEffect)
+	DNT_NurseAttack(mission, p1, skillEffect)
 end
 
 
 local HOOK_onFinalEffectBuild = function(mission, pawn, weaponId, p1, p2, p3, skillEffect)
-	DNT_AcidAttack(mission, p1, skillEffect)
+	DNT_NurseAttack(mission, p1, skillEffect)
 end
 
 -- -- psion acid immune / acid heal
@@ -338,9 +357,9 @@ end
 -- add / remove icon sprite
 local EVENT_onGameStateChanged = function(newGameState, oldGameState)
 	if newGameState == "Map" then
-		DNT_Acid1['Image'] = "DNT_jelly_icon"
+		DNT_Nurse1['Image'] = "DNT_jelly_icon"
 	else
-		DNT_Acid1['Image'] = "DNT_jelly"
+		DNT_Nurse1['Image'] = "DNT_jelly"
 	end
 end
 
@@ -373,22 +392,6 @@ local function HOOK_nextTurn(mission)
 			end
 		end
 	end
-	if mission[DNT_PSION] and Game:GetTeamTurn() == TEAM_ENEMY then
-		local pawnList = extract_table(Board:GetPawns(TEAM_ANY))
-		for i = 1, #pawnList do
-			local currPawn = Board:GetPawn(pawnList[i])
-			local pNumber = false
-			if DNT_PsionTarget(currPawn) and currPawn:IsAcid() then
-				pNumber = true
-				currPawn:SetAcid(false)
-				Board:Ping(currPawn:GetSpace(),GL_Color(0,255,0))
-				Board:AddBurst(currPawn:GetSpace(),BURST_UP,DIR_NONE)
-			end
-			if pNumber then
-				DNT_Sound_Buff()
-			end
-		end
-	end
 end
 
 -- add hooks
@@ -398,7 +401,6 @@ local function EVENT_onModsLoaded()
 	DNT_Vextra_ModApiExt:addPawnUntrackedHook(HOOK_pawnUntracked)
 	DNT_Vextra_ModApiExt:addSkillBuildHook(HOOK_onSkillBuild)
 	DNT_Vextra_ModApiExt:addFinalEffectBuildHook(HOOK_onFinalEffectBuild)
-	-- DNT_Vextra_ModApiExt:addPawnIsAcidHook(HOOK_PawnIsAcid)
 	
 	------------------------ do not change this -------------------------
 	-- add / remove trait when selected / highlighted
