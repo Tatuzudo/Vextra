@@ -47,12 +47,16 @@ a.DNT_icecrawlerw = base:new{ Image = imagepath.."DNT_"..name.."_Bw.png", PosY =
 -------------
 
 DNT_IceCrawlerAtk1 = Skill:new {
-	Name = "Cryo Spit",
-	Description = "Damage and freeze the target or explode ice to damage adjacent tiles.",
-	Damage = 1,
+	Name = "Cryo Flamethrower",
+	Description = "Release an icy gas with 3 range that deals more damage the farther it travels and freezes. Stops at buildings and mountains.",
+	Damage = 2,
+	MinDamage = 0, --Starting Damage
+	Range = 3,
 	Class = "Enemy",
 	FreezeSelf = false, -- set true and uncomment the hooks to test with self freeze
-	ExplodeIce = true,
+	ExplodeIce = false,
+	ExtraTiles = false,
+	DamageIncrease = 1,
 	LaunchSound = "/enemy/snowtank_1/attack",
 	ImpactSound = "/impact/generic/explosion",
 	Projectile = "effects/shot_tankice",
@@ -62,9 +66,7 @@ DNT_IceCrawlerAtk1 = Skill:new {
 	TipImage = {
 		Unit = Point(2,3),
 		Target = Point(2,2),
-		Second_Origin = Point(2,3),
-		Second_Target = Point(2,2),
-		Enemy = Point(1,1),
+		Enemy = Point(2,2),
 		Building = Point(2,1),
 		CustomPawn = "DNT_IceCrawler1",
 	}
@@ -72,62 +74,127 @@ DNT_IceCrawlerAtk1 = Skill:new {
 
 DNT_IceCrawlerAtk2 = DNT_IceCrawlerAtk1:new {
 	Damage = 3,
+	MinDamage = 1, --Starting Damage
 	TipImage = {
 		Unit = Point(2,3),
 		Target = Point(2,2),
-		Second_Origin = Point(2,3),
-		Second_Target = Point(2,2),
-		Enemy = Point(1,1),
+		Enemy = Point(2,2),
 		Building = Point(2,1),
 		CustomPawn = "DNT_IceCrawler2",
 	}
 }
+DNT_IceCrawlerAtk3 = DNT_IceCrawlerAtk1:new {
+	Description = "Release an icy gas in two directions with 3 range that deals more damage the farther it travels and freezes. Explodes existing ice out sideways. Stops at buildings and mountains.",
+	Damage = 3,
+	MinDamage = 1, --Starting Damage
+	ExplodeIce = true,
+	ExtraTiles = true,
+	TipImage = {
+		Unit = Point(2,3),
+		Target = Point(2,2),
+		Enemy = Point(2,2),
+		Building = Point(2,1),
+		Enemy2 = Point(1,2),
+		Building2 = Point(3,1),
+		Mountain = Point(2,4),
+		Second_Origin = Point(2,3),
+		Second_Target = Point(2,2),
+		CustomPawn = "DNT_IceCrawler3",
+	}
+}
 
+--TO DO: Animation
 function DNT_IceCrawlerAtk1:GetSkillEffect(p1,p2)
 	local ret = SkillEffect()
-	local target = GetProjectileEnd(p1,p2)
-	local damage = SpaceDamage(target,self.Damage)
-	local tpawn = Board:GetPawn(target)
-	local burrower = false
-	if tpawn and _G[tpawn:GetType()].Burrows then burrower = true end
+	--local target = GetProjectileEnd(p1,p2)
+	local dir = GetDirection(p2-p1)
+	local backdir = GetDirection(p1-p2)
+	local damage = nil
 
-	if Board:IsBlocked(target,PATH_PROJECTILE) and not Board:IsFrozen(target) and not burrower then -- do not freeze frozen things again or burrowers (they burrow anyway with damage)
-		damage.iFrozen = EFFECT_CREATE
-	elseif not Board:IsBlocked(target,PATH_PROJECTILE) and Board:GetTerrain(target) ~= TERRAIN_ICE then
-		damage.iFrozen = EFFECT_CREATE
+	local targets = {}
+	local curr = nil
+	for i=1,self.Range do
+		curr = p1+DIR_VECTORS[dir]*i
+		table.insert(targets, curr)
+		if Board:IsBuilding(curr) or Board:IsTerrain(curr, TERRAIN_MOUNTAIN) or not Board:IsValid(curr+DIR_VECTORS[dir]) then --Board isn't valid one space ahead
+			break
+		end
+	end
+	local distance = p1:Manhattan(curr)
+	local animation = SpaceDamage(curr,0)
+	animation.sAnimation = "flamethrower"..distance.."_"..dir
+
+	local animation2 = nil --I need this later
+
+	if self.ExtraTiles then
+		for i=1,self.Range do
+			curr = p1+DIR_VECTORS[backdir]*i
+			table.insert(targets, curr)
+			if Board:IsBuilding(curr) or Board:IsTerrain(curr, TERRAIN_MOUNTAIN) or not Board:IsValid(curr+DIR_VECTORS[backdir]) then
+				break
+			end
+		end
+
+		local distance2 = p1:Manhattan(curr)
+		animation2 = SpaceDamage(curr,0)
+		animation2.sAnimation = "flamethrower"..distance2.."_"..backdir
+	end
+
+	for _, target in pairs(targets) do
+		local currentDistance = p1:Manhattan(target)
+		LOG("currentDistance", currentDistance)
+		LOG("backdir", backdir)
+		LOG("GetDirection", GetDirection(target-p1))
+		if currentDistance == 1 and dir == GetDirection(target-p1) then
+			ret:AddQueuedDamage(animation)
+		elseif currentDistance == 1 and backdir == GetDirection(target-p1) then
+			ret:AddQueuedDamage(animation2)
+		end
+
+		local currentDamage = (currentDistance+self.MinDamage-1)*self.DamageIncrease
+		local tpawn = Board:GetPawn(target)
+		local burrower = false
+		if tpawn and _G[tpawn:GetType()].Burrows then burrower = true end
+
+		damage = SpaceDamage(target,currentDamage)
+		if Board:IsBlocked(target,PATH_PROJECTILE) and not Board:IsFrozen(target) and not burrower then -- do not freeze frozen things again or burrowers (they burrow anyway with damage)
+			damage.iFrozen = EFFECT_CREATE
+		elseif not Board:IsBlocked(target,PATH_PROJECTILE) and Board:GetTerrain(target) ~= TERRAIN_ICE then
+			damage.iFrozen = EFFECT_CREATE
+		end
+
+		ret:AddQueuedDamage(damage)
+
+		if self.ExplodeIce then --Explode Ice
+			if Board:IsFrozen(target) or (not Board:IsBlocked(target,PATH_PROJECTILE) and Board:GetTerrain(target) == TERRAIN_ICE) then
+				for i = -1, 2, 2 do
+					local currdir = (dir+i)%4
+					local curr = DIR_VECTORS[currdir] + target
+					damage = SpaceDamage(curr,currentDamage)
+					damage.sAnimation = "flamethrower1_"..currdir
+					-- damage.sSound = self.SoundBase.."/attack"
+					ret:AddQueuedDamage(damage)
+				end
+			end
+		end
+
+		-- Unfreeze mech corpse because it's weird (invisible ice). Also unfreeze shielded targets.
+		local defrost = Board:GetPawn(target)
+		if defrost then
+			defrost = Board:IsDeadly(SpaceDamage(target,currentDamage),defrost) or defrost:IsDead() or defrost:IsShield()
+		end
+		if defrost then
+			damage = SpaceDamage(target)
+			damage.iFrozen = EFFECT_REMOVE
+			ret:AddQueuedDamage(damage)
+		end
+		ret:AddQueuedDelay(.2)
 	end
 
 	if self.FreezeSelf then
 		selfdamage = SpaceDamage(p1)
 		selfdamage.iFrozen = EFFECT_CREATE
 		ret:AddQueuedDamage(selfdamage)
-	end
-
-	ret:AddQueuedProjectile(damage,self.Projectile,FULL_DELAY)
-
-	if self.ExplodeIce then
-		if Board:IsFrozen(target) or (not Board:IsBlocked(target,PATH_PROJECTILE) and Board:GetTerrain(target) == TERRAIN_ICE) then
-			for i = DIR_START, DIR_END do
-				local curr = DIR_VECTORS[i] + target
-				if i ~= GetDirection(p1 - p2) then
-					damage = SpaceDamage(curr,self.Damage)
-					-- damage.sAnimation = "IceShards"
-					-- damage.sSound = self.SoundBase.."/attack"
-					ret:AddQueuedDamage(damage)
-				end
-			end
-		end
-	end
-
-	-- Unfreeze mech corpse because it's weird (invisible ice). Also unfreeze shielded targets.
-	local defrost = Board:GetPawn(target)
-	if defrost then
-		defrost = Board:IsDeadly(SpaceDamage(target,self.Damage),defrost) or defrost:IsDead() or defrost:IsShield()
-	end
-	if defrost then
-		damage = SpaceDamage(target)
-		damage.iFrozen = EFFECT_REMOVE
-		ret:AddQueuedDamage(damage)
 	end
 
 	return ret
@@ -161,11 +228,12 @@ end
 DNT_IceCrawler1 = Pawn:new
 	{
 		Name = "Ice Crawler",
-		Health = 3,
-		MoveSpeed = 2,
+		Health = 2,
+		MoveSpeed = 3,
 		Ranged = 1,
 		Image = "DNT_icecrawler", --Image = "DNT_IceCrawler"
 		SkillList = {"DNT_IceCrawlerAtk1"},
+		MoveSkill = "DNT_IceCrawlerMove",
 		SoundLocation = "/enemy/beetle_1/",
 		DefaultTeam = TEAM_ENEMY,
 		ImpactMaterial = IMPACT_INSECT,
@@ -175,10 +243,11 @@ AddPawn("DNT_IceCrawler1")
 DNT_IceCrawler2 = Pawn:new
 	{
 		Name = "Alpha Ice Crawler",
-		Health = 5,
-		MoveSpeed = 2,
+		Health = 4,
+		MoveSpeed = 3,
 		Ranged = 1,
 		SkillList = {"DNT_IceCrawlerAtk2"},
+		MoveSkill = "DNT_IceCrawlerMove",
 		Image = "DNT_icecrawler", --Image = "DNT_IceCrawler",
 		SoundLocation = "/enemy/beetle_2/",
 		ImageOffset = 1,
@@ -187,6 +256,45 @@ DNT_IceCrawler2 = Pawn:new
 		Tier = TIER_ALPHA,
 	}
 AddPawn("DNT_IceCrawler2")
+
+DNT_IceCrawler3 = Pawn:new
+	{
+		Name = "Ice Crawler Leader",
+		Health = 6,
+		MoveSpeed = 3,
+		Ranged = 1,
+		SkillList = {"DNT_IceCrawlerAtk3"},
+		MoveSkill = "DNT_IceCrawlerMove",
+		Image = "DNT_icecrawler", --Image = "DNT_IceCrawler",
+		SoundLocation = "/enemy/beetle_2/",
+		ImageOffset = 2,
+		DefaultTeam = TEAM_ENEMY,
+		ImpactMaterial = IMPACT_INSECT,
+		Tier = TIER_BOSS,
+		Massive = true,
+	}
+AddPawn("DNT_IceCrawler3")
+
+----------------
+-- Move Skill --
+----------------
+
+DNT_IceCrawlerMove = Move:new
+{
+
+}
+
+function DNT_IceCrawlerMove:GetTargetArea(point)
+	return Board:GetReachable(point, Pawn:GetMoveSpeed(), Pawn:GetPathProf())
+end
+
+function DNT_IceCrawlerMove:GetSkillEffect(p1, p2)
+	local ret = SkillEffect()
+	--local mission = GetCurrentMission()
+	ret:AddMove(Board:GetPath(p1, p2, Pawn:GetPathProf()), FULL_DELAY)
+	ret:AddScript(string.format("Board:SetCustomTile(%s, %q)",p2:GetString(),"snow.png"))
+	return ret
+end
 
 
 -----------

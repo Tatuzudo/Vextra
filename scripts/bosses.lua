@@ -79,4 +79,55 @@ function Mission_CockroachBoss:IsBossDead()
 	end
 	return true
 end
--- IslandLocks.Mission_ThunderbugBoss = 3
+
+Mission_IceCrawlerBoss = Mission_Boss:new{
+	Name = "Ice Crawler Leader",
+	BossPawn = "DNT_IceCrawler3",
+	SpawnStartMod = -2, --One extra for the frozen Vek spawned
+	BossText = "Destroy the Ice Crawler Leader",
+}
+--Add Ice
+function Mission_IceCrawlerBoss:StartMission()
+	self:StartBoss()
+	math.randomseed(os.time())
+	local tile = Board:GetPawn(self.BossID):GetSpace()
+	local board_size = Board:GetSize()
+
+	--Frozen Vek
+	local choices = {}
+	self.Enemies = {}
+
+
+	for i = 0, board_size.x - 1 do
+		for j = 0, board_size.y - 1 do
+			local point = Point(i,j)
+			local distance = point:Manhattan(tile)
+			local odds = 30
+			if Board:IsBuilding(point) then odds = 50 end
+			if distance <= 2 and point ~= tile then
+				Board:SetFrozen(point, true)
+			elseif point == tile then
+				Board:SetCustomTile(point, "snow.png")
+			elseif (Board:IsBuilding(point) or Board:IsTerrain(point,TERRAIN_MOUNTAIN)) and not Board:IsUniqueBuilding(point) and math.random(1,100) <= odds then
+				Board:SetFrozen(point, true)
+			end
+			--Frozen Vek
+			if i >= 1 and i <= 5 and j >= 2 and j <= 6 then
+				if 	not Board:IsBlocked(point,PATH_GROUND) then
+					choices[#choices+1] = point
+				end
+			end
+		end
+	end
+
+	--Frozen Vek
+	if #choices > 0 then
+		pawn = self:NextPawn()
+		local choice = random_removal(choices)
+		self.Enemies[#self.Enemies+1] = pawn:GetId()
+		Board:AddPawn(pawn,choice)
+		pawn:SetFrozen(true)
+	else
+		self.SpawnStartMod = -1 --In case this works, but this should never happen
+	end
+end

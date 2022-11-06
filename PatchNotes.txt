@@ -27,3 +27,7 @@ Fixed the death effect psions for Cockroach so it is no longer exclusive with th
 	Special Thanks to Lemonymous for helping with the solution
 Added the Cockroach Leader
 Added the Dragonfly Leader
+Ice Crawler Rework:
+	The Ice Crawler felt a bit boring compared to some of the other uniques, so it got an update
+	Release an icy gas with 3 range that deals more damage the farther it travels and freezes. Stops at buildings and mountains.
+Ice Crawler Leader Added
