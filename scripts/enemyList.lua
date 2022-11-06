@@ -1,6 +1,16 @@
 local enemyListSolo = easyEdit.enemyList:add("Vextra Only")
 local enemyListCombined =  easyEdit.enemyList:add("Vanilla + Vextra")
-local enemyListVanilla = easyEdit.enemyList:get("vanilla")
+local enemyListVanilla = nil
+
+if easyEdit.enemyList:get("vanilla") then
+	enemyListVanilla = easyEdit.enemyList:get("vanilla")
+elseif easyEdit.enemyList:get("archive") then
+	enemyListVanilla = easyEdit.enemyList:get("archive")
+else
+	LOG("ERROR - Vextra - Enemy Lists not found, creating blank list to copy from")
+	enemyListVanilla = easyEdit.enemyList:add("Blank List") 
+end
+
 --local enemyListFinale = easyEdit.enemyList:get("finale")
 
 enemyListSolo.categories = {"Core", "Core", "Core", "Leaders", "Unique", "Unique"}
