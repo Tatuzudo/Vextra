@@ -239,11 +239,13 @@ local HOOK_pawnTracked = function(mission, pawn)
 						trait:update(currPawn:GetSpace())
 						Board:Ping(currPawn:GetSpace(),GL_Color(0,255,0))
 						Board:AddBurst(currPawn:GetSpace(),BURST_UP,DIR_NONE)
+						currPawn:SetAcid(false)
 					end
 				end
 			elseif DNT_PsionTarget(pawn) then
 				trait:update(pawn:GetSpace())
 				Board:Ping(pawn:GetSpace(),GL_Color(0,255,0))
+				pawn:SetAcid(false)
 				if Board:GetTurn() ~= 0 then
 					DNT_Sound_Buff()
 					Board:AddBurst(pawn:GetSpace(),BURST_UP,DIR_NONE)
