@@ -45,7 +45,7 @@ local enemies = {
 		weakpawn = false,
 		max_pawns = 3,
 		IslandLocks = 2,
-		ExclusiveElement = "Jelly_Explode", --Doens't work with them, so just exclude them
+		--ExclusiveElement = "Jelly_Explode", --Doens't work with them, so just exclude them
 	},
 	DNT_Termites = {
 		weakpawn = false,

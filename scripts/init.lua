@@ -77,7 +77,7 @@ local function load(self,options,version)
 	for _, table in ipairs(DNT_Vextra_VekList) do
 		if table[2] then
 			local name = table[1]
-			require(self.scriptPath .. "enemies/" .. string.lower(name)):load(self.libs.modApiExt)
+			require(self.scriptPath .. "enemies/" .. string.lower(name)):load(DNT_Vextra_ModApiExt)
 		end
 	end
 
