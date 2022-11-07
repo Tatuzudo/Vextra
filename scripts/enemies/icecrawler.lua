@@ -142,9 +142,9 @@ function DNT_IceCrawlerAtk1:GetSkillEffect(p1,p2)
 
 	for _, target in pairs(targets) do
 		local currentDistance = p1:Manhattan(target)
-		LOG("currentDistance", currentDistance)
-		LOG("backdir", backdir)
-		LOG("GetDirection", GetDirection(target-p1))
+		--LOG("currentDistance", currentDistance)
+		--LOG("backdir", backdir)
+		--LOG("GetDirection", GetDirection(target-p1))
 		if currentDistance == 1 and dir == GetDirection(target-p1) then
 			ret:AddQueuedDamage(animation)
 		elseif currentDistance == 1 and backdir == GetDirection(target-p1) then
