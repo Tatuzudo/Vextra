@@ -35,6 +35,13 @@ trait:add{
 	desc_title = "Undying",
 	desc_text = "If killed, resurrect with full hp after the Vek attack, unless damaged again or stepped on.",
 }
+trait:add{
+	pawnType = "DNT_Cockroach3",
+	icon = resourcePath.."img/combat/traits/DNT_cockroach_trait.png",
+	--icon_offset = Point(0,-15),
+	desc_title = "Undying",
+	desc_text = "If killed, resurrect with full hp after the Vek attack, unless damaged again or stepped on.",
+}
 
 
 -------------
