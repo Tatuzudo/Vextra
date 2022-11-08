@@ -14,9 +14,34 @@ end
 
 
 -------------
---  Icons  --
+--  Anims  --
 -------------
+local directions = {"U","R","D","L"}
+for i=1,3 do --4
+	for _, v in pairs(directions) do
+		modApi:appendAsset("img/effects/DNT_chillthrower"..i.."_"..v..".png", resourcePath.."img/effects/chillthrower"..i.."_"..v..".png")
+	end
+end
+a.chillthrower1_0 = a.flamethrower1_0:new{ Image = "effects/DNT_chillthrower1_U.png"}
+a.chillthrower2_0 = a.flamethrower2_0:new{ Image = "effects/DNT_chillthrower2_U.png"}
+a.chillthrower3_0 = a.flamethrower3_0:new{ Image = "effects/DNT_chillthrower3_U.png"}
+--a.chillthrower4_0 = a.flamethrower4_0:new{ Image = "effects/DNT_chillthrower4_U.png"}
 
+a.chillthrower1_1 = a.flamethrower1_1:new{ Image = "effects/DNT_chillthrower1_R.png"}
+a.chillthrower2_1 = a.flamethrower2_1:new{ Image = "effects/DNT_chillthrower2_R.png"}
+a.chillthrower3_1 = a.flamethrower3_1:new{ Image = "effects/DNT_chillthrower3_R.png"}
+--a.chillthrower4_1 = a.flamethrower4_1:new{ Image = "effects/DNT_chillthrower4_R.png"}
+
+a.chillthrower1_2 = a.flamethrower1_2:new{ Image = "effects/DNT_chillthrower1_D.png"}
+a.chillthrower2_2 = a.flamethrower2_2:new{ Image = "effects/DNT_chillthrower2_D.png"}
+a.chillthrower3_2 = a.flamethrower3_2:new{ Image = "effects/DNT_chillthrower3_D.png"}
+--a.chillthrower4_2 = a.flamethrower4_2:new{ Image = "effects/DNT_chillthrower4_D.png"}
+
+a.chillthrower1_3 = a.flamethrower1_3:new{ Image = "effects/DNT_chillthrower1_L.png"}
+a.chillthrower2_3 = a.flamethrower2_3:new{ Image = "effects/DNT_chillthrower2_L.png"}
+a.chillthrower3_3 = a.flamethrower3_3:new{ Image = "effects/DNT_chillthrower3_L.png"}
+--a.chillthrower1_0 = a.flamethrower4_3:new{ Image = "effects/DNT_chillthrower4_L.png"}
+ --Board:AddAnimation(Point(6,6),"chillthrower1_3",ANIM_NO_DELAY)
 -------------
 --   Art   --
 -------------
@@ -47,7 +72,7 @@ a.DNT_icecrawlerw = base:new{ Image = imagepath.."DNT_"..name.."_Bw.png", PosY =
 -------------
 
 DNT_IceCrawlerAtk1 = Skill:new {
-	Name = "Cryo Flamethrower",
+	Name = "Cryo Chillthrower",
 	Description = "Release an icy gas with 3 range that deals more damage the farther it travels and freezes. Stops at buildings and mountains.",
 	Damage = 2,
 	MinDamage = 0, --Starting Damage
@@ -122,7 +147,7 @@ function DNT_IceCrawlerAtk1:GetSkillEffect(p1,p2)
 	end
 	local distance = p1:Manhattan(curr)
 	local animation = SpaceDamage(curr,0)
-	animation.sAnimation = "flamethrower"..distance.."_"..dir
+	animation.sAnimation = "chillthrower"..distance.."_"..dir
 
 	local animation2 = nil --I need this later
 
@@ -137,8 +162,10 @@ function DNT_IceCrawlerAtk1:GetSkillEffect(p1,p2)
 
 		local distance2 = p1:Manhattan(curr)
 		animation2 = SpaceDamage(curr,0)
-		animation2.sAnimation = "flamethrower"..distance2.."_"..backdir
+		animation2.sAnimation = "chillthrower"..distance2.."_"..backdir
 	end
+
+	LOG(animation.sAnimation)
 
 	for _, target in pairs(targets) do
 		local currentDistance = p1:Manhattan(target)
@@ -171,7 +198,7 @@ function DNT_IceCrawlerAtk1:GetSkillEffect(p1,p2)
 					local currdir = (dir+i)%4
 					local curr = DIR_VECTORS[currdir] + target
 					damage = SpaceDamage(curr,currentDamage)
-					damage.sAnimation = "flamethrower1_"..currdir
+					damage.sAnimation = "chillthrower1_"..currdir
 					-- damage.sSound = self.SoundBase.."/attack"
 					ret:AddQueuedDamage(damage)
 				end
