@@ -93,18 +93,19 @@ DNT_cockroach_filler = Animation:new{
 	PosY = 0,
 }
 --]]
-a.DNT_cockroach_explosion_beta = Animation:new{
+a.DNT_cockroach_explo_beta = Animation:new{
 	Image = imagepath.."DNT_cockroach_explosion_beta.png",
 	NumFrames = 8,
 	Time = .14,
 	Loop = false,
 	PosX = -23,
 	PosY = -5,
+	Layer = ANIMS.LAYER_FLOOR,
 }
-a.DNT_cockroach_explosion_alpha = a.DNT_cockroach_explosion_beta:new{
+a.DNT_cockroach_explo_alpha = a.DNT_cockroach_explo_beta:new{
 	Image = imagepath.."DNT_cockroach_explosion_alpha.png",
 }
-a.DNT_cockroach_explosion_leader = a.DNT_cockroach_explosion_beta:new{
+a.DNT_cockroach_explo_leader = a.DNT_cockroach_explo_beta:new{
 	Image = imagepath.."DNT_cockroach_explosion_leader.png",
 }
 
