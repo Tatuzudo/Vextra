@@ -24,7 +24,7 @@ local function init(self)
 		{"Antlion",false,"Core",false},
 		{"Termites",false,"Unique",false},
 		{"Stinkbug",false,"Core",true},
-		{"Cockroach",true,"Unique",true},
+		{"Cockroach",false,"Unique",true},
 		{"Anthill",false,"Unique",true},
 		{"IceCrawler",false,"Unique",false},
 		{"Fly",false,"Core",false},
@@ -119,7 +119,7 @@ return {
 	requirements = { "kf_ModUtils" },
 	dependencies = {
 		modApiExt = "1.2",
-		--memedit = "0.1.0",
+		memedit = "0.1.2",
 		easyEdit = "2.0.1",
 	},
 	metadata = metadata,

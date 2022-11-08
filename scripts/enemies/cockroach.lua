@@ -65,7 +65,7 @@ local baseEmerge = a.BaseEmerge:new{Image = imagepath .. "DNT_"..name.."_emerge.
 a.DNT_cockroach = base
 a.DNT_cockroache = baseEmerge
 a.DNT_cockroacha = base:new{ Image = imagepath.."DNT_"..name.."a.png", NumFrames = 4 }
---a.DNT_cockroachd = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Loop = false, NumFrames = 4, Time = .15 } --Numbers copied for now
+a.DNT_cockroachd = base:new{ Image = imagepath.."DNT_"..name.."_death.png", NumFrames = 5, Lengths = {.15,.15,.15,.15,.8}, Loop = false }
 a.DNT_cockroachw = base:new{ Image = imagepath.."DNT_"..name.."_Bw.png", PosY = 0} --Only if there's a boss
 
 --MINE
@@ -125,14 +125,15 @@ a.DNT_cockroachd_leader = a.DNT_cockroachd_beta:new{
 	Image = imagepath.."DNT_cockroach_death_reverse_leader.png",
 }
 
-a.DNT_cockroachd_reverse_beta = a.DNT_cockroachd_beta:new{
-	Lengths = {.15, .15, .15, .15, .15}
+a.DNT_cockroach_revive_beta = a.DNT_cockroachd_beta:new{
+	Frames = {5,4,3,2,1},
+	Lengths = {.15, .15, .15, .15, .15},
 }
-a.DNT_cockroachd_reverse_alpha = a.DNT_cockroachd_alpha:new{
-	Lengths = {.15, .15, .15, .15, .15}
+a.DNT_cockroach_revive_alpha = a.DNT_cockroachd_alpha:new{
+	Lengths = {.15, .15, .15, .15, .15},
 }
-a.DNT_cockroachd_reverse_leader = a.DNT_cockroachd_leader:new{
-	Lengths = {.15, .15, .15, .15, .15}
+a.DNT_cockroach_revive_leader = a.DNT_cockroachd_leader:new{
+	Lengths = {.15, .15, .15, .15, .15},
 }
 
 
@@ -143,14 +144,14 @@ a.DNT_cockroachd_reverse_leader = a.DNT_cockroachd_leader:new{
 
 DNT_CockroachAtk1 = LineArtillery:new {
 	Name = "Organ Donor",
-	Description = "Damage itself to launch an artillery attack on two tiles, one tile apart.",
+	Description = "Damage itself to launch an artillery "
+				.."attack on two tiles, one tile apart.",
 	Damage = 1,
 	ArtillerySize = 4,
 	SelfDamage = 1,
 	Class = "Enemy",
 	PathSize = 1,
 	Projectile = "effects/shotup_ant1.png",
-	--Explosion = "ExploArt1",
 	ImpactSound = "/impact/generic/explosion",
 	LaunchSound = "",
 	ExtraTiles = false,
@@ -163,7 +164,8 @@ DNT_CockroachAtk1 = LineArtillery:new {
 		CustomPawn = "DNT_Cockroach1",
 	}
 }
-DNT_CockroachAtk2 = DNT_CockroachAtk1:new { --Just an example
+
+DNT_CockroachAtk2 = DNT_CockroachAtk1:new {
 	Name = "Organ Deliverer",
 	Damage = 3,
 	TipImage = {
@@ -175,9 +177,11 @@ DNT_CockroachAtk2 = DNT_CockroachAtk1:new { --Just an example
 		CustomPawn = "DNT_Cockroach2",
 	}
 }
-DNT_CockroachAtk3 = DNT_CockroachAtk1:new { --Just an example
+
+DNT_CockroachAtk3 = DNT_CockroachAtk1:new {
 	Name = "Organ Provider",
-	Description = "Damage itself to launch an artillery attack on three tiles, one tile apart each.",
+	Description = "Damage itself to launch an artillery "
+				.."attack on four tiles, centered around one tile.",
 	Damage = 2,
 	ExtraTiles = true,
 	TipImage = {
@@ -191,11 +195,9 @@ DNT_CockroachAtk3 = DNT_CockroachAtk1:new { --Just an example
 }
 
 
-
 function DNT_CockroachAtk1:GetSkillEffect(p1,p2)
 	local ret = SkillEffect()
 	local direction = GetDirection(p2 - p1)
-	--local backdir = GetDirection(p1 - p2)
 
 	local targets = {p2, p2 + DIR_VECTORS[direction]*2}
 	if self.ExtraTiles then
@@ -212,32 +214,12 @@ function DNT_CockroachAtk1:GetSkillEffect(p1,p2)
 	end
 
 	damage = SpaceDamage(p1,self.SelfDamage)
-	--Hide the self damage, we don't want people to misunderstand the red ground on it (doesn't work how I want)
-	--damage.bHide = true
-	--damage.bHideIcon = true This hides damage numbers on hover (I assume)
-	--damage.bHidePath = true
 	ret:AddQueuedDamage(damage)
-
-
-	--[[ OLD TARGETTING SYSTEM
-	local target = p2 + DIR_VECTORS[direction]
-	local damage = SpaceDamage(target, self.Damage)
-	damage.sAnimation = "ExploArt1",
-
-	ret:AddQueuedArtillery(damage,self.Projectile, NO_DELAY)
-
-	target = p2 + DIR_VECTORS[backdir]
-	damage.loc = target
-
-	ret:AddQueuedArtillery(damage,self.Projectile, NO_DELAY)
-	]]
 
 	return ret
 end
 
------------
--- Pawns --
------------
+----------------------------- UNITS -----------------------------
 
 DNT_Cockroach1 = Pawn:new
 	{
@@ -245,18 +227,16 @@ DNT_Cockroach1 = Pawn:new
 		Health = 1,
 		MoveSpeed = 3,
 		Ranged = 1,
-		Image = "DNT_cockroach", --lowercase
+		Image = "DNT_cockroach",
 		SkillList = {"DNT_CockroachAtk1"},
 		SoundLocation = "/enemy/beetle_1/",
 		DefaultTeam = TEAM_ENEMY,
 		ImpactMaterial = IMPACT_INSECT,
-		DroppedCorpse = "DNT_Corpse_Mine",
-		DeathAnimation = "DNT_cockroachd_beta",
-		ReverseAnimation = "DNT_cockroachd_reverse_beta",
-		--Corpse = true,
+		CorpseItem = "DNT_Corpse_Mine",
+		ReviveAnim = "DNT_cockroach_revive_beta",
+		Corpse = true,
 	}
 AddPawn("DNT_Cockroach1")
-
 
 DNT_Cockroach2 = DNT_Cockroach1:new
 	{
@@ -271,10 +251,9 @@ DNT_Cockroach2 = DNT_Cockroach1:new
 		DefaultTeam = TEAM_ENEMY,
 		ImpactMaterial = IMPACT_INSECT,
 		Tier = TIER_ALPHA,
-		DroppedCorpse = "DNT_Corpse2_Mine",
-		DeathAnimation = "DNT_cockroachd_alpha",
-		ReverseAnimation = "DNT_cockroachd_reverse_alpha",
-		--Corpse = true,
+		CorpseItem = "DNT_Corpse2_Mine",
+		ReviveAnim = "DNT_cockroach_revive_alpha",
+		Corpse = true,
 	}
 AddPawn("DNT_Cockroach2")
 
@@ -292,241 +271,145 @@ DNT_Cockroach3 = DNT_Cockroach1:new
 		ImpactMaterial = IMPACT_INSECT,
 		Tier = TIER_BOSS,
 		Massive = true,
-		DroppedCorpse = "DNT_Corpse3_Mine",
-		DeathAnimation = "DNT_cockroachd_leader",
-		ReverseAnimation = "DNT_cockroachd_reverse_leader",
-		--Corpse = true,
+		CorpseItem = "DNT_Corpse3_Mine",
+		ReviveAnim = "DNT_cockroach_revive_leader",
+		Corpse = true,
 	}
 AddPawn("DNT_Cockroach3")
-------------------
--- Death Effect --
-------------------
 
-local function DNT_Cockroach_Effect(p1, corpse, animation)
+function DNT_Cockroach1:GetDeathEffect(p)
 	local ret = SkillEffect()
-	LOG("DEATH EFFECT")
-	--ret:AddScript(string.format("Board:GetPawn(%s):SetInvisible(true)",p1:GetString()))
-	local terrain = Board:GetTerrain(p1)
-	if terrain ~= TERRAIN_WATER and terrain ~= TERRAIN_LAVA and terrain ~= TERRAIN_HOLE then
-		--Board:AddAnimation(p1,animation,ANIM_NO_DELAY)
-		--ret:AddDelay(3*.15)
-		local damage = SpaceDamage(p1,0)
-		damage.sItem = corpse
-		--ret:AddDelay(0.016)
-		ret:AddDamage(damage)--Wait a frame?
-		--ret:AddScript(string.format("table.insert(GetCurrentMission().CockroachCorpses,%s)",p1:GetString())) --BAD
-		--ret:AddDelay(9*.15) --1.35
+	local pawn = Board:GetPawn(p)
+	local item = self.CorpseItem
+
+	if pawn then
+		local pawnId = pawn:GetId()
+		local terrain = Board:GetTerrain(p)
+
+		if terrain == TERRAIN_HOLE then
+			-- Do nothing
+
+		elseif terrain == TERRAIN_WATER then
+			-- If the unit dies and is pushed into water,
+			-- unset corpse so it causes a splash.
+
+			ret:AddScript(string.format("Board:GetPawn(%s):SetCorpse(false)", pawnId))
+		else
+			-- Wait until xp text is gone
+			-- before we swap out the unit
+			-- with an item.
+
+			ret:AddDelay(0.5)
+			ret:AddScript(string.format([[
+				local pawnId, item = %s, %q
+				local pawn = Board:GetPawn(pawnId)
+				if pawn then
+					local p = pawn:GetSpace()
+
+					pawn:SetCorpse(false)
+					pawn:SetCustomAnim("")
+					Board:SetItem(p, item)
+				end
+			]], pawnId, item))
+		end
 	end
+
 	return ret
 end
 
+DNT_Cockroach2.GetDeathEffect = DNT_Cockroach1.GetDeathEffect
+DNT_Cockroach3.GetDeathEffect = DNT_Cockroach1.GetDeathEffect
 
-function DNT_Cockroach1:GetDeathEffect(p1) --Death Effects aren't inheritable apparently
-	local corpse = self.DroppedCorpse
-	local animation = self.DeathAnimation
-	return DNT_Cockroach_Effect(p1, corpse, animation)
-end
-
-function DNT_Cockroach2:GetDeathEffect(p1) --Death Effects aren't inheritable apparently
-	local corpse = self.DroppedCorpse
-	local animation = self.DeathAnimation
-	return DNT_Cockroach_Effect(p1, corpse, animation)
-end
-
-function DNT_Cockroach3:GetDeathEffect(p1) --Death Effects aren't inheritable apparently
-	local corpse = self.DroppedCorpse
-	local animation = self.DeathAnimation
-	return DNT_Cockroach_Effect(p1, corpse, animation)
-end
-
-
------------
--- Mines --
------------
+----------------------------- MINES -----------------------------
 
 TILE_TOOLTIPS = {
-	DNT_Corpse_Text = {"Cockroach Corpse", "Comes back to life at the beginning of the Vek turn as a Cockroach unless stepped on or damaged."},
-	DNT_Corpse_Text2 = {"Alpha Cockroach Corpse", "Comes back to life at the beginning of the Vek turn as an Alpha Cockroach unless stepped on or damaged."},
-	DNT_Corpse_Text3 = {"Cockroach Leader Corpse", "Comes back to life at the beginning of the Vek turn as a Cockroach Leader unless stepped on or damaged."},
+	DNT_Corpse_Text = {
+		"Cockroach Corpse",
+		"Comes back to life at the beginning of the Vek turn "..
+		"as a Cockroach unless stepped on or damaged."
+	},
+	DNT_Corpse_Text2 = {
+		"Alpha Cockroach Corpse",
+		"Comes back to life at the beginning of the Vek turn "..
+		"as an Alpha Cockroach unless stepped on or damaged."
+	},
+	DNT_Corpse_Text3 = {
+		"Cockroach Leader Corpse",
+		"Comes back to life at the beginning of the Vek turn "..
+		"as a Cockroach Leader unless stepped on or damaged."
+	},
 }
 
 local mine_damage_beta = SpaceDamage(0)
---mine_damage_beta.sAnimation = "DNT_cockroach_explosion_beta"
---ANIMATIONS ARE HIDDEN FOR NOW, AT LEAST UNTIL WE FIND A WAY TO NOT MAKE THEM PLAY WITH A PAWN
---mine_damage_beta.sScript = "LOG(mine_damage_beta.loc)"
---mine_damage_beta.sScript = string.format("Board:AddAnimation(%s,%q,ANIM_NO_DELAY)",self.loc,"DNT_cockroach_explosion_beta")
-
 local mine_damage_alpha = SpaceDamage(0)
---ANIMATIONS ARE HIDDEN FOR NOW, AT LEAST UNTIL WE FIND A WAY TO NOT MAKE THEM PLAY WITH A PAWN
---mine_damage_alpha.sAnimation = "DNT_cockroach_explosion_alpha"
-
 local mine_damage_leader = SpaceDamage(0)
+mine_damage_beta.sAnimation = "DNT_cockroach_explo_beta"
+mine_damage_alpha.sAnimation = "DNT_cockroach_explo_alpha"
+mine_damage_leader.sAnimation = "DNT_cockroach_explo_leader"
+
+DNT_Item_Blank = {
+	Image = "",
+	Damage = SpaceDamage(),
+	Tooltip = "",
+	Icon = "",
+	UsedImage = "",
+}
 
 DNT_Corpse_Mine = {
-	Image = imagepath.."DNT_cockroach_corpse_beta.png",
+	Image = "units/aliens/DNT_cockroach_corpse_beta.png",
 	Damage = mine_damage_beta,
 	Tooltip = "DNT_Corpse_Text",
-	Icon = imagepath.."combat/icons/icon_frozenmine_glow.png",
+	Icon = "combat/icons/icon_frozenmine_glow.png",
 	UsedImage = "",
 }
 
 DNT_Corpse2_Mine = {
-	Image = imagepath.."DNT_cockroach_corpse_alpha.png",
+	Image = "units/aliens/DNT_cockroach_corpse_alpha.png",
 	Damage = mine_damage_alpha,
 	Tooltip = "DNT_Corpse_Text2",
-	Icon = imagepath.."combat/icons/icon_frozenmine_glow.png",
+	Icon = "combat/icons/icon_frozenmine_glow.png",
 	UsedImage = "",
 }
 
 DNT_Corpse3_Mine = {
-	Image = imagepath.."DNT_cockroach_corpse_leader.png",
+	Image = "units/aliens/DNT_cockroach_corpse_leader.png",
 	Damage = mine_damage_leader,
 	Tooltip = "DNT_Corpse_Text3",
-	Icon = imagepath.."combat/icons/icon_frozenmine_glow.png",
+	Icon = "combat/icons/icon_frozenmine_glow.png",
 	UsedImage = "",
 }
 
------------
--- Hooks --
------------
-local function IsVek(pawn, vek) --Board:AddPawn("DNT_Cockroach1",Point(6,6))
-	return pawn and (pawn:GetType() == vek.."1" or pawn:GetType() == vek.."2" or pawn:GetType() == vek.."3")
-end
+---------------------------- RESPAWN -----------------------------
 
-local function PawnKilled(mission, pawn)
-	if IsVek(pawn, "DNT_Cockroach") then
-		local point = pawn:GetSpace()
-		local terrain = Board:GetTerrain(point)
-		if terrain ~= TERRAIN_WATER and terrain ~= TERRAIN_LAVA and terrain ~= TERRAIN_HOLE then
-			local animation = _G[pawn:GetType()].DeathAnimation
-			--local corpse = _G[pawn:GetType()].DroppedCorpse
-			Board:AddAnimation(point,animation,ANIM_NO_DELAY)
-			--[[
-			modApi:scheduleHook((4*.15+0.1)*1000 ,function() --After the update of the pawn being gone
-				LOG("SETTING ITEM")
-				point = pawn:GetSpace()
-				Board:SetItem(point, corpse)
+local item2Cockroach = {
+	DNT_Corpse_Mine = "DNT_Cockroach1",
+	DNT_Corpse2_Mine = "DNT_Cockroach2",
+	DNT_Corpse3_Mine = "DNT_Cockroach3",
+}
 
-				local effect = SkillEffect()
-				--effect:AddDelay(0.45)
-				local damage = SpaceDamage(point,0)
-				damage.sItem = corpse
-				effect:AddDamage(damage)
-				Board:AddEffect(effect)
+modApi.events.onNextTurn:subscribe(function(mission)
+	if Game:GetTeamTurn() ~= TEAM_ENEMY then
+		return
+	end
 
-			end)
-			]]
+	local effect = SkillEffect()
+
+	for i, p in ipairs(Board) do
+		local item = Board:GetItem(p)
+		local cockroachType = item2Cockroach[item]
+
+		if cockroachType then
+			local pawnTable = _G[cockroachType]
+			local reviveAnim = pawnTable.ReviveAnim
+
+			-- Create a blank item to remove the cockroach
+			-- corpse while the revive animation plays
+			effect:AddScript(string.format("Board:SetItem(%s,'DNT_Item_Blank')", p:GetString()))
+			effect:AddAnimation(p, reviveAnim, ANIM_DELAY)
+			effect:AddDelay(0.75)
+			effect:AddScript(string.format("Board:AddPawn(%q,%s)", cockroachType, p:GetString()))
 		end
 	end
-end
 
-
---[[
-local function resetVars(mission)
-	mission.CockroachCorpses = {}
-	mission.AlphaCockroachCorpses = {}
-end
---]]
-
-local function NextTurn(mission)
-	if Game:GetTeamTurn() == TEAM_ENEMY then
-		local point = nil
-		local effect = SkillEffect()
-		effect:AddDelay(5*.15) --1.35
-		local board_size = Board:GetSize()
-		for i = 0, board_size.x - 1 do
-			for j = 0, board_size.y - 1 do
-				local point = Point(i,j)
-				if Board:GetItem(point) == DNT_Cockroach1.DroppedCorpse then
-					Board:DamageSpace(SpaceDamage(point,1))
-					effect:AddScript(string.format("Board:AddPawn(%q,%s)","DNT_Cockroach1",point:GetString()))
-					Board:AddAnimation(point,"DNT_cockroachd_reverse_beta",ANIM_REVERSE)
-				elseif Board:GetItem(point) == DNT_Cockroach2.DroppedCorpse then
-					Board:DamageSpace(SpaceDamage(point,1))
-					effect:AddScript(string.format("Board:AddPawn(%q,%s)","DNT_Cockroach2",point:GetString()))
-					Board:AddAnimation(point,"DNT_cockroachd_reverse_alpha",ANIM_REVERSE)
-				elseif Board:GetItem(point) == DNT_Cockroach3.DroppedCorpse then
-					Board:DamageSpace(SpaceDamage(point,1))
-					effect:AddScript(string.format("Board:AddPawn(%q,%s)","DNT_Cockroach3",point:GetString()))
-					Board:AddAnimation(point,"DNT_cockroachd_reverse_leader",ANIM_REVERSE)
-				end
-			end
-		end
-		Board:AddEffect(effect)
-		--resetVars(mission)
-	end
-end
-
---[[
-local board_size = Board:GetSize()
-for i = 0, board_size.x - 1 do
-	for j = 0, board_size.y - 1 do
-		local point = Point(i,j)
-		--local pawn = Board:GetPawn(point)
-		if IsVek(pawn, "DNT_CockroachCorpse") then
-			local being = _G[pawn:GetType()].Being
-			local damage = SpaceDamage(pawn:GetSpace(),1)
-			damage.sPawn = being
-			Board:DamageSpace(damage)
-		end
-	end
-	--]]
-
---[[
-local function MissionStart(mission)
-	resetVars(mission)
-end
-local function PhaseStart(_, mission)
-	resetVars(mission)
-end
---]]
-
-local this = {}
-
-function this:load(NAH_Vextra_ModApiExt)
-	local options = mod_loader.currentModContent[mod.id].options
-	NAH_Vextra_ModApiExt:addPawnKilledHook(PawnKilled) --EXAMPLE
-	modApi:addNextTurnHook(NextTurn)
-	--modApi:addMissionStartHook(MissionStart)
-	--modApi:addMissionNextPhaseCreatedHook(PhaseStart)
-end
-
-return this
-
-
-
-
---[[
-DNT_CockroachCorpse1 = Pawn:new
-	{
-		Name = "Cockroach Corpse",
-		Health = 1,
-		MoveSpeed = 0,
-		Image = "totem", --lowercase
-		--SkillList = {"DNT_CockroachAtk1"},
-		--SoundLocation = "/enemy/beetle_1/",
-		DefaultTeam = TEAM_ENEMY,
-		ImpactMaterial = IMPACT_INSECT,
-		Minor = true,
-		Being = "DNT_Cockroach1",
-	}
-AddPawn("DNT_CockroachCorpse1")
-
-
-DNT_CockroachCorpse2 = Pawn:new
-	{
-		Name = "Alpha Cockroach Corpse",
-		Health = 1,
-		MoveSpeed = 0,
-		--SkillList = {"DNT_CockroachAtk2"},
-		Image = "totem",
-		--SoundLocation = "/enemy/beetle_1/",
-		ImageOffset = 1,
-		DefaultTeam = TEAM_ENEMY,
-		ImpactMaterial = IMPACT_INSECT,
-		Tier = TIER_ALPHA,
-		Minor = true,
-		Being = "DNT_Cockroach2",
-	}
-AddPawn("DNT_CockroachCorpse2")
---]]
+	Board:AddEffect(effect)
+end)
