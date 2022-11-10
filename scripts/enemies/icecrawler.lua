@@ -108,7 +108,7 @@ DNT_IceCrawlerAtk2 = DNT_IceCrawlerAtk1:new {
 		CustomPawn = "DNT_IceCrawler2",
 	}
 }
-DNT_IceCrawlerAtk3 = DNT_IceCrawlerAtk1:new {
+DNT_IceCrawlerAtkB = DNT_IceCrawlerAtk1:new {
 	Description = "Release an icy gas in two directions with 3 range that deals more damage the farther it travels and freezes. Explodes existing ice out sideways. Stops at buildings and mountains.",
 	Damage = 3,
 	MinDamage = 1, --Starting Damage
@@ -124,7 +124,7 @@ DNT_IceCrawlerAtk3 = DNT_IceCrawlerAtk1:new {
 		Mountain = Point(2,4),
 		Second_Origin = Point(2,3),
 		Second_Target = Point(2,2),
-		CustomPawn = "DNT_IceCrawler3",
+		CustomPawn = "DNT_IceCrawlerBoss",
 	}
 }
 
@@ -284,13 +284,13 @@ DNT_IceCrawler2 = Pawn:new
 	}
 AddPawn("DNT_IceCrawler2")
 
-DNT_IceCrawler3 = Pawn:new
+DNT_IceCrawlerBoss = Pawn:new
 	{
 		Name = "Ice Crawler Leader",
 		Health = 6,
 		MoveSpeed = 3,
 		Ranged = 1,
-		SkillList = {"DNT_IceCrawlerAtk3"},
+		SkillList = {"DNT_IceCrawlerAtkB"},
 		MoveSkill = "DNT_IceCrawlerMove",
 		Image = "DNT_icecrawler", --Image = "DNT_IceCrawler",
 		SoundLocation = "/enemy/beetle_2/",
@@ -300,7 +300,7 @@ DNT_IceCrawler3 = Pawn:new
 		Tier = TIER_BOSS,
 		Massive = true,
 	}
-AddPawn("DNT_IceCrawler3")
+AddPawn("DNT_IceCrawlerBoss")
 
 ----------------
 -- Move Skill --

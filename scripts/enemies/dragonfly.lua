@@ -129,6 +129,7 @@ function DNT_DragonflyAtk1:GetSkillEffect(p1,p2)
 		damage = SpaceDamage(p2,self.Damage)
 		damage.iSmoke = 2 --Disperse
 		damage.iFire = self.Fire
+		damage.sSound = "/weapons/flamespreader"
 		damage.sAnimation = "explopush2_"..dir
 		ret:AddQueuedDamage(damage)
 		for i= -1, 1 do
@@ -143,6 +144,7 @@ function DNT_DragonflyAtk1:GetSkillEffect(p1,p2)
 	else
 		damage = SpaceDamage(p2,self.Damage)
 		damage.iFire = self.Fire
+		damage.sSound = "/weapons/flamespreader"
 		damage.sAnimation = "ExploRaining1"
 		ret:AddQueuedDamage(damage)
 	end
@@ -167,7 +169,7 @@ DNT_DragonflyAtk2 = DNT_DragonflyAtk1:new {
 }
 
 --Boss Weapon is complicated/different enough to have its own code
-DNT_DragonflyAtk3 = LineArtillery:new {
+DNT_DragonflyAtkB = LineArtillery:new {
 	Name = "Launch Sparks",
 	Description = "Smoke a line to the target, preparing to launch an explosive artillery. If there's smoke, it explodes in a T shape. Otherwise, it just hits the target with fire.",
 	Damage = 2,
@@ -185,11 +187,11 @@ DNT_DragonflyAtk3 = LineArtillery:new {
 		Enemy2 = Point(1,1),
 		Second_Origin = Point(2,4),
 		Second_Target = Point(2,1),
-		CustomPawn = "DNT_Dragonfly3",
+		CustomPawn = "DNT_DragonflyBoss",
 	}
 }
 
-function DNT_DragonflyAtk3:GetTargetScore(p1,p2)
+function DNT_DragonflyAtkB:GetTargetScore(p1,p2)
 	this.isTargetScore = true
 	local ret = Skill.GetTargetScore(self, p1, p2)
 	this.isTargetScore = nil
@@ -210,7 +212,7 @@ function DNT_DragonflyAtk3:GetTargetScore(p1,p2)
 	return ret
 end
 
-function DNT_DragonflyAtk3:GetSkillEffect(p1,p2)
+function DNT_DragonflyAtkB:GetSkillEffect(p1,p2)
 	local ret = SkillEffect()
 	local dir = GetDirection(p2-p1)
 	local damage = nil
@@ -232,11 +234,14 @@ function DNT_DragonflyAtk3:GetSkillEffect(p1,p2)
 			ret:AddDamage(damage)
 		end
 	end
-
+	
+	--Sound
+	ret:AddQueuedScript("Game:TriggerSound('/weapons/fireball')")
 	if Board:IsSmoke(p2) or this.isTargetScore or (IsTipImage() and  p2 == Point(2,2)) then -- or Game:GetTeamTurn() == TEAM_ENEMY then
 		damage = SpaceDamage(p2,self.Damage)
 		damage.iSmoke = 2 --Disperse
 		damage.iFire = self.Fire
+		damage.sSound = "/weapons/flamespreader"
 		damage.sAnimation = "explopush2_"..dir
 		ret:AddQueuedArtillery(damage, "effects/shotup_ignite_fireball.png", NO_DELAY)
 		ret:AddQueuedDelay(0.8)
@@ -252,6 +257,7 @@ function DNT_DragonflyAtk3:GetSkillEffect(p1,p2)
 	else
 		damage = SpaceDamage(p2,self.Damage)
 		damage.iFire = self.Fire
+		damage.sSound = "/weapons/flamespreader"
 		damage.sAnimation = "ExploRaining1"
 		ret:AddQueuedArtillery(damage, "effects/shotup_ignite_fireball.png", FULL_DELAY)
 	end
@@ -295,14 +301,14 @@ DNT_Dragonfly2 = Pawn:new
 	}
 AddPawn("DNT_Dragonfly2")
 
-DNT_Dragonfly3 = Pawn:new
+DNT_DragonflyBoss = Pawn:new
 	{
 		Name = "Dragonfly Leader",
 		Health = 6,
 		MoveSpeed = 3,
 		Flying = true,
 		Ranged = 1,
-		SkillList = {"DNT_DragonflyAtk3"},
+		SkillList = {"DNT_DragonflyAtkB"},
 		Image = "DNT_dragonfly", --change
 		SoundLocation = "/enemy/hornet_1/",
 		ImageOffset = 2,
@@ -311,7 +317,7 @@ DNT_Dragonfly3 = Pawn:new
 		Tier = TIER_BOSS,
 		Massive = true,
 	}
-AddPawn("DNT_Dragonfly3")
+AddPawn("DNT_DragonflyBoss")
 
 
 -----------

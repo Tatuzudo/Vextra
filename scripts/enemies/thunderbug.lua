@@ -46,7 +46,7 @@ a.DNT_thunderbugw = base:new{ Image = imagepath.."DNT_"..name.."_Bw.png", PosY =
 -- Weapons --
 -------------
 
-DNT_VekLightning1 = Skill:new{
+DNT_ThunderbugAtk1 = Skill:new{
 	Name = "Static Prongs",
 	Description = "Damage the target and adjacent units and buildings.",
 	Class = "Enemy",
@@ -66,7 +66,7 @@ DNT_VekLightning1 = Skill:new{
 	}
 }
 
-DNT_VekLightning2 = DNT_VekLightning1:new{
+DNT_ThunderbugAtk2 = DNT_ThunderbugAtk1:new{
 	Name = "Galvanic Prongs",
 	Damage = 2,
 	TipImage = {
@@ -80,7 +80,7 @@ DNT_VekLightning2 = DNT_VekLightning1:new{
 	}
 }
 
-DNT_VekLightning3 = DNT_VekLightning1:new{
+DNT_ThunderbugAtkB = DNT_ThunderbugAtk1:new{
 	Name = "Lightning Prongs",
 	Description = "Damage the target and chained units and buildings. Deals less damage with distance.",
 	Damage = 3,
@@ -97,7 +97,7 @@ DNT_VekLightning3 = DNT_VekLightning1:new{
 	}
 }
 
-function DNT_VekLightning1:GetSkillEffect(p1, p2)
+function DNT_ThunderbugAtk1:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	local hash = function(point) return point.x + point.y*10 end
 	local explored = {[hash(p1)] = true}
@@ -138,7 +138,7 @@ function DNT_VekLightning1:GetSkillEffect(p1, p2)
 end
 
 
-function DNT_VekLightning1:GetTargetScore(p1,p2)
+function DNT_ThunderbugAtk1:GetTargetScore(p1,p2)
 	local ret = Skill.GetTargetScore(self, p1, p2)
 
 	-- don't zap your friends.
@@ -161,7 +161,7 @@ DNT_Thunderbug1 = Pawn:new{
 	Health = 2,
 	MoveSpeed = 3,
 	Image = "DNT_thunderbug",
-	SkillList = { "DNT_VekLightning1" },
+	SkillList = { "DNT_ThunderbugAtk1" },
 	SoundLocation = "/enemy/beetle_1/",
 	DefaultTeam = TEAM_ENEMY,
 	ImpactMaterial = IMPACT_INSECT,
@@ -174,7 +174,7 @@ DNT_Thunderbug2 = Pawn:new{
 	MoveSpeed = 3,
 	Image = "DNT_thunderbug",
 	ImageOffset = 1,
-	SkillList = { "DNT_VekLightning2" },
+	SkillList = { "DNT_ThunderbugAtk2" },
 	SoundLocation = "/enemy/beetle_2/",
 	DefaultTeam = TEAM_ENEMY,
 	ImpactMaterial = IMPACT_INSECT,
@@ -188,7 +188,7 @@ DNT_Thunderbug3 = Pawn:new{
 	MoveSpeed = 3,
 	Image = "DNT_thunderbug",
 	ImageOffset = 2,
-	SkillList = { "DNT_VekLightning3" },
+	SkillList = { "DNT_ThunderbugAtkB" },
 	SoundLocation = "/enemy/beetle_2/",
 	DefaultTeam = TEAM_ENEMY,
 	ImpactMaterial = IMPACT_INSECT,

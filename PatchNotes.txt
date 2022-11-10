@@ -21,7 +21,11 @@ Dragonfly will no longer smoke and attack friendlies
 
 vBETA.0.2.0
 Fixed a bug where the fly sprite was misaligned when selecting it.
-Haste Psion Added: +2 Movement
+Sonic Psion Added: +2 Movement
+Nurse Psion Added: Healing friendly fire
+Reactive Psion Added: Push adjacent on death
+Corrosive Psion Added: Acid attack and removal
+
 Cockroach Bug Fixed where it wouldn't revive on the top edge of the board
 Fixed the death effect psions for Cockroach so it is no longer exclusive with them
 	Special Thanks to Lemonymous for helping with the solution

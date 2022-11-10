@@ -141,7 +141,7 @@ DNT_SilkwormAtk2 = DNT_SilkwormAtk1:new {
 	}
 }
 
-DNT_SilkwormAtk3 = DNT_SilkwormAtk1:new {
+DNT_SilkwormAtkB = DNT_SilkwormAtk1:new {
 	Description = "Send a projectile attack forward while webbing the other three directions.",
 	Damage = 4,
 	ExtraWebs = true,
@@ -151,7 +151,7 @@ DNT_SilkwormAtk3 = DNT_SilkwormAtk1:new {
 		Enemy2 = Point(1,1),
 		Target = Point(2,2),
 		Unit = Point(2,1),
-		CustomPawn = "DNT_Silkworm3",
+		CustomPawn = "DNT_SilkwormBoss",
 	}
 }
 
@@ -187,12 +187,12 @@ DNT_Silkworm2 = Pawn:new
 	}
 AddPawn("DNT_Silkworm2")
 
-DNT_Silkworm3 = Pawn:new
+DNT_SilkwormBoss = Pawn:new
 	{
 		Name = "Silkworm Leader",
 		Health = 6,
 		MoveSpeed = 4,
-		SkillList = {"DNT_SilkwormAtk3"},
+		SkillList = {"DNT_SilkwormAtkB"},
 		Image = "DNT_silkworm", --change
 		SoundLocation = "/enemy/scorpion_soldier_2/",
 		ImageOffset = 2,
@@ -201,7 +201,7 @@ DNT_Silkworm3 = Pawn:new
 		Tier = TIER_BOSS,
 		Massive = true,
 	}
-AddPawn("DNT_Silkworm3")
+AddPawn("DNT_SilkwormBoss")
 
 
 -----------

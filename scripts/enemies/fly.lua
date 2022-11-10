@@ -78,7 +78,7 @@ DNT_FlyAtk2 = DNT_FlyAtk1:new{
 	}
 }
 
-DNT_FlyAtk3 = DNT_FlyAtk1:new{
+DNT_FlyAtkB = DNT_FlyAtk1:new{
 	-- Name = "Corrosive Eviction",
 	Name = "Leech Proboscis",
 	Description = "Drain life from its target and apply A.C.I.D. from a distance",
@@ -92,7 +92,7 @@ DNT_FlyAtk3 = DNT_FlyAtk1:new{
 		Unit = Point(2,3),
 		Target = Point(2,2),
 		Enemy1 = Point(2,1),
-		CustomPawn = "DNT_Fly3",
+		CustomPawn = "DNT_FlyBoss",
 	}
 }
 
@@ -191,7 +191,7 @@ DNT_Fly2 = Pawn:new{
 }
 AddPawn("DNT_Fly2")
 
-DNT_Fly3 = Pawn:new{
+DNT_FlyBoss = Pawn:new{
 	Name = "Fly Leader",
 	-- Health = 5,
 	-- MoveSpeed = 5,
@@ -202,14 +202,14 @@ DNT_Fly3 = Pawn:new{
 	ImageOffset = 2,
 	Flying = true,
 	Ranged = 1,
-	SkillList = { "DNT_FlyAtk3" },
+	SkillList = { "DNT_FlyAtkB" },
 	SoundLocation = "/enemy/leaper_2/",
 	DefaultTeam = TEAM_ENEMY,
 	ImpactMaterial = IMPACT_FLESH,
 	Tier = TIER_BOSS,
 	Massive = true,
 }
-AddPawn("DNT_Fly3")
+AddPawn("DNT_FlyBoss")
 
 -----------
 -- Hooks --

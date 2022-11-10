@@ -40,7 +40,7 @@ a.DNT_mantisw = base:new{ Image = imagepath.."DNT_"..name.."_Bw.png", PosY = 3} 
 -- Weapons --
 -------------
 
-DNT_MantisSlash1_StarfishAtk = Skill:new{
+DNT_MantisAtk1_StarfishAtk = Skill:new{
 	Name = "Sharp Claws",
 	Description = "Slash two diagonal tiles.",
 	Class = "Enemy",
@@ -59,7 +59,7 @@ DNT_MantisSlash1_StarfishAtk = Skill:new{
 }
 
 
-DNT_MantisSlash2_StarfishAtk = DNT_MantisSlash1_StarfishAtk:new{
+DNT_MantisAtk2_StarfishAtk = DNT_MantisAtk1_StarfishAtk:new{
 	Name = "Razor Claws",
 	Damage = 2,
 	TipImage = {
@@ -72,7 +72,7 @@ DNT_MantisSlash2_StarfishAtk = DNT_MantisSlash1_StarfishAtk:new{
 }
 
 
-DNT_MantisSlash3_StarfishAtk = DNT_MantisSlash1_StarfishAtk:new{
+DNT_MantisAtkB_StarfishAtk = DNT_MantisAtk1_StarfishAtk:new{
 	Name = "Vorpal Claws",
 	Description = "Slash two diagonal tiles and the tiles in front of them.",
 	Damage = 2,
@@ -83,12 +83,12 @@ DNT_MantisSlash3_StarfishAtk = DNT_MantisSlash1_StarfishAtk:new{
 		Enemy1 = Point(1,2),
 		Enemy2 = Point(3,2),
 		Building = Point(3,1),
-		CustomPawn = "DNT_Mantis3",
+		CustomPawn = "DNT_MantisBoss",
 	}
 }
 
 
-function DNT_MantisSlash1_StarfishAtk:GetSkillEffect(p1, p2)
+function DNT_MantisAtk1_StarfishAtk:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	local dir = GetDirection(p2 - p1)
 	local dirA = dir+1 > 3 and 0 or dir+1
@@ -124,7 +124,7 @@ DNT_Mantis1 = Pawn:new{
 	Image = "DNT_mantis",
 	Jumper = true,
 	Ranged = 1, --Since mantis attacks diagonally, it really makes sense for it to be considered ranged
-	SkillList = { "DNT_MantisSlash1_StarfishAtk" },
+	SkillList = { "DNT_MantisAtk1_StarfishAtk" },
 	SoundLocation = "/enemy/leaper_1/",
 	DefaultTeam = TEAM_ENEMY,
 	ImpactMaterial = IMPACT_FLESH,
@@ -139,7 +139,7 @@ DNT_Mantis2 = Pawn:new{
 	ImageOffset = 1,
 	Jumper = true,
 	Ranged = 1,
-	SkillList = { "DNT_MantisSlash2_StarfishAtk" },
+	SkillList = { "DNT_MantisAtk2_StarfishAtk" },
 	SoundLocation = "/enemy/leaper_2/",
 	DefaultTeam = TEAM_ENEMY,
 	ImpactMaterial = IMPACT_FLESH,
@@ -147,7 +147,7 @@ DNT_Mantis2 = Pawn:new{
 }
 AddPawn("DNT_Mantis2")
 
-DNT_Mantis3 = Pawn:new{
+DNT_MantisBoss = Pawn:new{
 	Name = "Mantis Leader",
 	Health = 6,
 	MoveSpeed = 3,
@@ -155,11 +155,11 @@ DNT_Mantis3 = Pawn:new{
 	ImageOffset = 2,
 	Jumper = true,
 	Ranged = 1,
-	SkillList = { "DNT_MantisSlash3_StarfishAtk" },
+	SkillList = { "DNT_MantisAtkB_StarfishAtk" },
 	SoundLocation = "/enemy/leaper_2/",
 	DefaultTeam = TEAM_ENEMY,
 	ImpactMaterial = IMPACT_FLESH,
 	Tier = TIER_BOSS,
 	Massive = true
 }
-AddPawn("DNT_Mantis3")
+AddPawn("DNT_MantisBoss")

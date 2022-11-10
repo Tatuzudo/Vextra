@@ -36,7 +36,7 @@ trait:add{
 	desc_text = "If killed, resurrect with full hp after the Vek attack, unless damaged again or stepped on.",
 }
 trait:add{
-	pawnType = "DNT_Cockroach3",
+	pawnType = "DNT_CockroachBoss",
 	icon = resourcePath.."img/combat/traits/DNT_cockroach_trait.png",
 	--icon_offset = Point(0,-15),
 	desc_title = "Undying",
@@ -179,7 +179,7 @@ DNT_CockroachAtk2 = DNT_CockroachAtk1:new {
 	}
 }
 
-DNT_CockroachAtk3 = DNT_CockroachAtk1:new {
+DNT_CockroachAtkB = DNT_CockroachAtk1:new {
 	Name = "Organ Provider",
 	Description = "Damage itself to launch an artillery "
 				.."attack on four tiles, centered around one tile.",
@@ -191,7 +191,7 @@ DNT_CockroachAtk3 = DNT_CockroachAtk1:new {
 		Enemy2 = Point(2,1),
 		Building = Point(2,0),
 		Target = Point(2,2),
-		CustomPawn = "DNT_Cockroach3",
+		CustomPawn = "DNT_CockroachBoss",
 	}
 }
 
@@ -258,13 +258,13 @@ DNT_Cockroach2 = DNT_Cockroach1:new
 	}
 AddPawn("DNT_Cockroach2")
 
-DNT_Cockroach3 = DNT_Cockroach1:new
+DNT_CockroachBoss = DNT_Cockroach1:new
 	{
 		Name = "Cockroach Leader",
 		Health = 6,
 		MoveSpeed = 3,
 		Ranged = 1,
-		SkillList = {"DNT_CockroachAtk3"},
+		SkillList = {"DNT_CockroachAtkB"},
 		Image = "DNT_cockroach",
 		SoundLocation = "/enemy/beetle_1/",
 		ImageOffset = 2,
@@ -276,7 +276,7 @@ DNT_Cockroach3 = DNT_Cockroach1:new
 		ReviveAnim = "DNT_cockroach_revive_leader",
 		Corpse = true,
 	}
-AddPawn("DNT_Cockroach3")
+AddPawn("DNT_CockroachBoss")
 
 function DNT_Cockroach1:GetDeathEffect(p)
 	local ret = SkillEffect()
@@ -319,7 +319,7 @@ function DNT_Cockroach1:GetDeathEffect(p)
 end
 
 DNT_Cockroach2.GetDeathEffect = DNT_Cockroach1.GetDeathEffect
-DNT_Cockroach3.GetDeathEffect = DNT_Cockroach1.GetDeathEffect
+DNT_CockroachBoss.GetDeathEffect = DNT_Cockroach1.GetDeathEffect
 
 ----------------------------- MINES -----------------------------
 
@@ -385,7 +385,7 @@ DNT_Corpse3_Mine = {
 local item2Cockroach = {
 	DNT_Corpse_Mine = "DNT_Cockroach1",
 	DNT_Corpse2_Mine = "DNT_Cockroach2",
-	DNT_Corpse3_Mine = "DNT_Cockroach3",
+	DNT_Corpse3_Mine = "DNT_CockroachBoss",
 }
 
 modApi.events.onNextTurn:subscribe(function(mission)

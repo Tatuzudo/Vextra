@@ -9,42 +9,42 @@ Mission_ThunderbugBoss = Mission_Boss:new{
 
 Mission_PillbugBoss = Mission_Boss:new{
 	Name = "Pillbug Leader",
-	BossPawn = "DNT_Pillbug3",
+	BossPawn = "DNT_PillbugBoss",
 	SpawnStartMod = -1,
 	BossText = "Destroy the Pillbug Leader",
 }
 
 Mission_MantisBoss = Mission_Boss:new{
 	Name = "Mantis Leader",
-	BossPawn = "DNT_Mantis3",
+	BossPawn = "DNT_MantisBoss",
 	SpawnStartMod = -1,
 	BossText = "Destroy the Mantis Leader",
 }
 
 Mission_SilkwormBoss = Mission_Boss:new{
 	Name = "Silkworm Leader",
-	BossPawn = "DNT_Silkworm3",
+	BossPawn = "DNT_SilkwormBoss",
 	SpawnStartMod = -1,
 	BossText = "Destroy the Silkworm Leader",
 }
 
 Mission_AntlionBoss = Mission_Boss:new{
 	Name = "Antlion Leader",
-	BossPawn = "DNT_Antlion3",
+	BossPawn = "DNT_AntlionBoss",
 	SpawnStartMod = -1,
 	BossText = "Destroy the Antlion Leader",
 }
 
 Mission_FlyBoss = Mission_Boss:new{
 	Name = "Fly Leader",
-	BossPawn = "DNT_Fly3",
+	BossPawn = "DNT_FlyBoss",
 	SpawnStartMod = -1,
 	BossText = "Destroy the Fly Leader",
 }
 
 Mission_DragonflyBoss = Mission_Boss:new{
 	Name = "Dragonfly Leader",
-	BossPawn = "DNT_Dragonfly3",
+	BossPawn = "DNT_DragonflyBoss",
 	SpawnStartMod = -1,
 	BossText = "Destroy the Dragonfly Leader",
 }
@@ -52,14 +52,14 @@ Mission_DragonflyBoss = Mission_Boss:new{
 
 Mission_TermitesBoss = Mission_Boss:new{
 	Name = "Termite Leaders",
-	BossPawn = "DNT_Termites3",
+	BossPawn = "DNT_TermitesBoss",
 	SpawnStartMod = -1,
 	BossText = "Destroy the Termite Leaders",
 }
 
 Mission_CockroachBoss = Mission_Boss:new{
 	Name = "Cockroach Leader",
-	BossPawn = "DNT_Cockroach3",
+	BossPawn = "DNT_CockroachBoss",
 	SpawnStartMod = -1,
 	BossText = "Destroy and Stomp the Cockroach Leader",
 }
@@ -70,10 +70,10 @@ function Mission_CockroachBoss:IsBossDead()
 	for i = 0, board_size.x - 1 do
 		for j = 0, board_size.y - 1 do
 			local point = Point(i,j)
-			if Board:GetItem(point) == DNT_Cockroach3.DroppedCorpse then return false end
+			if Board:GetItem(point) == DNT_CockroachBoss.DroppedCorpse then return false end
 			local pawn = Board:GetPawn(point)
 			if pawn then
-				if pawn:GetType() == "DNT_Cockroach3" then return false end
+				if pawn:GetType() == "DNT_CockroachBoss" then return false end
 			end
 		end
 	end
@@ -82,7 +82,7 @@ end
 
 Mission_IceCrawlerBoss = Mission_Boss:new{
 	Name = "Ice Crawler Leader",
-	BossPawn = "DNT_IceCrawler3",
+	BossPawn = "DNT_IceCrawlerBoss",
 	SpawnStartMod = -2, --One extra for the frozen Vek spawned
 	BossText = "Destroy the Ice Crawler Leader",
 }

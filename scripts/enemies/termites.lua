@@ -76,7 +76,7 @@ DNT_TermitesAtk2 = DNT_TermitesAtk1:new { --Just an example
 	}
 }
 
-DNT_TermitesAtk3 = DNT_TermitesAtk1:new { --Just an example
+DNT_TermitesAtkB = DNT_TermitesAtk1:new { --Just an example
 	Damage = 3,
 	Description = "Create a rock in front, rushing forward through all solid objects till an empty space, dealing damage, and leaving a rock on the starting space. If it can't dash, do a basic melee strike instead.",
 	TipImage = { --This is all tempalate and probably needs to change
@@ -86,7 +86,7 @@ DNT_TermitesAtk3 = DNT_TermitesAtk1:new { --Just an example
 		Building = Point(0,1),
 		Second_Origin = Point(2,1),
 		Second_Target = Point(1,1), --Can also do 2,2
-		CustomPawn = "DNT_Termites3",
+		CustomPawn = "DNT_TermitesBoss",
 	}
 }
 
@@ -150,7 +150,7 @@ function DNT_TermitesAtk1:GetSkillEffect(p1,p2)
 end
 
 -- BOSS weapon is complicated enough it needs a seperate skill effect
-function DNT_TermitesAtk3:GetSkillEffect(p1,p2)
+function DNT_TermitesAtkB:GetSkillEffect(p1,p2)
 	local ret = SkillEffect()
 	local dir = GetDirection(p2-p1)
 	local target = p1
@@ -249,12 +249,12 @@ DNT_Termites2 = Pawn:new
 	}
 AddPawn("DNT_Termites2")
 
-DNT_Termites3 = Pawn:new
+DNT_TermitesBoss = Pawn:new
 	{
 		Name = "Termite Leaders",
 		Health = 6,
 		MoveSpeed = 3,
-		SkillList = {"DNT_TermitesAtk3"},
+		SkillList = {"DNT_TermitesAtkB"},
 		Image = "DNT_termites",
 		SoundLocation = "/enemy/centipede_1/",
 		ImageOffset = 2,
@@ -263,7 +263,7 @@ DNT_Termites3 = Pawn:new
 		Tier = TIER_BOSS,
 		Massive = true,
 	}
-AddPawn("DNT_Termites3")
+AddPawn("DNT_TermitesBoss")
 
 
 

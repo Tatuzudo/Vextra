@@ -57,7 +57,7 @@ a.DNT_pillbugw = base:new{ Image = imagepath.."DNT_"..name.."_Bw.png", PosY = -3
 -- Weapons --
 -------------
 
-DNT_PillbugLeap1 = Skill:new{
+DNT_PillbugAtk1 = Skill:new{
 	Name = "Bouncing Leap",
 	Description = "Leap to a tile, landing on it or bouncing back on occupied tiles before it.", -- Too confusing?
 	Class = "Enemy",
@@ -78,7 +78,7 @@ DNT_PillbugLeap1 = Skill:new{
 	}
 }
 
-DNT_PillbugLeap2 = DNT_PillbugLeap1:new{
+DNT_PillbugAtk2 = DNT_PillbugAtk1:new{
 	Name = "Carapace Leap",
 	Damage = 2,
 	Projectile = "effects/DNT_upshot_pillbug2.png",
@@ -94,7 +94,7 @@ DNT_PillbugLeap2 = DNT_PillbugLeap1:new{
 	}
 }
 
-DNT_PillbugLeap3 = DNT_PillbugLeap1:new{
+DNT_PillbugAtkB = DNT_PillbugAtk1:new{
 	Name = "Crushing Leap",
 	Description = "Crack the current position and leap to a tile, landing on it or bouncing back on occupied tiles before it.",
 	Damage = 3,
@@ -108,11 +108,11 @@ DNT_PillbugLeap3 = DNT_PillbugLeap1:new{
 		Enemy1 = Point(2,0),
 		Mountain = Point(2,1),
 		Building = Point(2,2),
-		CustomPawn = "DNT_Pillbug3",
+		CustomPawn = "DNT_PillbugBoss",
 	}
 }
 
-function DNT_PillbugLeap1:GetTargetArea(point)
+function DNT_PillbugAtk1:GetTargetArea(point)
 	local ret = PointList()
 	for i = DIR_START, DIR_END do
 		for k = 2, self.Range do
@@ -132,7 +132,7 @@ SkillEffect["DNT_AddQueuedArtillery"] = function(self, ...) -- add our own queue
 	self.q_effect:AppendAll(fx.effect)
 end
 
-function DNT_PillbugLeap1:GetSkillEffect(p1, p2)
+function DNT_PillbugAtk1:GetSkillEffect(p1, p2)
 	local ret = SkillEffect()
 	local dir = GetDirection(p2 - p1)
 	local p3 = p2
@@ -195,7 +195,7 @@ function DNT_PillbugLeap1:GetSkillEffect(p1, p2)
 	return ret
 end
 
-function DNT_PillbugLeap1:GetTargetScore(p1, p2)
+function DNT_PillbugAtk1:GetTargetScore(p1, p2)
   local ret = Skill.GetTargetScore(self, p1, p2)
   local dir = GetDirection(p2 - p1)
 
@@ -239,7 +239,7 @@ DNT_Pillbug1 = Pawn:new{
 	Ranged = 1,
 	Image = "DNT_pillbug",
 	Armor = true,
-	SkillList = { "DNT_PillbugLeap1" },
+	SkillList = { "DNT_PillbugAtk1" },
 	SoundLocation = "/enemy/digger_1/",
 	DefaultTeam = TEAM_ENEMY,
 	ImpactMaterial = IMPACT_FLESH,
@@ -254,7 +254,7 @@ DNT_Pillbug2 = Pawn:new{
 	Image = "DNT_pillbug",
 	ImageOffset = 1,
 	Armor = true,
-	SkillList = { "DNT_PillbugLeap2" },
+	SkillList = { "DNT_PillbugAtk2" },
 	SoundLocation = "/enemy/digger_2/",
 	DefaultTeam = TEAM_ENEMY,
 	ImpactMaterial = IMPACT_FLESH,
@@ -262,7 +262,7 @@ DNT_Pillbug2 = Pawn:new{
 }
 AddPawn("DNT_Pillbug2")
 
-DNT_Pillbug3 = Pawn:new{
+DNT_PillbugBoss = Pawn:new{
 	Name = "Isopod Leader",
 	Health = 5,
 	MoveSpeed = 2,
@@ -270,11 +270,11 @@ DNT_Pillbug3 = Pawn:new{
 	Image = "DNT_pillbug",
 	ImageOffset = 2,
 	Armor = true,
-	SkillList = { "DNT_PillbugLeap3" },
+	SkillList = { "DNT_PillbugAtkB" },
 	SoundLocation = "/enemy/digger_2/",
 	DefaultTeam = TEAM_ENEMY,
 	ImpactMaterial = IMPACT_FLESH,
 	Tier = TIER_BOSS,
 	Massive = true
 }
-AddPawn("DNT_Pillbug3")
+AddPawn("DNT_PillbugBoss")

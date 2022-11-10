@@ -118,7 +118,7 @@ DNT_AntlionAtk2 = DNT_AntlionAtk1:new { --Just an example
 	}
 }
 
-DNT_AntlionAtk3 = DNT_AntlionAtk1:new { --Just an example
+DNT_AntlionAtkB = DNT_AntlionAtk1:new { --Just an example
 	Description = "Crack all adjacent tiles, preparing to strike it.",
 	ExtraTiles = true,
 	Damage = 2,
@@ -128,7 +128,7 @@ DNT_AntlionAtk3 = DNT_AntlionAtk1:new { --Just an example
 		Enemy = Point(2,1),
 		Enemy2 = Point(1,2),
 		Building = Point(2,3),
-		CustomPawn = "DNT_Antlion3",
+		CustomPawn = "DNT_AntlionBoss",
 	}
 }
 
@@ -168,12 +168,12 @@ DNT_Antlion2 = Pawn:new
 	}
 AddPawn("DNT_Antlion2")
 
-DNT_Antlion3 = Pawn:new
+DNT_AntlionBoss = Pawn:new
 	{
 		Name = "Antlion Leader",
 		Health = 6,
 		MoveSpeed = 3,
-		SkillList = {"DNT_AntlionAtk3"},
+		SkillList = {"DNT_AntlionAtkB"},
 		Image = "DNT_antlion",
 		SoundLocation = "/enemy/burrower_1/",
 		ImageOffset = 2,
@@ -184,7 +184,7 @@ DNT_Antlion3 = Pawn:new
 		Pushable = false,
 		Massive = true
 	}
-AddPawn("DNT_Antlion3")
+AddPawn("DNT_AntlionBoss")
 
 -- -- Death effect on water/chasms
 -- DNT_FallAntlion1 = Pawn:new
