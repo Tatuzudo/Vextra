@@ -25,13 +25,18 @@ Sonic Psion Added: +2 Movement
 Nurse Psion Added: Healing friendly fire
 Reactive Psion Added: Push adjacent on death
 Corrosive Psion Added: Acid attack and removal
-
 Cockroach Bug Fixed where it wouldn't revive on the top edge of the board
 Fixed the death effect psions for Cockroach so it is no longer exclusive with them
 	Special Thanks to Lemonymous for helping with the solution
+		Double special thanks to Lemon for helping fix a bug this solution caused
 Added the Cockroach Leader
 Added the Dragonfly Leader
 Ice Crawler Rework:
 	The Ice Crawler felt a bit boring compared to some of the other uniques, so it got an update
 	Release an icy gas with 3 range that deals more damage the farther it travels and freezes. Stops at buildings and mountains.
 Ice Crawler Leader Added
+Updated to Modloader 2.8.2
+Fixed a bug where the cockroach leader didn't have the "Undying" Trait
+Added an animation when the cockroach corpse dies
+	Again, thanks to Lemonymous
+Renamed the bosses so they would properly show up in harder difficulties outside of their mission

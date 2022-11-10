@@ -70,7 +70,7 @@ function Mission_CockroachBoss:IsBossDead()
 	for i = 0, board_size.x - 1 do
 		for j = 0, board_size.y - 1 do
 			local point = Point(i,j)
-			if Board:GetItem(point) == DNT_CockroachBoss.DroppedCorpse then return false end
+			if Board:GetItem(point) == DNT_CockroachBoss.CorpseItem then return false end
 			local pawn = Board:GetPawn(point)
 			if pawn then
 				if pawn:GetType() == "DNT_CockroachBoss" then return false end

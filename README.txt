@@ -1,13 +1,13 @@
 VEXTRA
 An Into the Breach Vek Mod By: Djinn, NamesAreHard, and Tatu
-vBETA.0.0.1
+vBETA.0.2.0
 
 We've heard your cries for more Vek, and we've delivered. Introducing "Vextra", the largest Vek mod created to date. With 5 new core Vek and 7 new unique Vek, Vextra provides a new opportunity. Vextra can be merged with the vanilla Vek, but Vextra also provides the same variety as Vanilla did (pre-AE) and can be played standalone, for a fully unique experience.
 
 READ THIS PLEASE
 Instructions for Use:
 Modloader:
-The modloader is required for the mod to run. Download the latest Modloader Here: https://github.com/itb-community/ITB-ModLoader/releases
+UPDATE: Modloader 2.8.1 or higher is required (you should always take the highest version when possible, we are updated to 2.8.2 as of writing this) for the mod to run. Download the latest Modloader Here: https://github.com/itb-community/ITB-ModLoader/releases
 Installing:
 Once installing the modloader, extract "Vextra" into your mods folder located in your Into the Breach directory.
 Easy Edit:
