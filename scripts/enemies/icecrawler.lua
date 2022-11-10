@@ -165,7 +165,7 @@ function DNT_IceCrawlerAtk1:GetSkillEffect(p1,p2)
 		animation2.sAnimation = "chillthrower"..distance2.."_"..backdir
 	end
 
-	LOG(animation.sAnimation)
+	--LOG(animation.sAnimation)
 
 	for _, target in pairs(targets) do
 		local currentDistance = p1:Manhattan(target)
