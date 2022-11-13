@@ -215,7 +215,7 @@ trait:add{
 	icon_glow = "img/icons/DNT_nurse_icon_glow.png",
 	icon_offset = Point(2,10),
 	desc_title = "Healing Strikes",
-	desc_text = "The Nurse Psion causes vek to heal instead of damaging allies.",
+	desc_text = "The Nurse Psion causes Vek to heal instead of damaging allies.",
 }
 
 ------------------------

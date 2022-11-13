@@ -119,7 +119,7 @@ DNT_AntlionAtk2 = DNT_AntlionAtk1:new { --Just an example
 }
 
 DNT_AntlionAtkB = DNT_AntlionAtk1:new { --Just an example
-	Description = "Crack all adjacent tiles, preparing to strike it.",
+	Description = "Crack all adjacent tiles, preparing to strike them.",
 	ExtraTiles = true,
 	Damage = 2,
 	TipImage = { --This is all tempalate and probably needs to change
