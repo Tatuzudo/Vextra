@@ -8,7 +8,7 @@ elseif easyEdit.enemyList:get("archive") then
 	enemyListVanilla = easyEdit.enemyList:get("archive")
 else
 	LOG("ERROR - Vextra - Enemy Lists not found, creating blank list to copy from")
-	enemyListVanilla = easyEdit.enemyList:add("Blank List") 
+	enemyListVanilla = easyEdit.enemyList:add("Blank List")
 end
 
 --local enemyListFinale = easyEdit.enemyList:get("finale")
@@ -28,12 +28,13 @@ for _, table in ipairs(DNT_Vextra_VekList) do
 	--enemyListFinale:addEnemy(name, "Enemies")
 end
 
---Add bots and psions, we only have new vek
+--Add bots and ~~psions~~, we only have new vek
 
 enemyListSolo:addEnemy("Snowtank", "Bots")
 enemyListSolo:addEnemy("Snowart", "Bots")
 enemyListSolo:addEnemy("Snowlaser", "Bots")
 
+--We have custom psions now!
 -- enemyListSolo:addEnemy("Jelly_Health", "Leaders")
 -- enemyListSolo:addEnemy("Jelly_Regen", "Leaders")
 -- enemyListSolo:addEnemy("Jelly_Armor", "Leaders")

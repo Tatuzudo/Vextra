@@ -80,7 +80,7 @@ local this = {}
 
 --@param vek	string	the name of the vek, capitalized
 local function IsVek(pawn, vek)
-	return pawn and (pawn:GetType() == vek.."1" or pawn:GetType() == vek.."2" or pawn:GetType() == vek.."Boss")
+	return pawn and (pawn:GetType():find("^"..vek))
 end
 
 local function PawnCreated(mission, pawn)
@@ -93,8 +93,8 @@ local function PawnCreated(mission, pawn)
 	end
 end
 
-function this:load(NAH_MechTaunt_ModApiExt)
-	NAH_MechTaunt_ModApiExt:addPawnTrackedHook(PawnCreated)
+function this:load(DNT_Vextra_ModApiExt)
+	DNT_Vextra_ModApiExt:addPawnTrackedHook(PawnCreated)
 end
 
 return this

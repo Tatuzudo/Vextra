@@ -197,7 +197,7 @@ end
 --Load hooks
 local this = {}
 
-function this:load(NAH_MechTaunt_ModApiExt)
+function this:load(DNT_Vextra_ModApiExt)
 	local options = mod_loader.currentModContent[mod.id].options
 	--[[
 	modApi:addMissionUpdateHook(function(mission) --Testing
@@ -205,7 +205,7 @@ function this:load(NAH_MechTaunt_ModApiExt)
 		Board:MarkSpaceColor(Point(4,4),GL_Color(255,255,255))
 	end)
 	--]]
-	NAH_MechTaunt_ModApiExt:addSkillBuildHook(SkillBuild)
+	DNT_Vextra_ModApiExt:addSkillBuildHook(SkillBuild)
 
 end
 

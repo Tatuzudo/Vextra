@@ -211,9 +211,9 @@ AddPawn("DNT_SilkwormBoss")
 --[[
 local this = {}
 
-function this:load(NAH_MechTaunt_ModApiExt)
+function this:load(DNT_Vextra_ModApiExt)
 	local options = mod_loader.currentModContent[mod.id].options
-	NAH_MechTaunt_ModApiExt:addSkillBuildHook(SkillBuild) --EXAMPLE
+	DNT_Vextra_ModApiExt:addSkillBuildHook(SkillBuild) --EXAMPLE
 
 end
 
