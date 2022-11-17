@@ -61,6 +61,16 @@ a.DNT_ladybuge = baseEmerge
 a.DNT_ladybuga = base:new{ Image = imagepath.."DNT_"..name.."a.png", NumFrames = 8 }
 a.DNT_ladybugd = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Loop = false, NumFrames = 8, Time = 0.16} --Numbers copied for now
 a.DNT_ladybugw = base:new{ Image = imagepath.."DNT_"..name.."_Bw.png", PosY = 0} --Only if there's a boss
+
+-----------------
+--  Portraits  --
+-----------------
+
+local ptname = "Ladybug"
+modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."1.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."1.png")
+modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."2.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."2.png")
+modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."3.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."3.png")
+
 -------------
 -- Weapons --
 -------------

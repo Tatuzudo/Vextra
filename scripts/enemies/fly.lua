@@ -34,6 +34,15 @@ a.DNT_flye = baseEmerge
 a.DNT_flya = base:new{ Image = imagepath.."DNT_"..name.."a.png", NumFrames = 4 }
 a.DNT_flyd = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Loop = false, NumFrames = 9, Time = .15 } --Numbers copied for now
 
+-----------------
+--  Portraits  --
+-----------------
+
+local ptname = "Fly"
+modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."1.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."1.png")
+modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."2.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."2.png")
+modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."3.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."3.png")
+
 -------------
 -- Weapons --
 -------------

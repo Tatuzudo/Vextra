@@ -89,6 +89,21 @@ modApi:appendAsset("img/effects/DNT_WorkerAnt1_upshot.png", resourcePath .. "img
 modApi:appendAsset("img/effects/DNT_FlyingAnt1_upshot.png", resourcePath .. "img/effects/DNT_FlyingAnt1_upshot.png")
 modApi:appendAsset("img/effects/DNT_SoldierAnt1_upshot.png", resourcePath .. "img/effects/DNT_SoldierAnt1_upshot.png")
 
+-----------------
+--  Portraits  --
+-----------------
+
+-- Anthill
+local ptname = "Anthill"
+modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."1.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."1.png")
+modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."2.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."2.png")
+modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."3.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."3.png")
+
+-- Ants
+modApi:appendAsset("img/portraits/enemy/DNT_WorkerAnt1.png",resourcePath.."img/portraits/enemy/DNT_WorkerAnt1.png")
+modApi:appendAsset("img/portraits/enemy/DNT_FlyingAnt1.png",resourcePath.."img/portraits/enemy/DNT_FlyingAnt1.png")
+modApi:appendAsset("img/portraits/enemy/DNT_SoldierAnt1.png",resourcePath.."img/portraits/enemy/DNT_SoldierAnt1.png")
+
 -------------
 -- Weapons --
 -------------
@@ -99,7 +114,7 @@ DNT_AnthillAtk1 = Skill:new {
 	Description = "Spawn soldier, flying or worker ants. Spawn stronger ants at higher health.",
 	Damage = 0,
 	Class = "Enemy",
-	LaunchSound = "",
+	LaunchSound = "/enemy/shaman_1/attack_launch",
 	ImpactSound = "/enemy/spider_boss_1/attack_egg_land",
 	Spawns = {"DNT_WorkerAnt1","DNT_FlyingAnt1","DNT_SoldierAnt1","DNT_SoldierAnt1","DNT_SoldierAnt1"},
 	TipImage = {
@@ -185,6 +200,7 @@ DNT_WorkerAntAtk = Skill:new {
 	Name = "Cutting Bite",
 	Description = "Prepares to bite an adjacent tile",
 	Damage = 1,
+	StrikeAnim = "SwipeClaw1",
 	Class = "Enemy",
 	LaunchSound = "",
 	PathSize = 1,
@@ -196,20 +212,10 @@ DNT_WorkerAntAtk = Skill:new {
 	}
 }
 
-DNT_FlyingAntAtk = DNT_WorkerAntAtk:new {
-	Name = "Sharp Sting",
-	Damage = 1,
-	TipImage = {
-		Unit = Point(2,2),
-		Target = Point(2,1),
-		Enemy = Point(2,1),
-		CustomPawn = "DNT_FlyingAnt1",
-	}
-}
-
 DNT_SoldierAntAtk = DNT_WorkerAntAtk:new {
 	Name = "Slashing Bite",
 	Damage = 2,
+	StrikeAnim = "SwipeClaw2",
 	TipImage = {
 		Unit = Point(2,2),
 		Target = Point(2,1),
@@ -222,6 +228,29 @@ function DNT_WorkerAntAtk:GetSkillEffect(p1,p2)
 	local ret = SkillEffect()
 	local dir = GetDirection(p2 - p1)
 	local damage = SpaceDamage(p2,self.Damage)
+	damage.sSound = "/enemy/leaper_1/attack"
+	damage.sAnimation = self.StrikeAnim
+	ret:AddQueuedDamage(damage)
+	return ret
+end
+
+DNT_FlyingAntAtk = DNT_WorkerAntAtk:new {
+	Name = "Sharp Sting",
+	Description = "Prepares to sting an adjacent tile",
+	Damage = 1,
+	TipImage = {
+		Unit = Point(2,2),
+		Target = Point(2,1),
+		Enemy = Point(2,1),
+		CustomPawn = "DNT_FlyingAnt1",
+	}
+}
+
+function DNT_FlyingAntAtk:GetSkillEffect(p1,p2)
+	local ret = SkillEffect()
+	local dir = GetDirection(p2 - p1)
+	local damage = SpaceDamage(p2,self.Damage)
+	damage.sSound = "/enemy/hornet_1/attack"
 	damage.sAnimation = "explomosquito_"..dir
 	ret:AddQueuedDamage(damage)
 	return ret
@@ -235,6 +264,7 @@ end
 DNT_Anthill1 = Pawn:new
 	{
 		Name = "Anthill",
+		Icon = "portraits/enemy/DNT_Anthill1",
 		Health = 3,
 		MoveSpeed = 2,
 		Burrows = true,
@@ -251,6 +281,7 @@ AddPawn("DNT_Anthill1")
 DNT_Anthill2 = Pawn:new
 	{
 		Name = "Alpha Anthill",
+		Icon = "portraits/enemy/DNT_Anthill2",
 		Health = 5,
 		MoveSpeed = 2,
 		Burrows = true,
@@ -275,27 +306,12 @@ DNT_WorkerAnt1 = Pawn:new
 		SpawnLimit = false,
 		Image = "DNT_workerant", --lowercase
 		SkillList = {"DNT_WorkerAntAtk"},
-		SoundLocation = "/enemy/spiderling_1//",
+		SoundLocation = "/enemy/spiderling_1/",
 		DefaultTeam = TEAM_ENEMY,
 		ImpactMaterial = IMPACT_INSECT,
 		Minor = true,
 	}
 AddPawn("DNT_WorkerAnt1")
-
--- DNT_WorkerAnt2 = Pawn:new
-	-- {
-		-- Name = "Alpha Worker Ant",
-		-- Health = 1,
-		-- MoveSpeed = 3,
-		-- SkillList = {"DNT_AntAtk1"},
-		-- Image = "spiderling",
-		-- SoundLocation = "/enemy/spiderling_2/",
-		-- ImageOffset = 1,
-		-- DefaultTeam = TEAM_ENEMY,
-		-- ImpactMaterial = IMPACT_INSECT,
-		-- Tier = TIER_ALPHA,
-	-- }
--- AddPawn("DNT_WorkerAnt2")
 
 -- FlyingAnt
 DNT_FlyingAnt1 = Pawn:new
@@ -307,28 +323,12 @@ DNT_FlyingAnt1 = Pawn:new
 		SpawnLimit = false,
 		Image = "DNT_flyingant", --lowercase
 		SkillList = {"DNT_FlyingAntAtk"},
-		SoundLocation = "/enemy/spiderling_1//",
+		SoundLocation = "/enemy/hornet_1/",
 		DefaultTeam = TEAM_ENEMY,
 		ImpactMaterial = IMPACT_INSECT,
 		Minor = true,
 	}
 AddPawn("DNT_FlyingAnt1")
-
--- DNT_FlyingAnt2 = Pawn:new
-	-- {
-		-- Name = "Alpha Flying Ant",
-		-- Health = 1,
-		-- MoveSpeed = 3,
-		-- Flying = true,
-		-- SkillList = {"DNT_AntAtk1"},
-		-- Image = "hornet",
-		-- SoundLocation = "/enemy/spiderling_2/",
-		-- ImageOffset = 1,
-		-- DefaultTeam = TEAM_ENEMY,
-		-- ImpactMaterial = IMPACT_INSECT,
-		-- Tier = TIER_ALPHA,
-	-- }
--- AddPawn("DNT_FlyingAnt2")
 
 -- SoldierAnt
 DNT_SoldierAnt1 = Pawn:new
@@ -339,27 +339,12 @@ DNT_SoldierAnt1 = Pawn:new
 		SpawnLimit = false,
 		Image = "DNT_soldierant",
 		SkillList = {"DNT_SoldierAntAtk"},
-		SoundLocation = "/enemy/spiderling_1//",
+		SoundLocation = "/enemy/spiderling_1/",
 		DefaultTeam = TEAM_ENEMY,
 		ImpactMaterial = IMPACT_INSECT,
 		Minor = true,
 	}
 AddPawn("DNT_SoldierAnt1")
-
--- DNT_SoldierAnt2 = Pawn:new
-	-- {
-		-- Name = "Alpha Soldier Ant",
-		-- Health = 2,
-		-- MoveSpeed = 3,
-		-- SkillList = {"DNT_AntAtk2"},
-		-- Image = "leaper",
-		-- SoundLocation = "/enemy/spiderling_2/",
-		-- ImageOffset = 1,
-		-- DefaultTeam = TEAM_ENEMY,
-		-- ImpactMaterial = IMPACT_INSECT,
-		-- Tier = TIER_ALPHA,
-	-- }
--- AddPawn("DNT_SoldierAnt2")
 
 -----------
 -- Hooks --

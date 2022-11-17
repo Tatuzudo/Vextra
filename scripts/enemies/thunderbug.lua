@@ -41,6 +41,14 @@ a.DNT_thunderbuga = base:new{ Image = imagepath.."DNT_"..name.."a.png", NumFrame
 a.DNT_thunderbugd = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Loop = false, NumFrames = 8, Time = .15 } --Numbers copied for now
 a.DNT_thunderbugw = base:new{ Image = imagepath.."DNT_"..name.."_Bw.png", PosY = -3} --Only if there's a boss
 
+-----------------
+--  Portraits  --
+-----------------
+
+local ptname = "Thunderbug"
+modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."1.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."1.png")
+modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."2.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."2.png")
+modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."3.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."3.png")
 
 -------------
 -- Weapons --
