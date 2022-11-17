@@ -2,7 +2,7 @@
 Mission_ThunderbugBoss = Mission_Boss:new{
 	Name = "Thunderbug Leader",
 	-- islandLock = 3,
-	BossPawn = "DNT_Thunderbug3",
+	BossPawn = "DNT_ThunderbugBoss",
 	SpawnStartMod = -1,
 	BossText = "Destroy the Thunderbug Leader",
 }

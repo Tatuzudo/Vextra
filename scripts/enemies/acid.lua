@@ -50,6 +50,13 @@ a.DNT_jelly_icona = base:new{ Image = imagepath.."DNT_"..name.."a.png", NumFrame
 a.DNT_jelly_icond = base:new{ Image = imagepath.."DNT_"..name.."_death.png", PosX = -18, PosY = -14, NumFrames = 8, Time = 0.14, Loop = false }
 a.DNT_jelly_icon_ns = a.MechIcon:new{ Image = imagepath.."DNT_"..name.."_ns.png", Height = 10 }
 
+-----------------
+--  Portraits  --
+-----------------
+
+local ptname = "Acid"
+modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."1.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."1.png")
+
 --------------
 -- Emitters --
 --------------

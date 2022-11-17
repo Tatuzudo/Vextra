@@ -48,7 +48,7 @@ a.DNT_thunderbugw = base:new{ Image = imagepath.."DNT_"..name.."_Bw.png", PosY =
 local ptname = "Thunderbug"
 modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."1.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."1.png")
 modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."2.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."2.png")
-modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."3.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."3.png")
+modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."Boss.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."Boss.png")
 
 -------------
 -- Weapons --
@@ -190,7 +190,7 @@ DNT_Thunderbug2 = Pawn:new{
 }
 AddPawn("DNT_Thunderbug2")
 
-DNT_Thunderbug3 = Pawn:new{
+DNT_ThunderbugBoss = Pawn:new{
 	Name = "Thunderbug Leader",
 	Health = 6,
 	MoveSpeed = 3,
@@ -203,4 +203,4 @@ DNT_Thunderbug3 = Pawn:new{
 	Tier = TIER_BOSS,
 	Massive = true,
 }
-AddPawn("DNT_Thunderbug3")
+AddPawn("DNT_ThunderbugBoss")

@@ -41,7 +41,7 @@ a.DNT_flyd = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Loop = fal
 local ptname = "Fly"
 modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."1.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."1.png")
 modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."2.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."2.png")
-modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."3.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."3.png")
+modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."Boss.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."Boss.png")
 
 -------------
 -- Weapons --

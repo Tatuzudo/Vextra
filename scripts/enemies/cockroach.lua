@@ -144,7 +144,7 @@ a.DNT_cockroach_revive_leader = a.DNT_cockroachd_leader:new{
 local ptname = "Cockroach"
 modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."1.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."1.png")
 modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."2.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."2.png")
-modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."3.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."3.png")
+modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."Boss.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."Boss.png")
 
 -------------
 -- Weapons --
