@@ -128,19 +128,25 @@ a.DNT_JunebugPlusSpiral = Animation:new {
 -------------
 
 DNT_JunebugAtkBoss = Skill:new {
-	Name = "Light Slash",
-	Description = "Something cool goes here",
+	Name = "Light Bender",
+	Description = "Hit two opposite tiles with a powerful light attack. If the ladybug dies, launch two high powered pushing lasers in opposite directions.",
 	Damage = 3,
 	MinDamage = 1,
 	Class = "Enemy",
 	LaunchSound = "",
   PathSize = 1,
   LaserArt = "effects/DNT_laser_junebug",
+	CustomTipImage = "DNT_JunebugAtkBoss_Tip",
 	TipImage = { --This is all tempalate and probably needs to change
-		Unit = Point(2,4),
-		Target = Point(2,3),
-		Enemy = Point(2,3),
+		Unit = Point(2,2),
+		Target = Point(2,1),
+		Building = Point(2,0),
+		Enemy = Point(2,1),
+		Enemy2 = Point(2,4),
+		Second_Origin = Point(2,2),
+		Second_Target = Point(2,1),
 		CustomPawn = "DNT_JunebugBoss",
+		Length = 4,
 	}
 }
 
@@ -158,7 +164,7 @@ function DNT_JunebugAtkBoss:GetSkillEffect(p1,p2)
 	local direction = GetDirection(p2-p1)
 	local backdir = (direction+2)%4
 	local damage = nil
-	if mission.DNT_LadybugID and Board:IsPawnAlive(mission.DNT_LadybugID) then
+	if (mission.DNT_LadybugID and Board:IsPawnAlive(mission.DNT_LadybugID)) or (IsTipImage() and self.Tooltip <= 1) then --Tooltip Stuff
 		--Animation First Since the Queued Melee has Delay
 		ret:AddQueuedBounce(p1,2)
 		targets = {p1+DIR_VECTORS[direction],p1+DIR_VECTORS[backdir]}
@@ -176,12 +182,9 @@ function DNT_JunebugAtkBoss:GetSkillEffect(p1,p2)
 				targets[#targets+1] = curr
 				curr = curr + DIR_VECTORS[dir]
 			end
-			--[[
 			if Board:IsValid(curr) then
 				targets[#targets+1] = curr
-				curr = curr + DIR_VECTORS[dir]
 			end
-			]]
 			local dam = SpaceDamage(curr, 0)
 			ret:AddQueuedProjectile(dam,self.LaserArt,NO_DELAY)
 
@@ -197,6 +200,24 @@ function DNT_JunebugAtkBoss:GetSkillEffect(p1,p2)
 		end
 
 	end
+	return ret
+end
+
+-------------
+-- Tooltip --
+-------------
+
+DNT_JunebugAtkBoss_Tip = DNT_JunebugAtkBoss:new{
+	Tooltip = 0, --0 1 equals Ladybug, 2 3 equals no ladybug
+	--This is because the skill effect runs twice. I'll use these numbers change the board state and determine which weapon to use
+}
+
+function DNT_JunebugAtkBoss_Tip:GetSkillEffect(p1,p2)
+	if self.Tooltip == 0 then --Add Ladybug
+		Board:AddPawn("DNT_LadybugBoss", Point(2,3))
+	end
+	local ret = DNT_JunebugAtkBoss.GetSkillEffect(self,p1,p2) --Pass in self by using the . instead of :
+	self.Tooltip = (self.Tooltip + 1) % 4
 	return ret
 end
 
