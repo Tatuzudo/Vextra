@@ -23,8 +23,10 @@ for _, table in ipairs(DNT_Vextra_VekList) do
 	local category = table[3]
 	--LOG(name)
 	--LOG(category)
-	enemyListSolo:addEnemy(name,category)
-	enemyListCombined:addEnemy(name,category)
+	if category ~= "None" then
+		enemyListSolo:addEnemy(name,category)
+		enemyListCombined:addEnemy(name,category)
+	end
 	--enemyListFinale:addEnemy(name, "Enemies")
 end
 

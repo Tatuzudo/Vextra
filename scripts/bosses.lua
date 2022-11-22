@@ -131,3 +131,32 @@ function Mission_IceCrawlerBoss:StartMission()
 		self.SpawnStartMod = -1 --In case this works, but this should never happen
 	end
 end
+
+Mission_JunebugBoss = Mission_Boss:new{
+	Name = "Junebug and Ladybug Leader",
+	BossPawn = "DNT_JunebugBoss",
+	SpawnStartMod = -1, --One extra for the ladybug?? It just heals so I'm not sure
+	BossText = "Destroy the Junebug and Ladybug Companion",
+	Ladybug = "DNT_LadybugBoss"
+}
+
+function Mission_JunebugBoss:StartMission()
+	self:StartBoss()
+	local tile = Board:GetPawn(self.BossID):GetSpace()
+	for i=DIR_START,DIR_END do
+		local curr = tile+DIR_VECTORS[i]
+		--LOG(curr)
+		if not Board:IsBlocked(curr,PATH_GROUND) then
+			Board:AddPawn(self.Ladybug,curr)
+			self.DNT_LadybugID = Board:GetPawn(curr):GetId()
+			break
+		end
+	end
+	if not self.DNT_LadybugID then
+		LOG("THIS SHOULD NEVER HAPPEN BUT IF YOU SEE THIS @NamesAreHard ON DISCORD THANK YOU")
+	end
+end
+
+function Mission_JunebugBoss:IsBossDead()
+	return not Board:IsPawnAlive(self.BossID) and not Board:IsPawnAlive(self.DNT_LadybugID)
+end

@@ -28,10 +28,16 @@ modApi:appendAsset("img/icons/DNT_ladybug_icon.png",resourcePath.."img/icons/DNT
 	------------
 
 	trait:add{
-		pawnType = "DNT_LadybugBoss",
+		pawnType = "DNT_Ladybug1",
+		icon = resourcePath.."img/combat/traits/DNT_ladybug_trait.png",
+		desc_title = "Hypnotic Shell",
+		desc_text = "If this unit can be targeted by a mech and isn't, that mech takes 1 self damage (cumulative).",
+	}
+	trait:add{
+		pawnType = "DNT_Ladybug2",
 		icon = resourcePath.."img/combat/traits/DNT_ladybug_trait.png",
 		desc_title = "Mesmerizing Shell",
-		desc_text = "If this unit can be targeted by a mech and isn't, that mech takes 2 self damage.",
+		desc_text = "If this unit can be targeted by a mech and isn't, that mech takes 2 self damage (cumulative).",
 	}
 
 
@@ -47,7 +53,6 @@ modApi:appendAsset(writepath.."DNT_"..name.."_emerge.png", readpath.."DNT_"..nam
 modApi:appendAsset(writepath.."DNT_"..name.."_death.png", readpath.."DNT_"..name.."_death.png")
 modApi:appendAsset(writepath.."DNT_"..name.."_Bw.png", readpath.."DNT_"..name.."_Bw.png")
 
-
 local base = a.EnemyUnit:new{Image = imagepath .. "DNT_"..name..".png", PosX = -23, PosY = -5}
 local baseEmerge = a.BaseEmerge:new{Image = imagepath .. "DNT_"..name.."_emerge.png", PosX = -23, PosY = -5}
 
@@ -62,137 +67,113 @@ a.DNT_ladybugw = base:new{ Image = imagepath.."DNT_"..name.."_Bw.png", PosY = 0}
 -----------------
 
 local ptname = "Ladybug"
---modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."1.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."1.png")
---modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."2.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."2.png")
+modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."1.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."1.png")
+modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."2.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."2.png")
 modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."Boss.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."Boss.png")
-
------------------
---  Animation  --
------------------
-
-modApi:appendAsset("img/effects/DNT_explo_heart.png", resourcePath.."img/effects/DNT_explo_heart.png")
-a.DNT_explo_heart = a.ExploArt3:new {
-	Image = "effects/DNT_explo_heart.png",
-	Time = 0.1,
-}
-
 
 -------------
 -- Weapons --
 -------------
 
-DNT_LadybugAtkBoss = LineArtillery:new {
-	Name = "Focused Heal Bomb", --This needs to be better
-	Description = "Tries to heal the Junebug in anyway it can, shooting an healing artillery with splash healing.",
-	Damage = -2,
-	SplashDamage = -1,
+DNT_LadybugAtk1 = Skill:new {
+	Name = "Shell Bump", --This needs to be better
+	Description = "Push all adjacent tiles.",
+	Damage = 0,
 	Class = "Enemy",
-	PathSize = 1,
-	ArtillerySize = 5,
-	Explosion = "",
-	Junebug = "DNT_JunebugBoss",
-	UpShot = "effects/shotup_ant2.png",
-	--LaunchSound = "/weapons/science_repulse",
-	CustomTipImage = "DNT_LadybugAtkBoss_Tip",
+	LaunchSound = "/weapons/science_repulse",
 	TipImage = {
-		Unit = Point(2,3),
-		Target = Point(2,1),
-		Enemy = Point(2,2),
-		CustomPawn = "DNT_LadybugBoss",
-		Length = 5,
+		Unit = Point(2,2),
+		Target = Point(2,2),
+		Enemy = Point(2,1),
+		Enemy2 = Point(1,2),
+		Building = Point(3,2),
+		CustomPawn = "DNT_Ladybug1",
 	}
 }
 
-function DNT_LadybugAtkBoss:GetTargetScore(p1,p2)
-	local mission = GetCurrentMission()
-	local ret = 0
-	if mission.BossID then
-		ret = 0-p1:Manhattan(Board:GetPawnSpace(mission.BossID)) --More negative the farther away
-	else
-		ret = 1 --If we're not in the mission, which this shoouldn't happen but just in case, everything is 1
-	end
-	local pawn = Board:GetPawn(p2)
-	if pawn and pawn:GetType() == self.Junebug then
-		ret = 100
-	end
+DNT_LadybugAtk2 = DNT_LadybugAtk1:new{
+	TipImage = {
+		Unit = Point(2,2),
+		Target = Point(2,2),
+		Enemy = Point(2,1),
+		Enemy2 = Point(1,2),
+		Building = Point(3,2),
+		CustomPawn = "DNT_Ladybug2",
+	}
+}
+
+function DNT_LadybugAtk1:GetTargetArea(p1)
+	local ret = PointList()
+	ret:push_back(p1)
 	return ret
 end
 
-function DNT_LadybugAtkBoss:AddHealing(ret,point,healing,arty) --This will check for the junebug which needs its health set
-	arty = arty or false
-	local damage = SpaceDamage(point,healing)
-	if arty then
-		damage.sAnimation = "DNT_explo_heart"
-		ret:AddQueuedArtillery(damage, self.UpShot)
-	else
-		ret:AddQueuedDamage(damage)
-	end
-
-	local pawn = Board:GetPawn(point)
-	if pawn and pawn:GetType() == self.Junebug and pawn:IsDead() then --Set Health of Junebug
-		ret:AddQueuedScript(string.format("Board:GetPawn(%s):SetHealth(%s)",point:GetString(),healing*-1))
-	end
-
-	ret:AddQueuedBounce(point,healing)
-
-	return ret
-end
-
-function DNT_LadybugAtkBoss:GetSkillEffect(p1,p2)
+function DNT_LadybugAtk1:GetSkillEffect(p1,p2)
 	local ret = SkillEffect()
-	local dir = GetDirection(p2-p1)
-	ret = self:AddHealing(ret,p2,self.Damage,true)
+	ret:AddQueuedBounce(p1,-2)
+	for i = DIR_START,DIR_END do
+		local curr = p1 + DIR_VECTORS[i]
+		local spaceDamage = SpaceDamage(curr, 0, i)
 
-	for i=DIR_START,DIR_END do
-		local curr = p2+DIR_VECTORS[i]
-		if Board:IsValid(curr) then
-			ret = self:AddHealing(ret,p2+DIR_VECTORS[i],self.SplashDamage)
+		--In case we have a shield friendly upgrade (alpha/boss)
+		if self.ShieldFriendly and (Board:GetPawnTeam(curr) == TEAM_ENEMY) then
+			spaceDamage.iShield = 1
 		end
+
+		spaceDamage.sAnimation = "airpush_"..i
+		ret:AddQueuedDamage(spaceDamage)
+
+		ret:AddQueuedBounce(curr,-1)
 	end
+
+	local selfDamage = SpaceDamage(p1,0)
+
+	--In case we have a shield self upgrade (alpha/boss)
+	if self.ShieldSelf then
+		selfDamage.iShield = 1
+	end
+
+	selfDamage.sAnimation = "ExploRepulse2"
+	ret:AddQueuedDamage(selfDamage)
 	return ret
 end
 
--------------
--- Tooltip --
--------------
-
-DNT_LadybugAtkBoss_Tip = DNT_LadybugAtkBoss:new {}
-
-function DNT_LadybugAtkBoss_Tip:GetSkillEffect(p1,p2)
-	local pawn = Board:GetPawn(Point(2,1))
-	if not pawn then
-		Board:AddPawn("DNT_JunebugBoss",Point(2,1))
-		local damage = SpaceDamage(Point(2,1),DAMAGE_DEATH)
-		Board:DamageSpace(damage)
-		local damage = SpaceDamage(Point(2,2),2)
-		Board:DamageSpace(damage)
-	end
-	local ret = DNT_LadybugAtkBoss:GetSkillEffect(p1,p2)
-	--ret:AddQueuedDelay(1)
-	return ret
-end
 
 -----------
 -- Pawns --
 -----------
 
-DNT_LadybugBoss = Pawn:new
+DNT_Ladybug1 = Pawn:new
 	{
 		Name = "Ladybug",
 		Health = 3,
 		MoveSpeed = 4,
 		Image = "DNT_ladybug",
 		VoidShockImmune = true,
-		SkillList = {"DNT_LadybugAtkBoss"},
+		SkillList = {"DNT_LadybugAtk1"},
 		SoundLocation = "/enemy/beetle_1/",
 		DefaultTeam = TEAM_ENEMY,
 		ImpactMaterial = IMPACT_INSECT,
-		PunishmentDamage = 2,
-		Tier = TIER_ALPHA,
-		Ranged = 1,
+		PunishmentDamage = 1,
 	}
-AddPawn("DNT_LadybugBoss")
+AddPawn("DNT_Ladybug1")
 
+DNT_Ladybug2 = Pawn:new
+	{
+		Name = "Alpha Ladybug",
+		Health = 5,
+		MoveSpeed = 4,
+		SkillList = {"DNT_LadybugAtk2"},
+		Image = "DNT_ladybug",
+		VoidShockImmune = true,
+		SoundLocation = "/enemy/beetle_1/",
+		ImageOffset = 1,
+		DefaultTeam = TEAM_ENEMY,
+		ImpactMaterial = IMPACT_INSECT,
+		Tier = TIER_ALPHA,
+		PunishmentDamage = 2,
+	}
+AddPawn("DNT_Ladybug2")
 
 -----------
 -- Hooks --
@@ -202,14 +183,14 @@ AddPawn("DNT_LadybugBoss")
 local function isLadybug(pawn)
 	if pawn then
 		local type = pawn:GetType()
-		return type == "DNT_LadybugBoss"
+		return type == "DNT_Ladybug1" or type == "DNT_Ladybug2"
 	end
 	return false
 end
 
 --Hook that baits mechs
 local function SkillBuild(mission, pawn, weaponId, p1, p2, skillEffect)
-	if pawn:GetTeam() == TEAM_PLAYER and pawn:IsMech() and not IsTipImage() then --?
+	if pawn:GetTeam() == TEAM_PLAYER and pawn:IsMech() and weaponId ~= "DNT_LadybugBait" and not IsTipImage() then --?
 		local pawn = Board:GetPawn(p2)
 		if isLadybug(pawn) then --Don't go on, we're targetting a ladybug
 			return
@@ -220,17 +201,23 @@ local function SkillBuild(mission, pawn, weaponId, p1, p2, skillEffect)
 			pawn = Board:GetPawn(v)
 			if isLadybug(pawn) then --There is a ladybug and we aren't targetting it
 				--Ping the ladybug(s) and add damage
-				local point = pawn:GetSpace()
-				skillEffect:AddScript([[
-					local v = Point(]]..v:GetString()..[[)
-					Board:Ping(v, GL_Color(255, 0, 0))
-					Board:AddAlert(v, "DIDN'T TARGET")
-				]])
-				local punishmentDmg = _G[pawn:GetType()].PunishmentDamage
+				local punishmentDmg = 0
+				for _,point in pairs(extract_table(areaPoints)) do
+					if isLadybug(Board:GetPawn(point)) then
+						skillEffect:AddScript([[
+							local v = Point(]]..v:GetString()..[[)
+							Board:Ping(v, GL_Color(255, 0, 0))
+							Board:AddAlert(v, "DIDN'T TARGET")
+						]])
+						punishmentDmg = punishmentDmg + _G[Board:GetPawn(point):GetType()].PunishmentDamage
 
-				local icon = SpaceDamage(point, 0)
-				icon.sImageMark = "icons/DNT_ladybug_icon.png"
-				skillEffect:AddDamage(icon)
+						local icon = SpaceDamage(point, 0)
+						icon.sImageMark = "icons/DNT_ladybug_icon.png"
+						skillEffect:AddDamage(icon)
+
+					end
+				end
+
 
 				--Save old effect
 				local oldEffect = skillEffect.effect
@@ -253,16 +240,14 @@ local function SkillBuild(mission, pawn, weaponId, p1, p2, skillEffect)
 					oldDamage = oldEffectCopy:index(i);
 					skillEffect.effect:push_back(oldDamage)
 				end
+
+
+
 			end
 		end
 	end
 end
 
---[[
-local function PawnHealedHook(mission, pawn, healingTaken)
-	LOG(pawn:GetType() .. " was healed for " .. healingTaken .. " damage!")
-end
-]]--
 
 --Load hooks
 local this = {}
@@ -270,7 +255,6 @@ local this = {}
 function this:load(DNT_Vextra_ModApiExt)
 	local options = mod_loader.currentModContent[mod.id].options
 	DNT_Vextra_ModApiExt:addSkillBuildHook(SkillBuild)
-	--DNT_Vextra_ModApiExt:addPawnHealedHook(PawnHealedHook) Only mechs revive
 
 end
 

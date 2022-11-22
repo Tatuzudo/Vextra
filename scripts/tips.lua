@@ -30,7 +30,7 @@ tips:Add{
 tips:Add{
 	id = "Tip_DNT_Ladybug",
 	title = "Ladybugs",
-	text = "The Ladybug has a simple weapon, but has a hypnotic effect on the mechs. If your weapon's target area is within the range of a ladybug, you must target your attack at a ladybug, or you hurt yourself in your confusion."
+	text = "The Ladybug heals the Junebug and has a hypnotic effect on mechs. If your weapon's target area is within the range of a ladybug, you must target your attack at a ladybug, or you hurt yourself in your confusion."
 }
 
 tips:Add{
@@ -73,6 +73,12 @@ tips:Add{
 	id = "Tip_DNT_IceCrawler",
 	title = "Ice Crawlers",
 	text = "The Ice Crawler shoots a projectile that damages, then freezes. If the target is already frozen, it explodes, dealing damage to adjacent tiles."
+}
+
+tips:Add{
+	id = "Tip_DNT_Junebug",
+	title = "Junebug",
+	text = "The Junebug Boss has a corpse and a companion ladybug. If the ladybug dies, its weapon will be upgraded, and if the junebug dies, the ladybug will try to revive it."
 }
 
 --Put the hooks in here for pawn creation

@@ -6,6 +6,7 @@ local bossListVanilla = easyEdit.bossList:get("archive")
 bossListCombined:copy(bossListVanilla)
 
 local DNT_bosses = {
+  "Mission_JunebugBoss", --At the top like Goos, makes it fit a bit more
   "Mission_MantisBoss",
   "Mission_PillbugBoss",
   "Mission_ThunderbugBoss",
