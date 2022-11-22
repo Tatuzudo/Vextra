@@ -50,7 +50,7 @@ Thunderbug- Damages its target and chains lightning to adjacent targets
 
 
 CREDITS:
-Art By: Djinn
+Art By: Djinn and Hedera
 Programming By: NamesAreHard and Tatu
 
 Coding Support:
@@ -73,6 +73,5 @@ snakebag
 MasterSpider5
 Could be YOU!
 
-Special Thanks:
-Lemonymous: Provided insane help for the cockroach when it was looking grim
-Hedera: Provided the animations for the ice crawler's attack
+Ultra Special Thanks:
+Lemonymous: Provided insane help for the cockroach when it was looking grim, and like a million other things
