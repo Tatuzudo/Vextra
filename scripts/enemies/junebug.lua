@@ -215,6 +215,10 @@ DNT_JunebugAtkBoss_Tip = DNT_JunebugAtkBoss:new{
 function DNT_JunebugAtkBoss_Tip:GetSkillEffect(p1,p2)
 	if self.Tooltip == 0 then --Add Ladybug
 		Board:AddPawn("DNT_LadybugBoss", Point(2,3))
+	elseif self.Tooltip == 2 then --Angry Boy
+		Board:GetPawn(p1):SetCustomAnim("DNT_angryjunebug")
+		Board:Ping(p1, GL_Color(255,0,0))
+		--Board:AddAlert(p1,"COMPANION KILLED")
 	end
 	local ret = DNT_JunebugAtkBoss.GetSkillEffect(self,p1,p2) --Pass in self by using the . instead of :
 	self.Tooltip = (self.Tooltip + 1) % 4
@@ -298,10 +302,25 @@ local function PawnKilled(mission,pawn)
 	end
 end
 
+local function UpdateAngryBoi(mission)
+	modApi:conditionalHook(
+		function()
+			return GetCurrentMission()
+		end,
+		function()
+			local mission = GetCurrentMission()
+			if mission.DNT_LadybugID and not Board:IsPawnAlive(mission.DNT_LadybugID) then
+				Board:GetPawn(GetCurrentMission().BossID):SetCustomAnim("DNT_angryjunebug")
+			end
+		end
+	)
+end
+
 function this:load(DNT_Vextra_ModApiExt)
 	local options = mod_loader.currentModContent[mod.id].options
 	DNT_Vextra_ModApiExt:addPawnKilledHook(PawnKilled)
-
+	DNT_Vextra_ModApiExt:addGameLoadedHook(UpdateAngryBoi)
+	DNT_Vextra_ModApiExt:addResetTurnHook(UpdateAngryBoi)
 end
 
 return this
