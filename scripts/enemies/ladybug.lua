@@ -207,7 +207,46 @@ local function isLadybug(pawn)
 	return false
 end
 
---Hook that baits mechs
+local function AdjustTargetArea(mission, pawn, weapoId, p1, targetArea)
+	--Only when there's a ladybug
+	if mission.DNT_LadybugID and Board:IsPawnAlive(mission.DNT_LadybugID) and pawn:GetTeam() == TEAM_PLAYER then
+		local targets = extract_table(targetArea)
+		for _, point in pairs(targets) do
+			if isLadybug(Board:GetPawn(point)) then
+				while not targetArea:empty() do
+					targetArea:erase(0)
+				end
+				targetArea:push_back(point)
+				--Board:Ping(point, GL_Color(28, 255, 62))
+				--Board:AddAlert(point, "HYPNOSIS")
+				return
+			end
+		end
+	end
+end
+
+local function AdjustSecondTargetArea(mission, pawn, weapoId, p1, p2, targetArea)
+	AdjustTargetArea(mission, pawn, weapoId, p1, targetArea)
+end
+
+--Load hooks
+local this = {}
+
+function this:load(DNT_Vextra_ModApiExt)
+	local options = mod_loader.currentModContent[mod.id].options
+	DNT_Vextra_ModApiExt:addTargetAreaBuildHook(AdjustTargetArea)
+	DNT_Vextra_ModApiExt:addSecondTargetAreaBuildHook(AdjustSecondTargetArea)
+	--DNT_Vextra_ModApiExt:addSkillBuildHook(SkillBuild)
+	--DNT_Vextra_ModApiExt:addPawnHealedHook(PawnHealedHook) Only mechs revive
+
+end
+
+return this
+
+
+
+
+--[[Hook that baits mechs
 local function SkillBuild(mission, pawn, weaponId, p1, p2, skillEffect)
 	if pawn:GetTeam() == TEAM_PLAYER and pawn:IsMech() and not IsTipImage() then --?
 		local pawn = Board:GetPawn(p2)
@@ -221,11 +260,11 @@ local function SkillBuild(mission, pawn, weaponId, p1, p2, skillEffect)
 			if isLadybug(pawn) then --There is a ladybug and we aren't targetting it
 				--Ping the ladybug(s) and add damage
 				local point = pawn:GetSpace()
-				skillEffect:AddScript([[
-					local v = Point(]]..v:GetString()..[[)
+				skillEffect:AddScript("
+					local v = Point("..v:GetString()..")
 					Board:Ping(v, GL_Color(255, 0, 0))
-					Board:AddAlert(v, "DIDN'T TARGET")
-				]])
+					Board:AddAlert(v, 'DIDN\'T TARGET')
+				")
 				local punishmentDmg = _G[pawn:GetType()].PunishmentDamage
 
 				local icon = SpaceDamage(point, 0)
@@ -257,21 +296,9 @@ local function SkillBuild(mission, pawn, weaponId, p1, p2, skillEffect)
 		end
 	end
 end
-
+--]]
 --[[
 local function PawnHealedHook(mission, pawn, healingTaken)
 	LOG(pawn:GetType() .. " was healed for " .. healingTaken .. " damage!")
 end
 ]]--
-
---Load hooks
-local this = {}
-
-function this:load(DNT_Vextra_ModApiExt)
-	local options = mod_loader.currentModContent[mod.id].options
-	DNT_Vextra_ModApiExt:addSkillBuildHook(SkillBuild)
-	--DNT_Vextra_ModApiExt:addPawnHealedHook(PawnHealedHook) Only mechs revive
-
-end
-
-return this
