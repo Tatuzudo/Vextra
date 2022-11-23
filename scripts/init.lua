@@ -119,9 +119,9 @@ return {
   version = "0.2.0", --BETA
 	requirements = { "kf_ModUtils" },
 	dependencies = {
-		modApiExt = "1.2",
-		memedit = "0.1.2",
-		easyEdit = "2.0.1",
+		modApiExt = "1.17",
+		memedit = "1.0.1",
+		easyEdit = "2.0.3",
 	},
 	metadata = metadata,
 	load = load,
