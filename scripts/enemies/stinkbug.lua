@@ -143,7 +143,7 @@ function DNT_StinkbugAtk1:GetSkillEffect(p1,p2)
 			damage.sAnimation = "DNT_FartAppear"
 			damage.iSmoke = EFFECT_CREATE
 			ret:AddDamage(damage)
-			if Board:IsBlocked(p3,PATH_PROJECTILE) then L = false end
+			if Board:IsBlocked(p3,PATH_PROJECTILE) and not Board:IsPawnSpace(p3) then L = false end
 		end
 		if R then
 			local dir3 = dir-1 < 0 and 3 or dir-1
@@ -153,7 +153,7 @@ function DNT_StinkbugAtk1:GetSkillEffect(p1,p2)
 			damage.sAnimation = "DNT_FartAppear"
 			damage.iSmoke = EFFECT_CREATE
 			ret:AddDamage(damage)
-			if Board:IsBlocked(p4,PATH_PROJECTILE) then R = false end
+			if Board:IsBlocked(p4,PATH_PROJECTILE) and not Board:IsPawnSpace(p4) then R = false end
 		end
 		ret:AddDelay(0.1)
 	end
@@ -276,8 +276,13 @@ function DNT_StinkbugAtk_Tip:GetSkillEffect(p1,p2)
 			damage.sAnimation = "DNT_FartAppear"
 			damage.iSmoke = EFFECT_CREATE
 			ret:AddDamage(damage)
+			damage.loc = p4 + DIR_VECTORS[dir3]*i,0
+			ret:AddDamage(damage)
 			ret:AddDelay(0.24) -- delay for adding smoke anim
+			damage.loc = p3 + DIR_VECTORS[dir2]*i,0
 			damage.sAnimation = "DNT_FartFront"
+			ret:AddDamage(damage)
+			damage.loc = p4 + DIR_VECTORS[dir3]*i,0
 			ret:AddDamage(damage)
 		end
 	end
@@ -292,6 +297,8 @@ function DNT_StinkbugAtk_Tip:GetSkillEffect(p1,p2)
 		for i = 1, 2 do
 			damage.loc = p3 + DIR_VECTORS[dir2]*i
 			damage.sAnimation = "DNT_FartFront"
+			ret:AddDamage(damage)
+			damage.loc = p4 + DIR_VECTORS[dir3]*i
 			ret:AddDamage(damage)
 		end
 	end
@@ -334,7 +341,7 @@ AddPawn("DNT_Stinkbug2")
 
 DNT_StinkbugBoss = Pawn:new
 	{
-		Name = "Stinkbug Boss",
+		Name = "Stinkbug Leader",
 		Health = 6,
 		MoveSpeed = 3,
 		SkillList = {"DNT_StinkbugAtkBoss"},
@@ -345,7 +352,7 @@ DNT_StinkbugBoss = Pawn:new
 		ImpactMaterial = IMPACT_INSECT,
 		Tier = TIER_ALPHA,
 	}
-AddPawn("DNT_Stinkbug2")
+AddPawn("DNT_StinkbugBoss")
 
 -----------
 -- Hooks --
