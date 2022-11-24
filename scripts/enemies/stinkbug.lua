@@ -99,6 +99,7 @@ DNT_StinkbugAtk1 = Skill:new {
 	Class = "Enemy",
 	LaunchSound = "",
 	PathSize = 1,
+	FartRange = 1,
 	Icon = "weapons/enemy_leaper1.png",
 	SoundBase = "/enemy/mosquito_1",
 	CustomTipImage = "DNT_StinkbugAtk_Tip",
@@ -117,32 +118,51 @@ DNT_StinkbugAtk2 = DNT_StinkbugAtk1:new {
 	CustomTipImage = "DNT_StinkbugAtk2_Tip",
 }
 
+DNT_StinkbugAtkBoss = DNT_StinkbugAtk1:new {
+	Name = "Abhorrent Spray",
+	Description = "Prepares to attack while surrounding itself with long short-lived stink clouds.",
+	Damage = 4,
+	FartRange = 8,
+	CustomTipImage = "DNT_StinkbugAtkBoss_Tip",
+}
+
 function DNT_StinkbugAtk1:GetSkillEffect(p1,p2)
 	local ret = SkillEffect()
 	local dir = GetDirection(p2 - p1)
 	local mission = GetCurrentMission()
     if not mission.DNT_FartList then mission.DNT_FartList = {} end
-
-	local dir2 = dir+1 > 3 and 0 or dir+1
-	local p3 = p1 + DIR_VECTORS[dir2]
-	ret:AddScript(string.format("table.insert(GetCurrentMission().DNT_FartList,%s)",p3:GetString())) -- insert point in fart list
-
-	local dir3 = dir-1 < 0 and 3 or dir-1
-	local p4 = p1 + DIR_VECTORS[dir3]
-	ret:AddScript(string.format("table.insert(GetCurrentMission().DNT_FartList,%s)",p4:GetString())) -- insert other fart point
-
+	
+	local L = true
+	local R = true
+	for i = 1, self.FartRange do
+		if L then
+			local dir2 = dir+1 > 3 and 0 or dir+1
+			local p3 = p1 + DIR_VECTORS[dir2]*i
+			ret:AddScript(string.format("table.insert(GetCurrentMission().DNT_FartList,%s)",p3:GetString())) -- insert point in fart list
+			local damage = SpaceDamage(p3,0) -- smoke
+			damage.sAnimation = "DNT_FartAppear"
+			damage.iSmoke = EFFECT_CREATE
+			ret:AddDamage(damage)
+			if Board:IsBlocked(p3,PATH_PROJECTILE) then L = false end
+		end
+		if R then
+			local dir3 = dir-1 < 0 and 3 or dir-1
+			local p4 = p1 + DIR_VECTORS[dir3]*i
+			ret:AddScript(string.format("table.insert(GetCurrentMission().DNT_FartList,%s)",p4:GetString())) -- insert other fart point
+			local damage = SpaceDamage(p4,0) -- smoke
+			damage.sAnimation = "DNT_FartAppear"
+			damage.iSmoke = EFFECT_CREATE
+			ret:AddDamage(damage)
+			if Board:IsBlocked(p4,PATH_PROJECTILE) then R = false end
+		end
+		ret:AddDelay(0.1)
+	end
+	
 	local damage = SpaceDamage(p2,self.Damage) -- attack
 	damage.sAnimation = "explomosquito_"..dir
 	damage.sSound = self.SoundBase.."/attack"
 	ret:AddQueuedMelee(p1,damage)
-
-	damage = SpaceDamage(p3,0) -- smoke
-	damage.sAnimation = "DNT_FartAppear"
-	damage.iSmoke = EFFECT_CREATE
-	ret:AddDamage(damage)
-	damage.loc = p4
-	ret:AddDamage(damage)
-
+	
 	ret:AddDelay(0.24) -- delay for adding smoke anim (hook)
 
 	return ret
@@ -154,10 +174,12 @@ function DNT_StinkbugAtk1:GetTargetScore(p1,p2)
 
 	local dir2 = dir+1 > 3 and 0 or dir+1
 	local p3 = p1 + DIR_VECTORS[dir2]
+	if self.FartRange > 1 then p3 = GetProjectileEnd(p1,p3) end
 	local pawn3 = Board:GetPawn(p3)
 
 	local dir3 = dir-1 < 0 and 3 or dir-1
 	local p4 = p1 + DIR_VECTORS[dir3]
+	if self.FartRange > 1 then p4 = GetProjectileEnd(p1,p4) end
 	local pawn4 = Board:GetPawn(p4)
 
 	local order = extract_table(Board:GetPawns(TEAM_ENEMY))
@@ -207,11 +229,22 @@ DNT_StinkbugAtk2_Tip = DNT_StinkbugAtk_Tip:new {
 		CustomPawn = "DNT_Stinkbug2",
 	}
 }
+DNT_StinkbugAtkBoss_Tip = DNT_StinkbugAtk_Tip:new {
+	Damage = DNT_StinkbugAtkBoss.Damage,
+	FartRange = 8,
+	TipImage = {
+		Unit = Point(2,2),
+		Target = Point(2,1),
+		Enemy = Point(1,2),
+		Building = Point(2,1),
+		CustomPawn = "DNT_StinkbugBoss",
+	}
+}
 
 function DNT_StinkbugAtk_Tip:GetSkillEffect(p1,p2)
 	local ret = SkillEffect()
 	local dir = GetDirection(p2 - p1)
-
+	
 	local dir2 = dir+1 > 3 and 0 or dir+1
 	local p3 = p1 + DIR_VECTORS[dir2]
 
@@ -236,12 +269,33 @@ function DNT_StinkbugAtk_Tip:GetSkillEffect(p1,p2)
 	ret:AddDamage(damage)
 	damage.loc = p4
 	ret:AddDamage(damage)
-
+	
+	if self.FartRange > 1 then -- for the boss
+		for i = 1, 2 do
+			damage = SpaceDamage(p3 + DIR_VECTORS[dir2]*i,0) -- smoke
+			damage.sAnimation = "DNT_FartAppear"
+			damage.iSmoke = EFFECT_CREATE
+			ret:AddDamage(damage)
+			ret:AddDelay(0.24) -- delay for adding smoke anim
+			damage.sAnimation = "DNT_FartFront"
+			ret:AddDamage(damage)
+		end
+	end
+	
 	ret:AddDelay(0.4) -- prolong the animation for Tip
+	damage.loc = p4
 	ret:AddDamage(damage)
 	damage.loc = p3
 	ret:AddDamage(damage)
-
+	
+	if self.FartRange > 1 then -- for the boss
+		for i = 1, 2 do
+			damage.loc = p3 + DIR_VECTORS[dir2]*i
+			damage.sAnimation = "DNT_FartFront"
+			ret:AddDamage(damage)
+		end
+	end
+	
 	return ret
 end
 
@@ -278,6 +332,20 @@ DNT_Stinkbug2 = Pawn:new
 	}
 AddPawn("DNT_Stinkbug2")
 
+DNT_StinkbugBoss = Pawn:new
+	{
+		Name = "Stinkbug Boss",
+		Health = 6,
+		MoveSpeed = 3,
+		SkillList = {"DNT_StinkbugAtkBoss"},
+		Image = "DNT_stinkbug", --Image = "DNT_stinkbug",
+		SoundLocation = "/enemy/scarab_2/",
+		ImageOffset = 2,
+		DefaultTeam = TEAM_ENEMY,
+		ImpactMaterial = IMPACT_INSECT,
+		Tier = TIER_ALPHA,
+	}
+AddPawn("DNT_Stinkbug2")
 
 -----------
 -- Hooks --
