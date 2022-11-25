@@ -30,7 +30,7 @@ tips:Add{
 tips:Add{
 	id = "Tip_DNT_Ladybug",
 	title = "Ladybugs",
-	text = "The Ladybug heals the Junebug and has a hypnotic effect on mechs. If your weapon's target area is within the range of a ladybug, you must target your attack at a ladybug, or you hurt yourself in your confusion."
+	text = "The Ladybug heals the Junebug and has a hypnotic effect on mechs. If your weapon's target area is within the range of a ladybug, you must target your attack at the ladybug."
 }
 
 tips:Add{

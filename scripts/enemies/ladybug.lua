@@ -23,16 +23,16 @@ modApi:appendAsset("img/icons/DNT_ladybug_icon.png",resourcePath.."img/icons/DNT
 	Location["icons/DNT_ladybug_icon.png"] = Point(-10,2)
 --modApi:appendAsset("img/combat/traits/DNT_ladybug_trait.png",resourcePath.."img/combat/traits/DNT_ladybug_trait.png")
 
-	------------
-	-- Traits --
-	------------
+------------
+-- Traits --
+------------
 
-	trait:add{
-		pawnType = "DNT_LadybugBoss",
-		icon = resourcePath.."img/combat/traits/DNT_ladybug_trait.png",
-		desc_title = "Mesmerizing Shell",
-		desc_text = "If this unit can be targeted by a mech and isn't, that mech takes 2 self damage.",
-	}
+trait:add{
+	pawnType = "DNT_LadybugBoss",
+	icon = resourcePath.."img/combat/traits/DNT_ladybug_trait.png",
+	desc_title = "Mesmerizing Shell",
+	desc_text = "If this unit can be targeted by a mech it must be targeted by that mech.",
+}
 
 
 -------------
@@ -76,6 +76,14 @@ a.DNT_explo_heart = a.ExploArt3:new {
 	Time = 0.1,
 }
 
+modApi:appendAsset("img/icons/DNT_ladybug_spiral.png",resourcePath.."img/icons/DNT_ladybug_spiral.png")
+a.DNT_LadybugHypnosis = Animation:new {
+	Image = "icons/DNT_ladybug_spiral.png", --"combat/icons/icon_mind_glow.png",
+	NumFrames = 1,
+	PosX = -15,
+	PosY = -12, --4,
+	Time = 1/60,
+}
 
 -------------
 -- Weapons --
@@ -83,7 +91,7 @@ a.DNT_explo_heart = a.ExploArt3:new {
 
 DNT_LadybugAtkBoss = LineArtillery:new {
 	Name = "Focused Heal Bomb", --This needs to be better
-	Description = "Tries to heal the Junebug in anyway it can, shooting an healing artillery with splash healing.",
+	Description = "Tries to heal the Junebug in anyway it can, shooting a healing artillery with splash healing.",
 	Damage = -2,
 	SplashDamage = -1,
 	Class = "Enemy",
@@ -109,11 +117,11 @@ function DNT_LadybugAtkBoss:GetTargetScore(p1,p2)
 	if mission.BossID then
 		ret = 0-p1:Manhattan(Board:GetPawnSpace(mission.BossID)) --More negative the farther away
 	else
-		ret = 1 --If we're not in the mission, which this shoouldn't happen but just in case, everything is 1
+		ret = 1 --If we're not in the mission, which this shouldn't happen but just in case, everything is 1
 	end
 	local pawn = Board:GetPawn(p2)
 	if pawn and pawn:GetType() == self.Junebug then
-		ret = 100
+		ret = ret + 100
 	end
 	return ret
 end
@@ -217,6 +225,7 @@ local function AdjustTargetArea(mission, pawn, weapoId, p1, targetArea)
 					targetArea:erase(0)
 				end
 				targetArea:push_back(point)
+				Board:AddAnimation(point,"DNT_LadybugHypnosis",ANIM_NO_DELAY)
 				--Board:Ping(point, GL_Color(28, 255, 62))
 				--Board:AddAlert(point, "HYPNOSIS")
 				return
