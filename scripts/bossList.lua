@@ -18,6 +18,7 @@ local DNT_bosses = {
   "Mission_CockroachBoss",
   "Mission_DragonflyBoss",
   "Mission_IceCrawlerBoss",
+  "Mission_AnthillBoss",
 }
 
 

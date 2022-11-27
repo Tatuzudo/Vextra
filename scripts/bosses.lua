@@ -63,6 +63,24 @@ Mission_StinkbugBoss = Mission_Boss:new{
 	BossText = "Destroy the Stinkbug Leader",
 }
 
+Mission_AnthillBoss = Mission_Boss:new{
+	Name = "Anthill Leader",
+	BossPawn = "DNT_AnthillBoss",
+	SpawnStartMod = -2, --There's gonna be a lot
+	BossText = "Destroy the Anthill Leader",
+}
+
+function Mission_AnthillBoss:StartMission()
+	self:StartBoss()
+	self:GetSpawner():BlockPawns({
+		"DNT_Anthill", --Let's not get a bunch of anthills with the anthill boss
+		"Spider", --Or other spawners
+		"Shaman",
+		"Blobber",
+	})
+end
+
+
 Mission_CockroachBoss = Mission_Boss:new{
 	Name = "Cockroach Leader",
 	BossPawn = "DNT_CockroachBoss",

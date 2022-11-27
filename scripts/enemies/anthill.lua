@@ -116,7 +116,8 @@ DNT_AnthillAtk1 = Skill:new {
 	Class = "Enemy",
 	LaunchSound = "/enemy/shaman_1/attack_launch",
 	ImpactSound = "/enemy/spider_boss_1/attack_egg_land",
-	Spawns = {"DNT_WorkerAnt1","DNT_FlyingAnt1","DNT_SoldierAnt1","DNT_SoldierAnt1","DNT_SoldierAnt1"},
+	Spawns = {"DNT_WorkerAnt1","DNT_FlyingAnt1","DNT_SoldierAnt1"},
+	DoubleSpawn = false,
 	TipImage = {
 		Unit = Point(2,2),
 		Building = Point(2,1),
@@ -129,6 +130,21 @@ DNT_AnthillAtk1 = Skill:new {
 
 DNT_AnthillAtk2 = DNT_AnthillAtk1:new {
 	Spawns = {"DNT_WorkerAnt1","DNT_WorkerAnt1","DNT_FlyingAnt1","DNT_FlyingAnt1","DNT_SoldierAnt1"},
+	TipImage = {
+		Unit = Point(2,2),
+		Building = Point(2,1),
+		Target = Point(3,1),
+		Second_Origin = Point(3,1),
+		Second_Target = Point(2,1),
+		CustomPawn = "DNT_Anthill2",
+	}
+}
+
+DNT_AnthillAtkBoss = DNT_AnthillAtk1:new {
+	Name = "Ant Rain",
+	Description = "Spawn two soldier, flying or worker ants. Spawn stronger ants at higher health.",
+	Spawns = {"DNT_WorkerAnt1","DNT_FlyingAnt1","DNT_FlyingAnt1","DNT_SoldierAnt1"},
+	DoubleSpawn = true,
 	TipImage = {
 		Unit = Point(2,2),
 		Building = Point(2,1),
@@ -161,16 +177,29 @@ end
 
 function DNT_AnthillAtk1:GetSkillEffect(p1,p2)
 	local ret = SkillEffect()
+	local mission = GetCurrentMission()
 
-	local spawn = math.min(Pawn:GetHealth(), 5)
+	local spawn = math.min(Pawn:GetHealth(), #self.Spawns)
 
 	local damage = SpaceDamage(p2)
 	damage.sPawn = self.Spawns[spawn]
 
-	ret:AddArtillery(damage,"effects/"..self.Spawns[spawn].."_upshot.png",NO_DELAY)
+	ret:AddArtillery(damage,"effects/"..self.Spawns[spawn].."_upshot.png")
+
+	if self.DoubleSpawn then
+		ret:AddDelay(0.1)
+		local spawn2 = math.max(spawn-1,1)
+		ret:AddScript(string.format(
+			"GetCurrentMission():FlyingSpawns(%s,1,%q,{ image = %q, launch = \"\", impact = \"\"})",
+			p1:GetString(),
+			self.Spawns[spawn2],
+			"effects/"..self.Spawns[spawn2].."_upshot.png"
+		))
+	end
+
 
 	if IsTipImage() then
-		ret:AddDelay(4)
+		ret:AddDelay(3)
 	end
 
 	return ret
@@ -296,6 +325,25 @@ DNT_Anthill2 = Pawn:new
 		Tier = TIER_ALPHA,
 	}
 AddPawn("DNT_Anthill2")
+
+DNT_AnthillBoss = Pawn:new
+	{
+		Name = "Anthill Leader",
+		Icon = "portraits/enemy/DNT_AnthillBoss",
+		Health = 4,
+		MoveSpeed = 2,
+		Burrows = true,
+		Pushable = false,
+		VoidShockImmune = true,
+		SkillList = {"DNT_AnthillAtkBoss"},
+		Image = "DNT_anthill",
+		SoundLocation = "/enemy/beetle_1/",
+		ImageOffset = 2,
+		DefaultTeam = TEAM_ENEMY,
+		ImpactMaterial = IMPACT_INSECT,
+		Tier = TIER_Boss,
+	}
+AddPawn("DNT_AnthillBoss")
 
 -- WorkerAnt
 DNT_WorkerAnt1 = Pawn:new
