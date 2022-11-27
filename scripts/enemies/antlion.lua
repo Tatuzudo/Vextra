@@ -178,7 +178,7 @@ AddPawn("DNT_Antlion2")
 DNT_AntlionBoss = Pawn:new
 	{
 		Name = "Antlion Leader",
-		Health = 6,
+		Health = 5,
 		MoveSpeed = 3,
 		SkillList = {"DNT_AntlionAtkB"},
 		Image = "DNT_antlion",
