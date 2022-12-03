@@ -90,7 +90,7 @@ DNT_IceCrawlerAtk1 = Skill:new {
 	ExplodeIce = false,
 	ExtraTiles = false,
 	DamageIncrease = 1,
-	LaunchSound = "/enemy/snowtank_1/attack",
+	LaunchSound = "/weapons/flamespreader",
 	ImpactSound = "/impact/generic/explosion",
 	Projectile = "effects/shot_tankice",
 	PathSize = 1,
@@ -171,6 +171,7 @@ function DNT_IceCrawlerAtk1:GetSkillEffect(p1,p2)
 		local distance2 = p1:Manhattan(curr)
 		animation2 = SpaceDamage(curr,0)
 		animation2.sAnimation = "chillthrower"..distance2.."_"..backdir
+		animation2.sSound = "/weapons/flamespreader"
 	end
 
 	--LOG(animation.sAnimation)
