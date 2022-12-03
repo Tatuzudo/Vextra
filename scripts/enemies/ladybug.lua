@@ -100,7 +100,8 @@ DNT_LadybugAtkBoss = LineArtillery:new {
 	Explosion = "",
 	Junebug = "DNT_JunebugBoss",
 	UpShot = "effects/shotup_ant2.png",
-	--LaunchSound = "/weapons/science_repulse",
+	LaunchSound = "/enemy/scarab_1/attack",
+	ImpactSound = "/impact/generic/explosion",
 	CustomTipImage = "DNT_LadybugAtkBoss_Tip",
 	TipImage = {
 		Unit = Point(2,3),
@@ -131,6 +132,7 @@ function DNT_LadybugAtkBoss:AddHealing(ret,point,healing,arty) --This will check
 	local damage = SpaceDamage(point,healing)
 	if arty then
 		damage.sAnimation = "DNT_explo_heart"
+		damage.sSound = "/ui/map/repair_mech"
 		ret:AddQueuedArtillery(damage, self.UpShot)
 	else
 		ret:AddQueuedDamage(damage)

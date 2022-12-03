@@ -15,7 +15,6 @@ local function init(self)
 	DNT_Vextra_VekList = {
 		-- READ BELOW COMMENT FOR INFO
 		-- {name, does it have a load (for hooks), what category it is in, does it have a tip}
-		{"Ladybug",true,"None",true},
 		{"Mantis",false,"Core",false},
 		{"Pillbug",false,"Unique",true},
 		{"Thunderbug",false,"Unique",false},
@@ -28,6 +27,7 @@ local function init(self)
 		{"Anthill",false,"Unique",true},
 		{"IceCrawler",false,"Unique",false},
 		{"Fly",false,"Core",false},
+		{"Ladybug",true,"None",true},
 		{"Junebug",true,"None",true},
 		{"Haste",false,"Leaders",false},
 		{"Acid",false,"Leaders",false},
