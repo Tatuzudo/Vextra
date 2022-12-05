@@ -217,8 +217,9 @@ local function isLadybug(pawn)
 	return false
 end
 
-local function AdjustTargetArea(mission, pawn, weapoId, p1, targetArea)
+local function AdjustTargetArea(mission, pawn, weaponId, p1, targetArea)
 	--Only when there's a ladybug
+	if not mission then return end
 	if mission.DNT_LadybugID and Board:IsPawnAlive(mission.DNT_LadybugID) and pawn:GetTeam() == TEAM_PLAYER then
 		local targets = extract_table(targetArea)
 		for _, point in pairs(targets) do
@@ -236,8 +237,8 @@ local function AdjustTargetArea(mission, pawn, weapoId, p1, targetArea)
 	end
 end
 
-local function AdjustSecondTargetArea(mission, pawn, weapoId, p1, p2, targetArea)
-	AdjustTargetArea(mission, pawn, weapoId, p1, targetArea)
+local function AdjustSecondTargetArea(mission, pawn, weaponId, p1, p2, targetArea)
+	AdjustTargetArea(mission, pawn, weaponId, p1, targetArea)
 end
 
 --Load hooks
