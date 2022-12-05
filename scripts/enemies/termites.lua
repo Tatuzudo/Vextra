@@ -185,6 +185,7 @@ function DNT_TermitesAtkB:GetSkillEffect(p1,p2)
 	if not Board:IsBlocked(p2, PATH_PROJECTILE) then
 		damage = SpaceDamage(p2, self.Damage)
 		damage.sPawn = "Wall"
+		damage.sSound = "/enemy/digger_1/attack_queued"
 		ret:AddQueuedDamage(damage)
 		ret:AddQueuedDelay(0.5)
 	end
@@ -235,7 +236,7 @@ DNT_Termites1 = Pawn:new
 		MoveSpeed = 3,
 		Image = "DNT_termites", --lowercase
 		SkillList = {"DNT_TermitesAtk1"},
-		SoundLocation = "/enemy/centipede_1/",
+		SoundLocation = "/enemy/digger_1/",
 		DefaultTeam = TEAM_ENEMY,
 		ImpactMaterial = IMPACT_INSECT,
 	}
@@ -248,7 +249,7 @@ DNT_Termites2 = Pawn:new
 		MoveSpeed = 3,
 		SkillList = {"DNT_TermitesAtk2"},
 		Image = "DNT_termites",
-		SoundLocation = "/enemy/centipede_1/",
+		SoundLocation = "/enemy/digger_2/",
 		ImageOffset = 1,
 		DefaultTeam = TEAM_ENEMY,
 		ImpactMaterial = IMPACT_INSECT,
@@ -263,7 +264,7 @@ DNT_TermitesBoss = Pawn:new
 		MoveSpeed = 3,
 		SkillList = {"DNT_TermitesAtkB"},
 		Image = "DNT_termites",
-		SoundLocation = "/enemy/centipede_1/",
+		SoundLocation = "/enemy/digger_2/",
 		ImageOffset = 2,
 		DefaultTeam = TEAM_ENEMY,
 		ImpactMaterial = IMPACT_INSECT,
