@@ -171,6 +171,7 @@ function DNT_JunebugAtkBoss:GetSkillEffect(p1,p2)
 		for _, target in pairs(targets) do
 			damage = SpaceDamage(target,self.Damage,GetDirection(target-p1))
 			damage.sAnimation = "DNT_JunebugShimmer"
+			damage.sSound = "/weapons/electric_whip"
 			ret:AddQueuedMelee(p1, damage)
 		end
 	else --Stolen and Edited from Push Beam
@@ -186,6 +187,7 @@ function DNT_JunebugAtkBoss:GetSkillEffect(p1,p2)
 				targets[#targets+1] = curr
 			end
 			local dam = SpaceDamage(curr, 0)
+			dam.sSound = "/weapons/bend_beam"
 			ret:AddQueuedProjectile(dam,self.LaserArt,NO_DELAY)
 
 			for i = 1, #targets do
