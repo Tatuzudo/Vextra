@@ -10,6 +10,11 @@ local function init(self)
 	local resourcePath = mod.resourcePath
 	local scriptPath = mod.scriptPath
 	local options = mod_loader.currentModContent[mod.id].options
+	--Add randomization for easyEdit enemy lists at least until the fix goes through in the modloader
+	--Although leaving this here never hurt anything
+	--https://github.com/itb-community/ITB-Easy-Edit/pull/6/commits/852c8391b25abf504b2ad817959a309824c864d1
+	math.randomseed(os.time())
+	math.random()
 
 	--A list of all the vek, to hopefully make the init process smooth. This is global
 	DNT_Vextra_VekList = {
