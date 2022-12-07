@@ -151,7 +151,7 @@ DNT_AnthillAtkBoss = DNT_AnthillAtk1:new {
 		Target = Point(3,1),
 		Second_Origin = Point(3,1),
 		Second_Target = Point(2,1),
-		CustomPawn = "DNT_Anthill2",
+		CustomPawn = "DNT_AnthillBoss",
 	}
 }
 
@@ -190,10 +190,12 @@ function DNT_AnthillAtk1:GetSkillEffect(p1,p2)
 		ret:AddDelay(0.1)
 		local spawn2 = math.max(spawn-1,1)
 		ret:AddScript(string.format(
-			"GetCurrentMission():FlyingSpawns(%s,1,%q,{ image = %q, launch = \"\", impact = \"\"})",
+			"GetCurrentMission():FlyingSpawns(%s,1,%q,{ image = %q, launch = %q, impact = %q})",--launch = \"\", impact = \"\"})",
 			p1:GetString(),
 			self.Spawns[spawn2],
-			"effects/"..self.Spawns[spawn2].."_upshot.png"
+			"effects/"..self.Spawns[spawn2].."_upshot.png",
+			self.LaunchSound,
+			self.ImpactSound
 		))
 	end
 
