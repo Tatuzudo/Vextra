@@ -56,6 +56,8 @@ local function init(self)
 	require(self.scriptPath.."bossList")
 	require(self.scriptPath.."tips")
 	require(self.scriptPath.."spawnerfix")
+	--Squad
+	require(self.scriptPath.."squad/init")
 	-- require(self.scriptPath.."modApiExt_fix")
 
 	--Scripts
@@ -73,6 +75,21 @@ local function load(self,options,version)
 	--DNT_Vextra_ModApiExt:load(self, optoins, version)
 	--require(self.scriptPath .."weaponPreview/api"):load()
 	require(self.scriptPath .. "tips"):load(self.libs.modApiExt)
+
+	--Add Squad:
+	if options.DNT_Vextra_OSquad and options.DNT_Vextra_OSquad.enabled then
+		modApi:addSquad({
+			"Vextra Secret Squad",
+			"DNT_StinkbugMech",
+			"DNT_FlyMech",
+			"DNT_DragonflyMech",
+			id = "DNT_VextraSS"
+		},
+		"Vextra Secret Squad",
+		'With the sudden appearance of the Vek deemed "Vextra", these Mechs were designed with their new weapons in mind.',
+		self.resourcePath .. "img/icons/squad_icon.png" --SQUAD ICON NEEDED
+		)
+	end
 
 	--Hooks
 	for _, table in ipairs(DNT_Vextra_VekList) do
@@ -96,17 +113,12 @@ local function metadata()
 		"Check to reset all tutorial tooltips for this profile.",
 		{ enabled = false }
 	)
-
-	-- The O stands for Option
-	-- "DNT_Vextra_O" .. name
-	--Since we require you to change the list an island pulls from, there's really no point in having this, since you can edit the lists directly
-	--[[
 	modApi:addGenerationOption(
-		"DNT_Vextra_OLadybug",
-		"Enable Ladybug",
-		"Puts the ladybug into the Vek pool. Restart required.",
-		{enabled = true}
-	)]]--
+		"DNT_Vextra_OSquad",
+		"Secret Squad",
+		"Enables the Secret Squad. Here till achievements are added. Restart required.",
+		{enabled = false}
+	)
 end
 
 return {
