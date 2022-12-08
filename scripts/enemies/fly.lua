@@ -177,7 +177,7 @@ DNT_Fly1 = Pawn:new{
 	SkillList = { "DNT_FlyAtk1" },
 	SoundLocation = "/enemy/leaper_1/",
 	DefaultTeam = TEAM_ENEMY,
-	ImpactMaterial = IMPACT_FLESH,
+	ImpactMaterial = IMPACT_INSECT,
 }
 AddPawn("DNT_Fly1")
 
@@ -195,7 +195,7 @@ DNT_Fly2 = Pawn:new{
 	SkillList = { "DNT_FlyAtk2" },
 	SoundLocation = "/enemy/leaper_2/",
 	DefaultTeam = TEAM_ENEMY,
-	ImpactMaterial = IMPACT_FLESH,
+	ImpactMaterial = IMPACT_INSECT,
 	Tier = TIER_ALPHA,
 }
 AddPawn("DNT_Fly2")
@@ -214,7 +214,7 @@ DNT_FlyBoss = Pawn:new{
 	SkillList = { "DNT_FlyAtkB" },
 	SoundLocation = "/enemy/leaper_2/",
 	DefaultTeam = TEAM_ENEMY,
-	ImpactMaterial = IMPACT_FLESH,
+	ImpactMaterial = IMPACT_INSECT,
 	Tier = TIER_BOSS,
 	Massive = true,
 }

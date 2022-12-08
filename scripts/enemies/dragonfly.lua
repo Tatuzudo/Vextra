@@ -241,7 +241,7 @@ function DNT_DragonflyAtkB:GetSkillEffect(p1,p2)
 			ret:AddDamage(damage)
 		end
 	end
-	
+
 	--Sound
 	ret:AddQueuedScript("Game:TriggerSound('/weapons/fireball')")
 	if Board:IsSmoke(p2) or this.isTargetScore or (IsTipImage() and  p2 == Point(2,2)) then -- or Game:GetTeamTurn() == TEAM_ENEMY then
@@ -286,7 +286,7 @@ DNT_Dragonfly1 = Pawn:new
 		Flying = true,
 		Image = "DNT_dragonfly", --change
 		SkillList = {"DNT_DragonflyAtk1"},
-		SoundLocation = "/enemy/hornet_1/",
+		SoundLocation = "/enemy/moth_1/",
 		DefaultTeam = TEAM_ENEMY,
 		ImpactMaterial = IMPACT_INSECT,
 	}
@@ -300,7 +300,7 @@ DNT_Dragonfly2 = Pawn:new
 		Flying = true,
 		SkillList = {"DNT_DragonflyAtk2"},
 		Image = "DNT_dragonfly", --change
-		SoundLocation = "/enemy/hornet_1/",
+		SoundLocation = "/enemy/moth_2/",
 		ImageOffset = 1,
 		DefaultTeam = TEAM_ENEMY,
 		ImpactMaterial = IMPACT_INSECT,
@@ -317,7 +317,7 @@ DNT_DragonflyBoss = Pawn:new
 		Ranged = 1,
 		SkillList = {"DNT_DragonflyAtkB"},
 		Image = "DNT_dragonfly", --change
-		SoundLocation = "/enemy/hornet_1/",
+		SoundLocation = "/enemy/moth_2/",
 		ImageOffset = 2,
 		DefaultTeam = TEAM_ENEMY,
 		ImpactMaterial = IMPACT_INSECT,
