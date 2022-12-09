@@ -38,6 +38,7 @@ DNT_SS_AcridSpray = Skill:new {
 		Target = Point(2,1),
 		Enemy = Point(1,2),
 		Enemy2 = Point(2,1),
+		CustomPawn = "DNT_StinkbugMech",
   },
 }
 
@@ -175,6 +176,7 @@ DNT_SS_SappingProboscis = Skill:new {
 		Unit_Damaged = Point(2,3),
 		Target = Point(2,2),
 		Enemy1 = Point(2,1),
+		CustomPawn = "DNT_FlyMech",
 	},
 }
 
@@ -190,7 +192,7 @@ function DNT_SS_SappingProboscis:GetSkillEffect(p1, p2)
 	-- ret:AddQueuedProjectile(SpaceDamage(p3),self.LaserArt)
 	ret:AddProjectile(p3,SpaceDamage(p1),"effects/shot_firefly2",NO_DELAY)
 	ret:AddDelay(p1:Manhattan(p3)*0.1)
-	if Board:IsBlocked(p3, PATH_PROJECTILE) and Board:GetTerrain(p3) ~= TERRAIN_MOUNTAIN and Board:GetPawn(p3) then
+	if Board:IsBlocked(p3, PATH_PROJECTILE) and Board:GetTerrain(p3) ~= TERRAIN_MOUNTAIN and Board:GetPawn(p3) and not Board:GetPawn(p3):IsDead() then
     local heal = SpaceDamage(p1,-self.Heal)
     ret:AddDamage(heal)
 	end
@@ -224,6 +226,7 @@ DNT_SS_SparkHurl = LineArtillery:new {
 		Enemy2 = Point(1,1),
 		Second_Origin = Point(2,4),
 		Second_Target = Point(2,1),
+		CustomPawn = "DNT_DragonflyMech",
 	}
 }
 
