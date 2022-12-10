@@ -145,7 +145,7 @@ function DNT_FlyAtk1:GetSkillEffect(p1, p2)
 	-- ret:AddQueuedProjectile(SpaceDamage(p3),self.LaserArt)
 	ret:DNT_AddQueuedProjectile(p3,SpaceDamage(p1),"effects/shot_firefly2",NO_DELAY)
 	ret:AddQueuedDelay(p1:Manhattan(p3)*0.1)
-	if Board:IsBlocked(p3, PATH_PROJECTILE) and Board:GetTerrain(p3) ~= TERRAIN_MOUNTAIN then
+	if Board:IsPawnSpace(p3) or Board:IsPowered(p3) then
 		ret:AddQueuedDamage(heal)
 	end
 
