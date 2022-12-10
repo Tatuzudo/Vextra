@@ -159,7 +159,7 @@ end
 -- weapon DNT_SS_SappingProboscis
 DNT_SS_SappingProboscis = Skill:new {
   Name = "Sapping Proboscis",
-  Description = "Shoot a projectile that drains life from living targets and pulls.",
+  Description = "Shoots a projectile that steals health from the target and pulls.",
   Damage = 1,
   Heal = 1,
   Class = "TechnoVek",
@@ -192,7 +192,7 @@ function DNT_SS_SappingProboscis:GetSkillEffect(p1, p2)
 	-- ret:AddQueuedProjectile(SpaceDamage(p3),self.LaserArt)
 	ret:AddProjectile(p3,SpaceDamage(p1),"effects/shot_firefly2",NO_DELAY)
 	ret:AddDelay(p1:Manhattan(p3)*0.1)
-	if Board:IsBlocked(p3, PATH_PROJECTILE) and Board:GetTerrain(p3) ~= TERRAIN_MOUNTAIN and Board:GetPawn(p3) and not Board:GetPawn(p3):IsDead() then
+	if Board:IsPawnSpace(p3) or Board:IsPowered(p3) then
     local heal = SpaceDamage(p1,-self.Heal)
     ret:AddDamage(heal)
 	end
