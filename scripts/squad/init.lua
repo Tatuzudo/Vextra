@@ -1,4 +1,8 @@
---I think this works
+--To Do
+--Replace Smoke Icon with Green Smoke Icon?
+--Submerged Broken Sprites
+
+
 local mod = mod_loader.mods[modApi.currentMod]
 local resourcePath = mod.resourcePath
 local scriptPath = mod.scriptPath
