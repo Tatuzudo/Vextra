@@ -26,13 +26,19 @@ for k,v in pairs(wt2) do Weapon_Texts[k] = v end
 
 
 
--------------
---- Icons ---
--------------
+-----------
+--- Art ---
+-----------
 modApi:appendAsset(writepath.."DNT_SS_AcridSpray.png", readpath.."DNT_SS_AcridSpray.png")
 modApi:appendAsset(writepath.."DNT_SS_SappingProboscis.png", readpath.."DNT_SS_SappingProboscis.png")
 modApi:appendAsset(writepath.."DNT_SS_SparkHurl.png", readpath.."DNT_SS_SparkHurl.png")
 
+--Layering it right on top of the previous smoke icon. If it becomes an issue, I can hide that icon with damage.bHide or whatever
+--Opacity Layering might be an issue, so I'm using the non glowing one /shrug
+modApi:appendAsset("img/combat/icons/DNT_icon_stink.png",resourcePath.."img/combat/icons/DNT_icon_stink.png")
+	Location["combat/icons/DNT_icon_stink.png"] = Point(-8,11)
+modApi:appendAsset("img/combat/icons/DNT_icon_stink_glow.png",resourcePath.."img/combat/icons/DNT_icon_stink_glow.png")
+	Location["combat/icons/DNT_icon_stink_glow.png"] = Point(-10,9)
 ----------------
 --- Stinkbug ---
 ----------------
@@ -84,6 +90,7 @@ function DNT_SS_AcridSpray:GetSkillEffect(p1,p2)
       local damage = SpaceDamage(p3,0) -- smoke
       damage.sAnimation = "DNT_FartAppear"
       damage.iSmoke = EFFECT_CREATE
+			damage.sImageMark = "combat/icons/DNT_icon_stink.png"
       ret:AddDamage(damage)
       if Board:IsBlocked(p3,PATH_PROJECTILE) and not Board:IsPawnSpace(p3) then L = false end
     end
@@ -94,6 +101,7 @@ function DNT_SS_AcridSpray:GetSkillEffect(p1,p2)
       local damage = SpaceDamage(p4,0) -- smoke
       damage.sAnimation = "DNT_FartAppear"
       damage.iSmoke = EFFECT_CREATE
+			damage.sImageMark = "combat/icons/DNT_icon_stink.png"
       ret:AddDamage(damage)
       if Board:IsBlocked(p4,PATH_PROJECTILE) and not Board:IsPawnSpace(p4) then R = false end
     end
@@ -154,6 +162,7 @@ function DNT_SS_AcridSpray_Tip:GetSkillEffect(p1,p2)
 	damage = SpaceDamage(p3,0) -- smoke
 	damage.sAnimation = "DNT_FartAppear"
 	damage.iSmoke = EFFECT_CREATE
+	--damage.sImageMark = "combat/icons/DNT_icon_stink.png" --Not sure why it doesn't work on this one.
 	ret:AddDamage(damage)
 	damage.loc = p4
 	ret:AddDamage(damage)
@@ -161,6 +170,7 @@ function DNT_SS_AcridSpray_Tip:GetSkillEffect(p1,p2)
 	ret:AddDelay(0.24) -- delay for adding smoke anim
 	damage = SpaceDamage(p3,0) -- smoke
 	damage.sAnimation = "DNT_FartFront"
+	damage.sImageMark = "combat/icons/DNT_icon_stink_glow.png"
 	ret:AddDamage(damage)
 	damage.loc = p4
 	ret:AddDamage(damage)
@@ -170,6 +180,7 @@ function DNT_SS_AcridSpray_Tip:GetSkillEffect(p1,p2)
 			damage = SpaceDamage(p3 + DIR_VECTORS[dir2]*i,0) -- smoke
 			damage.sAnimation = "DNT_FartAppear"
 			damage.iSmoke = EFFECT_CREATE
+			damage.sImageMark = "combat/icons/DNT_icon_stink.png" --Some glow some don't get over it
 			ret:AddDamage(damage)
 			--damage.loc = p4 + DIR_VECTORS[dir3]*i,0 --ADDED A MOUNTAIN
 			--ret:AddDamage(damage)
