@@ -1,6 +1,6 @@
 --To Do
---Replace Smoke Icon with Green Smoke Icon?
 --Submerged Broken Sprites
+--Pilots
 
 
 local mod = mod_loader.mods[modApi.currentMod]
