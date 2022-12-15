@@ -147,17 +147,18 @@ DNT_Winter_Passive_Tip = DNT_Winter_Passive:new{}
 
 function DNT_Winter_Passive_Tip:GetSkillEffect(p1,p2) -- for passive preview
 	local ret = SkillEffect()
-	local damage = 1
-
-	Board:Ping(Point(1,1),GL_Color(0,255,0))
-	Board:AddBurst(Point(1,1),BURST_UP,DIR_NONE)
-	Board:Ping(Point(2,1),GL_Color(0,255,0))
-	Board:AddBurst(Point(2,1),BURST_UP,DIR_NONE)
-
-	local dam = SpaceDamage(Point(2,1),-damage)
-	ret:AddMelee(Point(1,1),dam)
+	
+	ret:AddScript([[
+		Board:Ping(Point(2,1),GL_Color(0,255,0))
+		Board:AddBurst(Point(2,1),"DNT_Winter_Up",DIR_NONE)
+	]])
+	
+	local dam = SpaceDamage(Point(2,1))
+	dam.iFrozen = EFFECT_CREATE
+	
+	ret:AddQueuedDamage(dam)
 	ret:AddDelay(2)
-
+	
 	return ret
 end
 
