@@ -1,0 +1,8 @@
+Dragonfly:
+Maybe it could hit tiles adjacent to it and one away to start? It feels a bit clunky
+But then again that's not really artillery
+I want to try and make it more reliant on the explosion, maybe removing damage
+from the non smoke attack?
+
+
+Pillbug Tip Should say Isopod now
