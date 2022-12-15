@@ -77,6 +77,7 @@ a.DNT_FartFront = Animation:new{
 
 a.DNT_FartBack = a.DNT_FartFront:new{
 	Image = "effects/fart_back.png",
+	Layer = ANIMS.LAYER_LESS_BACK
 }
 
 -----------------
@@ -368,12 +369,15 @@ local HOOK_MissionUpdate = function(mission)
 				if Board:IsSmoke(farts[i]) then -- add effects on tiles with smoke
 					if reFart == 1 then -- remove first when loading game
 						customAnim:Rem(mission,farts[i],"DNT_FartFront")
+						customAnim:Rem(mission,farts[i],"DNT_FartBack")
 					end
 					if not customAnim:Is(mission,farts[i],"DNT_FartFront") then
 						customAnim:Add(mission,farts[i],"DNT_FartFront")
+						customAnim:Add(mission,farts[i],"DNT_FartBack")
 					end
 				elseif customAnim:Is(mission,farts[i],"DNT_FartFront") then  -- remove effects on tiles without smoke
 					customAnim:Rem(mission,farts[i],"DNT_FartFront")
+					customAnim:Rem(mission,farts[i],"DNT_FartBack")
 					Board:AddAnimation(farts[i],"DNT_FartAppear",ANIM_REVERSE)
 				end
 			end
@@ -396,6 +400,7 @@ local HOOK_nextTurn = function(mission) -- delete farts after all the vek attack
 				if Board:IsSmoke(farts[i]) and customAnim:Is(mission,farts[i],"DNT_FartFront") then -- only delete farts, not normal smoke
 					Board:SetSmoke(farts[i],false,false)
 					customAnim:Rem(mission,farts[i],"DNT_FartFront")
+					customAnim:Rem(mission,farts[i],"DNT_FartBack")
 					Board:AddAnimation(farts[i],"DNT_FartAppear",ANIM_REVERSE)
 				end
 			end
@@ -412,6 +417,7 @@ local HOOK_MissionEnd = function(mission) -- delete farts on mission end
 				if customAnim:Is(mission,farts[i],"DNT_FartFront") then -- only delete farts, not normal smoke
 					Board:SetSmoke(farts[i],false,false)
 					customAnim:Rem(mission,farts[i],"DNT_FartFront")
+					customAnim:Rem(mission,farts[i],"DNT_FartBack")
 					Board:AddAnimation(farts[i],"DNT_FartAppear",ANIM_REVERSE)
 				end
 			end

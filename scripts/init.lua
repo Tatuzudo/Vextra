@@ -38,6 +38,7 @@ local function init(self)
 		{"Acid",false,"Leaders",false},
 		{"Reactive",false,"Leaders",false},
 		{"Nurse",false,"Leaders",false},
+		{"Winter",false,"Leaders",false},
 	}
 
 	--[[ModApiExt
