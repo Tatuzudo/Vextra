@@ -1,3 +1,23 @@
+local mod = mod_loader.mods[modApi.currentMod]
+local resourcePath = mod.resourcePath
+local scriptPath = mod.scriptPath
+
+local names = {
+	"StinkbugMech",
+	"DragonflyMech",
+	"FlyMech",
+}
+for _, ptname in pairs(names) do
+	modApi:appendAsset("img/portraits/pilots/Pilot_DNT_"..ptname..".png",resourcePath.."img/portraits/pilots/Pilot_DNT_"..ptname..".png")
+	CreatePilot{
+		Id = "Pilot_DNT_"..ptname,
+		Personality = "Vek",
+		Sex = SEX_VEK,
+		Rarity = 0,
+		Skill = "Survive_Death",
+	}
+end
+
 DNT_DragonflyMech = Pawn:new
 	{
 		Name = "Techno-Dragonfly",
