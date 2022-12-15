@@ -86,6 +86,12 @@ local enemies = {
 		IslandLocks = 2,
 		max_level = 1,
 	},
+	DNT_Winter = {
+		weakpawn = false,
+		max_pawns = 1,
+		IslandLocks = 2,
+		max_level = 1,
+	},
 }
 
 -- config enemies
@@ -170,6 +176,8 @@ local myPsions = {
 	"DNT_Haste",
 	"DNT_Acid",
 	"DNT_Reactive",
+	"DNT_Nurse",
+	"DNT_Winter",
 }
 
 modApi.events.onPreMissionAvailable:subscribe(function(mission)
