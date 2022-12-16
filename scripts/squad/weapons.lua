@@ -13,7 +13,7 @@ end
 ----------------
 
 local wt2 = {
-	DNT_SS_SparkHurl_Upgrade1 = "Infinite Range",
+	DNT_SS_SparkHurl_Upgrade1 = "+1 Damage",
 	DNT_SS_SparkHurl_Upgrade2 = "+1 Damage",
 
 	DNT_SS_SappingProboscis_Upgrade1 = "Acidic Spit",
@@ -286,17 +286,17 @@ DNT_SS_SappingProboscis_AB = DNT_SS_SappingProboscis:new{
 -- weapon DNT_SS_SparkHurl
 DNT_SS_SparkHurl = LineArtillery:new {
   Name = "Spark Hurl",
-  Description = "Hurl sparks at a target with limited range. If there's smoke, it explodes in a T shape outwards, igniting and damaging targets. Otherwise, it only affects the target.",
+  Description = "Hurl sparks that pushes the target. If there's smoke, it explodes in a T shape outwards, igniting and damaging targets. Otherwise, it only ignites the target doing one less damage.",
   Damage = 1,
   Fire = 1,
   Class = "TechnoVek",
   Icon = "weapons/DNT_SS_SparkHurl.png",
-  ArtillerySize = 3,
+  ArtillerySize = 8,
   PowerCost = 0,
   Upgrades = 2,
   Explosion = "",
   UpShot = "effects/shotup_ignite_fireball.png",
-  --UpgradeList = {Infinite Range, +1 Damage},
+  --UpgradeList = {+1 Damage, +1 Damage},
   UpgradeCost = {1,3},
   TipImage = {
 		Unit = Point(2,4),
@@ -324,7 +324,7 @@ function DNT_SS_SparkHurl:GetSkillEffect(p1,p2)
 	--Sound
 	ret:AddScript("Game:TriggerSound('/weapons/fireball')")
 	if Board:IsSmoke(p2) or (IsTipImage() and p2 == Point(2,2)) then -- or Game:GetTeamTurn() == TEAM_ENEMY then
-		damage = SpaceDamage(p2,self.Damage)
+		damage = SpaceDamage(p2,self.Damage,dir)
 		damage.iSmoke = 2 --Disperse
 		damage.iFire = self.Fire
 		damage.sSound = "/weapons/flamespreader"
@@ -341,7 +341,7 @@ function DNT_SS_SparkHurl:GetSkillEffect(p1,p2)
 			end
 		end
 	else
-		damage = SpaceDamage(p2,self.Damage)
+		damage = SpaceDamage(p2,self.Damage-1,dir)
 		damage.iFire = self.Fire
 		damage.sSound = "/weapons/flamespreader"
 		damage.sAnimation = "ExploRaining1"
@@ -351,8 +351,8 @@ function DNT_SS_SparkHurl:GetSkillEffect(p1,p2)
 end
 
 DNT_SS_SparkHurl_A = DNT_SS_SparkHurl:new{
-	UpgradeDescription = "Increases range to cover the whole board.",
-	ArtillerySize = 8,
+	UpgradeDescription = "Increases damage by 1.",
+	Damage = 2,
 }
 
 DNT_SS_SparkHurl_B = DNT_SS_SparkHurl:new{
@@ -361,6 +361,5 @@ DNT_SS_SparkHurl_B = DNT_SS_SparkHurl:new{
 }
 
 DNT_SS_SparkHurl_AB = DNT_SS_SparkHurl:new{
-	ArtillerySize = 8,
-	Damage = 2,
+	Damage = 3,
 }
