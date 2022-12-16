@@ -415,7 +415,7 @@ local function HOOK_nextTurn(mission)
 end
 
 local HOOK_MissionEnd = function(mission) -- delete farts on mission end
-	if #mission[DNT_PSION] > 0 then
+	if mission[DNT_PSION] and #mission[DNT_PSION] > 0 then
 		Game:TriggerSound("/props/snow_storm")
 		local effect = SkillEffect()
 		for i = 1, #mission[DNT_PSION] do
