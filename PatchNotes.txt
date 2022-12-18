@@ -62,4 +62,4 @@ Antlion Boss Health 6 --> 5
 	The antlions burrow and stable made it difficult to deal that much damage so its health was reduced
 Fixed a bug where upon rebooting the game the island layouts would be the same
 	This is an easyEdit bug, but until released, this band-aid will fix the problem
-	
+Added the Winter Psion: Freezes the starting tile of all mechs at the end of each turn
