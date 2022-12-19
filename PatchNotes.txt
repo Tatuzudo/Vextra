@@ -63,3 +63,5 @@ Antlion Boss Health 6 --> 5
 Fixed a bug where upon rebooting the game the island layouts would be the same
 	This is an easyEdit bug, but until released, this band-aid will fix the problem
 Added the Winter Psion: Freezes the starting tile of all mechs at the end of each turn
+Edited the stinkbugs stink to show up in front of and behind pawns
+Changed the conditions that need to be met for the fly to steal life.
