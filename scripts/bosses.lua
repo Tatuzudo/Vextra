@@ -126,8 +126,8 @@ function Mission_IceCrawlerBoss:StartMission()
 		for j = 0, board_size.y - 1 do
 			local point = Point(i,j)
 			local distance = point:Manhattan(tile)
-			local odds = 30
-			if Board:IsBuilding(point) then odds = 50 end
+			local odds = 25
+			if Board:IsBuilding(point) then odds = 30 end
 			if distance <= 2 and point ~= tile then
 				Board:SetFrozen(point, true)
 			elseif point == tile then
