@@ -23,8 +23,8 @@ tips:Add{
 
 tips:Add{
 	id = "Tip_DNT_Pillbug",
-	title = "Pillbugs",
-	text = "The Pillbug launches itself in the air, bouncing on units and structures backwards, doing damage on each bounce and landing in the first empty space."
+	title = "Isopods",
+	text = "The Isopod launches itself in the air, bouncing on units and structures backwards, doing damage on each bounce and landing in the first empty space."
 }
 
 tips:Add{
