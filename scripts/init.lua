@@ -57,6 +57,7 @@ local function init(self)
 	self.libs.modApiExt = modapiext
 	DNT_Vextra_ModApiExt = self.libs.modApiExt --I'm assuming this is safe
 	require(self.scriptPath.."achievements")
+	require(self.scriptPath.."NAH_achievements")
 	require(self.scriptPath.."enemies")
 	require(self.scriptPath.."enemyList")
 	require(self.scriptPath.."bosses")
@@ -66,7 +67,7 @@ local function init(self)
 	--Squad
 	require(self.scriptPath.."squad/init")
 	-- require(self.scriptPath.."modApiExt_fix")
-	
+
 	--Scripts
 	for _, table in ipairs(DNT_Vextra_VekList) do
 		local name = table[1]

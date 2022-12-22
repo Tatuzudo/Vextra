@@ -348,12 +348,39 @@ TILE_TOOLTIPS = {
 	},
 }
 
-local mine_damage_beta = SpaceDamage(0)
+mine_damage_beta = SpaceDamage(0)
 local mine_damage_alpha = SpaceDamage(0)
 local mine_damage_leader = SpaceDamage(0)
 mine_damage_beta.sAnimation = "DNT_cockroach_explo_beta"
 mine_damage_alpha.sAnimation = "DNT_cockroach_explo_alpha"
 mine_damage_leader.sAnimation = "DNT_cockroach_explo_leader"
+
+DNT_StupidDummyPawn = Pawn:new --Creation of the pawn that didn't work
+	{
+		Name = "Stupid Dummy Pawn",
+		Health = 1,
+		MoveSpeed = 0,
+		Image = "DNT_Cockroach",
+		SkillList = {},
+		DefaultTeam = TEAM_NONE,
+	}
+--[[Some of what I've tried
+Works:
+mine_damage_beta.iSmoke = EFFECT_CREATE
+Doesn't Work:
+mine_damage_beta.sScript = string.format("Board:AddPawn(%q,%s)","DNT_Cockroach1",Point(5,5):GetString())
+mine_damage_beta.sScript = "THIS SHOULD ERROR BOARD:ADD(sslkP)__);;"  Essentially random characters hoping for an error, I couldn't find one
+mine_damage_beta.sScript = "Board:SetSmoke(Point(4,4),true,true)"
+mine_damage_beta.sPawn = "Wall"
+mine_damage_beta.sPawn = "DNT_StupidDummyPawn"
+]]
+mine_damage_beta.sScript = string.format("Board:AddPawn(%q,%s)","DNT_Cockroach1",Point(5,5):GetString())
+mine_damage_alpha.sPawn = "DNT_StupidDummyPawn"
+mine_damage_leader.sPawn = "DNT_StupidDummyPawn"
+
+
+
+
 
 DNT_Item_Blank = {
 	Image = "",
