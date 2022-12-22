@@ -29,7 +29,6 @@ function DNT_VextraChevio(id)
 	modApi.achievements:trigger(modid,id)
 end
 
-
 -- Helper Functions
 local function isGame()
 	return true
@@ -64,15 +63,22 @@ end
 
 -- Hook Functions
 
-local function HOOK_PawnTracked(mission, pawn) --My attempt to get the pawn working, it's commented out (below) for now
+local function HOOK_MissionUpdateHook(mission, pawn) --My attempt to get the pawn working, it's commented out (below) for now`
 	if isMissionBoard() then
-		if not achievements.DNT_SelfSmush:isComplete() and pawn:GetType() == "DNT_StupidDummyPawn" then
-			LOG(2)
-			local space = pawn:GetSpace()
-			Board:RemovePawn(pawn:GetId())
-			local pawn = Board:GetPawn(space)
-			if pawn and pawn:GetTeam() == TEAM_ENEMY then
-				DNT_VextraChevio(DNT_SelfSmush)
+		if not achievements.DNT_SelfSmush:isComplete() then
+			mission.DNT_CockroachMines = mission.DNT_CockroachMines or {}
+			for _, point in pairs(mission.DNT_CockroachMines) do
+				local pawn = Board:GetPawn(point)
+				if pawn and pawn:GetTeam() == TEAM_ENEMY then
+					achievements.DNT_SelfSmush:addProgress(1)
+				end
+			end
+			mission.DNT_CockroachMines = {}
+			for i, point in ipairs(Board) do
+				local item = Board:GetItem(point)
+				if item and item:find("^DNT_Corpse") ~= nil then
+					table.insert(mission.DNT_CockroachMines,point)
+				end
 			end
 		end
 	end
@@ -81,7 +87,7 @@ end
 
 -- AddHooks
 local function EVENT_onModsLoaded()
-	--DNT_Vextra_ModApiExt:addPawnTrackedHook(HOOK_PawnTracked)
+	modApi:addMissionUpdateHook(HOOK_MissionUpdateHook)
 	-- modApi:addNextTurnHook(HOOK_nextTurn)
 end
 
