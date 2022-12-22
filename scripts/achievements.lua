@@ -78,7 +78,7 @@ local function HOOK_QueuedSkillEnd(mission, pawn, weaponId, p1, p2)
 			end
 		end
 		-- Dragon Slayer (End Fly attack)
-		if not achievements.DNT_DragonSlayer:isComplete() and pawn:GetType():find("^DNT_Fly") then
+		if pawn:GetType():find("^DNT_Fly") and not pawn:IsMech() then
 			flyAttack = false
 		end
 		
@@ -88,7 +88,7 @@ end
 local function HOOK_QueuedSkillStart(mission, pawn, weaponId, p1, p2)
 	if isMissionBoard() then
 		-- Dragon Slayer (Start Fly attack)
-		if not achievements.DNT_DragonSlayer:isComplete() and pawn:GetType():find("^DNT_Fly") then
+		if not achievements.DNT_DragonSlayer:isComplete() and pawn:GetType():find("^DNT_Fly") and not pawn:IsMech() then
 			flyAttack = true
 		end
 	end
