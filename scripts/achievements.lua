@@ -1,6 +1,8 @@
 local mod = modApi:getCurrentMod()
 local global = "Vextra"
 
+local customAnim = require(mod.scriptPath .."libs/customAnim")
+
 -- Add Achievements
 local achievements = {
 	-- DNT_Something = modApi.achievements:add{
@@ -73,7 +75,6 @@ end
 
 -- Variables
 local flyAttack = false -- Dragon Slayer
-local inStink = 0 -- Fartality
 
 -- Hook Functions
 local function HOOK_PawnKilled(mission, pawn)
@@ -93,19 +94,6 @@ local function HOOK_QueuedSkillStart(mission, pawn, weaponId, p1, p2)
 		if not achievements.DNT_DragonSlayer:isComplete() and pawn:GetType():find("^DNT_Fly") and not pawn:IsMech() then
 			flyAttack = true
 		end
-		-- Fartality start count
-		if not achievements.DNT_Fartality:isComplete() then
-			if mission and mission.DNT_FartList then
-				inStink = 0
-				for i = 1, #mission.DNT_FartList do
-					local stinker = Board:GetPawn(mission.DNT_FartList[i])
-					if stinker and stinker:GetType():find("^DNT_Stinkbug") and not stinker:IsMech() then
-						inStink = inStink + 1
-					end
-				end
-			end
-		end
-		LOG(inStink)
 	end
 end
 
@@ -123,64 +111,34 @@ local function HOOK_QueuedSkillEnd(mission, pawn, weaponId, p1, p2)
 		if pawn:GetType():find("^DNT_Fly") and not pawn:IsMech() then
 			flyAttack = false
 		end
-		-- Fartality end count
-		if not achievements.DNT_Fartality:isComplete() then
-			modApi:scheduleHook(1000, function()
-				if mission and mission.DNT_FartList then
-					for i = 1, #mission.DNT_FartList do
-						local stinker = Board:GetPawn(mission.DNT_FartList[i])
-						if stinker and stinker:GetType():find("^DNT_Stinkbug") and not stinker:IsMech() then
-							inStink = inStink - 1
-						end
-					end
-				end
-				LOG(inStink)
-				mission.DNT_FartProgress = mission.DNT_FartProgress or 0
-				mission.DNT_FartProgress = mission.DNT_FartProgress - math.min(inStink,0)
-				if mission.DNT_FartProgress >= 3 then
-					achievements.DNT_Fartality:addProgress(1)
-				end
-			end)
-		end
 	end
 end
 
-local function HOOK_SkillStart(mission, pawn, weaponId, p1, p2)
-	if isMissionBoard() then
-		-- Fartality start count
-		if not achievements.DNT_Fartality:isComplete() then
-			if mission and mission.DNT_FartList then
-				inStink = 0
-				for i = 1, #mission.DNT_FartList do
-					local stinker = Board:GetPawn(mission.DNT_FartList[i])
-					if stinker and stinker:GetType():find("^DNT_Stinkbug") and not stinker:IsMech() then
-						inStink = inStink + 1
-					end
-				end
-			end
-		end
-		LOG(inStink)
-	end
-end
+-- local function HOOK_SkillStart(mission, pawn, weaponId, p1, p2)
+	-- if isMissionBoard() then
+	
+	-- end
+-- end
 
-local function HOOK_SkillEnd(mission, pawn, weaponId, p1, p2)
+-- local function HOOK_SkillEnd(mission, pawn, weaponId, p1, p2)
+	-- if isMissionBoard() then
+	
+	-- end
+-- end
+
+local function HOOK_PawnPositionChanged(mission, pawn, oldPosition)
 	if isMissionBoard() then
-		-- Fartality end count
+		-- Fartality
 		if not achievements.DNT_Fartality:isComplete() then
-			modApi:scheduleHook(1000, function()
-				if mission and mission.DNT_FartList then
-					for i = 1, #mission.DNT_FartList do
-						local stinker = Board:GetPawn(mission.DNT_FartList[i])
-						if stinker and stinker:GetType():find("^DNT_Stinkbug") and not stinker:IsMech() then
-							inStink = inStink - 1
-						end
+			local currPos = pawn:GetSpace()
+			local anim = IsPassiveSkill("Electric_Smoke") and "DNT_FartFrontDark" or "DNT_FartFront"
+			modApi:scheduleHook(500, function()
+				if customAnim:Is(mission,pawn:GetSpace(),anim) and currPos == pawn:GetSpace() then
+					mission.DNT_FartProgress = mission.DNT_FartProgress or 0
+					mission.DNT_FartProgress = mission.DNT_FartProgress + 1
+					if mission.DNT_FartProgress >= 3 then
+						achievements.DNT_Fartality:addProgress(1)
 					end
-				end
-				LOG(inStink)
-				mission.DNT_FartProgress = mission.DNT_FartProgress or 0
-				mission.DNT_FartProgress = mission.DNT_FartProgress - math.min(inStink,0)
-				if mission.DNT_FartProgress >= 3 then
-					achievements.DNT_Fartality:addProgress(1)
 				end
 			end)
 		end
@@ -189,11 +147,12 @@ end
 
 -- AddHooks
 local function EVENT_onModsLoaded()
-	DNT_Vextra_ModApiExt:addSkillEndHook(HOOK_SkillEnd)
-	DNT_Vextra_ModApiExt:addSkillStartHook(HOOK_SkillStart)
 	DNT_Vextra_ModApiExt:addPawnKilledHook(HOOK_PawnKilled)
+	-- DNT_Vextra_ModApiExt:addSkillEndHook(HOOK_SkillEnd)
+	-- DNT_Vextra_ModApiExt:addSkillStartHook(HOOK_SkillStart)
 	DNT_Vextra_ModApiExt:addQueuedSkillEndHook(HOOK_QueuedSkillEnd)
 	DNT_Vextra_ModApiExt:addQueuedSkillStartHook(HOOK_QueuedSkillStart)
+	DNT_Vextra_ModApiExt:addPawnPositionChangedHook(HOOK_PawnPositionChanged)
 	
 	-- modApi:addNextTurnHook(HOOK_nextTurn)
 end
