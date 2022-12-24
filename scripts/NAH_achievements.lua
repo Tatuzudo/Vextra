@@ -17,6 +17,14 @@ local achievements = {
 		id = "DNT_SelfSmush",
 		name = "Pest Control",
 		tooltip = "Finish off a Cockroach by smushing it with a another Vek.",
+		image = mod.resourcePath.."img/achievements/selfsmush.png",
+		objective = 1,
+		global = global,
+	},
+	DNT_PsychoDragonfly = modApi.achievements:add{
+		id = "DNT_PsychoDragonfly",
+		name = "We Didn't Start the Fire",
+		tooltip = "Ignite two Vek with an attack from a dragonfly.",
 		image = mod.resourcePath.."img/achievements/placeholder.png",
 		objective = 1,
 		global = global,
@@ -25,7 +33,8 @@ local achievements = {
 
 local modid = "Djinn_NAH_Tatu_Vextra"
 function DNT_VextraChevio(id)
-	if modApi.achievements:getProgress(modid,id) then return end
+	progress = modApi.achievements:getProgress(modid,id)
+	if progress ~= 0 then return end
 	modApi.achievements:trigger(modid,id)
 end
 
@@ -63,14 +72,18 @@ end
 
 -- Hook Functions
 
-local function HOOK_MissionUpdateHook(mission, pawn) --My attempt to get the pawn working, it's commented out (below) for now`
+local fireCount = 0
+local dragonflyAttack = false
+
+local function HOOK_MissionUpdateHook(mission, pawn) --My attempt to get the pawn working, it's commented out (below) for now
 	if isMissionBoard() then
+		--SelfSmush/PestControl Cockroach Achievement
 		if not achievements.DNT_SelfSmush:isComplete() then
 			mission.DNT_CockroachMines = mission.DNT_CockroachMines or {}
 			for _, point in pairs(mission.DNT_CockroachMines) do
 				local pawn = Board:GetPawn(point)
 				if pawn and pawn:GetTeam() == TEAM_ENEMY then
-					achievements.DNT_SelfSmush:addProgress(1)
+					DNT_VextraChevio("DNT_SelfSmush")
 				end
 			end
 			mission.DNT_CockroachMines = {}
@@ -84,10 +97,45 @@ local function HOOK_MissionUpdateHook(mission, pawn) --My attempt to get the paw
 	end
 end
 
+local function HOOK_QueuedSkillStart(mission, pawn, weaponId, p1, p2)
+	if isMissionBoard() then
+		-- Psycho Dragonfly (Start Dragonfly attack)
+		if not achievements.DNT_PsychoDragonfly:isComplete() and pawn:GetType():find("^DNT_Dragonfly") and not pawn:IsMech() then
+			dragonflyAttack = true
+			fireCount = 0
+		end
+	end
+end
+
+local function HOOK_QueuedSkillEnd(mission, pawn, weaponId, p1, p2)
+	if isMissionBoard() then
+		-- Psycho Dragonfly (End Dragonfly attack)
+		modApi:scheduleHook(1000, function()
+			dragonflyAttack = false
+		end)
+	end
+end
+
+local function HOOK_PawnIsFire(mission,pawn,isFire)
+	if isMissionBoard() then
+		-- Psycho Dragonfly (Count Fire)
+		if not achievements.DNT_PsychoDragonfly:isComplete() and dragonflyAttack and isFire and pawn:GetTeam() == TEAM_ENEMY then
+			fireCount = fireCount + 1
+			if fireCount >= 2 then
+				DNT_VextraChevio("DNT_PsychoDragonfly")
+			end
+		end
+	end
+end
+
 
 -- AddHooks
 local function EVENT_onModsLoaded()
 	modApi:addMissionUpdateHook(HOOK_MissionUpdateHook)
+
+	DNT_Vextra_ModApiExt:addQueuedSkillEndHook(HOOK_QueuedSkillEnd)
+	DNT_Vextra_ModApiExt:addQueuedSkillStartHook(HOOK_QueuedSkillStart)
+	DNT_Vextra_ModApiExt:addPawnIsFireHook(HOOK_PawnIsFire)
 	-- modApi:addNextTurnHook(HOOK_nextTurn)
 end
 
