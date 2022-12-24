@@ -42,10 +42,11 @@ local achievements = {
 	DNT_UnstableGround = modApi.achievements:add{
 		id = "DNT_UnstableGround",
 		name = "Unstable Ground",
-		tooltip = "Drop an Antlion into a chasm by breaking the ground beneath it.",
+		tooltip = "Drop the Antlion Leader into a chasm by breaking the ground beneath it.",
 		image = mod.resourcePath.."img/achievements/placeholder.png",
 		objective = 1,
 		global = global,
+		secret = true,
 	},
 }
 
@@ -157,7 +158,7 @@ local function HOOK_PawnKilled(mission, pawn)
 	if isMissionBoard() then
 		-- Unstable Ground
 		if not achievements.DNT_UnstableGround:isComplete() then
-			if pawn:GetType():find("^DNT_Antlion") and Board:GetTerrain(pawn:GetSpace()) == TERRAIN_HOLE then
+			if pawn:GetType():find("^DNT_AntlionBoss") and Board:GetTerrain(pawn:GetSpace()) == TERRAIN_HOLE then
 				achievements.DNT_UnstableGround:addProgress(1)
 			end
 		end
