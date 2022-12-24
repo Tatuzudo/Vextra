@@ -19,7 +19,7 @@ local achievements = {
 		id = "DNT_Suicidal",
 		name = "No Diving",
 		tooltip = "Have an Isopod leap to its doom.",
-		image = mod.resourcePath.."img/achievements/placeholder.png",
+		image = mod.resourcePath.."img/achievements/nodiving.png",
 		objective = 1,
 		global = global,
 	},
@@ -27,14 +27,22 @@ local achievements = {
 		id = "DNT_DragonSlayer",
 		name = "Dragon Slayer",
 		tooltip = "Have a Fly kill a Dragonfly.",
-		image = mod.resourcePath.."img/achievements/placeholder.png",
+		image = mod.resourcePath.."img/achievements/dragonslayer.png",
 		objective = 1,
 		global = global,
 	},
 	DNT_Fartality = modApi.achievements:add{
 		id = "DNT_Fartality",
 		name = "Fartality!",
-		tooltip = "Move stinkbugs to fart tiles 3 times in a single battle.",
+		tooltip = "Move Stinkbugs to stink tiles 3 times in a single battle.",
+		image = mod.resourcePath.."img/achievements/placeholder.png",
+		objective = 1,
+		global = global,
+	},
+	DNT_UnstableGround = modApi.achievements:add{
+		id = "DNT_UnstableGround",
+		name = "Unstable Ground",
+		tooltip = "Drop an Antlion into a chasm by breaking the ground beneath it.",
 		image = mod.resourcePath.."img/achievements/placeholder.png",
 		objective = 1,
 		global = global,
@@ -145,6 +153,17 @@ local function HOOK_PawnPositionChanged(mission, pawn, oldPosition)
 	end
 end
 
+local function HOOK_PawnKilled(mission, pawn)
+	if isMissionBoard() then
+		-- Unstable Ground
+		if not achievements.DNT_UnstableGround:isComplete() then
+			if pawn:GetType():find("^DNT_Antlion") and Board:GetTerrain(pawn:GetSpace()) == TERRAIN_HOLE then
+				achievements.DNT_UnstableGround:addProgress(1)
+			end
+		end
+	end
+end
+
 -- AddHooks
 local function EVENT_onModsLoaded()
 	DNT_Vextra_ModApiExt:addPawnKilledHook(HOOK_PawnKilled)
@@ -153,7 +172,7 @@ local function EVENT_onModsLoaded()
 	DNT_Vextra_ModApiExt:addQueuedSkillEndHook(HOOK_QueuedSkillEnd)
 	DNT_Vextra_ModApiExt:addQueuedSkillStartHook(HOOK_QueuedSkillStart)
 	DNT_Vextra_ModApiExt:addPawnPositionChangedHook(HOOK_PawnPositionChanged)
-	
+	DNT_Vextra_ModApiExt:addPawnKilledHook(HOOK_PawnKilled)
 	-- modApi:addNextTurnHook(HOOK_nextTurn)
 end
 
