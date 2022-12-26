@@ -1,5 +1,25 @@
 local mod = modApi:getCurrentMod()
 local global = "Vextra"
+local modid = "Djinn_NAH_Tatu_Vextra"
+
+--Needs to actually Unlock It
+--Could use some more testing
+function DNT_checkSquadProgress() --This can be made local once combined
+	local id = "DNT_SecretSquad"
+	local complete = modApi.achievements:isComplete(modid,id)
+	if complete then return end --Already Unlocked
+
+	local count = 0
+	local ids = {"DNT_PsychoDragonfly","DNT_DragonSlayer","DNT_Fartality"}
+	for _, i in pairs(ids) do
+		local complete = modApi.achievements:isComplete(modid,i)
+		if complete then count = count + 1 end
+	end
+	if count >= 3 then
+		modApi.achievements:trigger(modid,id)
+	end
+
+end
 
 -- Add Achievements
 local achievements = {
@@ -28,15 +48,26 @@ local achievements = {
 		image = mod.resourcePath.."img/achievements/placeholder.png",
 		objective = 1,
 		global = global,
+		addReward = DNT_checkSquadProgress,
+		remReward = DNT_checkSquadProgress,
+	},
+	DNT_SecretSquad = modApi.achievements:add{
+		id = "DNT_SecretSquad",
+		name = "Secret Squad",
+		tooltip = "Secret Squad is now unlocked! Restart if just unlocked.",
+		image = mod.resourcePath.."img/achievements/placeholder.png",
+		secret = true,
+		objective = 3,
+		global = global,
 	},
 }
 
-local modid = "Djinn_NAH_Tatu_Vextra"
 function DNT_VextraChevio(id)
-	progress = modApi.achievements:getProgress(modid,id)
-	if progress ~= 0 then return end
+	local complete = modApi.achievements:isComplete(modid,id)
+	if complete then return end
 	modApi.achievements:trigger(modid,id)
 end
+
 
 -- Helper Functions
 local function isGame()
@@ -59,15 +90,6 @@ local function isMissionBoard()
 		and isMission()
 		and Board ~= nil
 		and Board:IsTipImage() == false
-end
-
--- Secret Functions
-local function addSquad1()
-
-end
-
-local function remSquad1()
-
 end
 
 -- Hook Functions

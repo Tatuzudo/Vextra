@@ -30,6 +30,8 @@ local achievements = {
 		image = mod.resourcePath.."img/achievements/dragonslayer.png",
 		objective = 1,
 		global = global,
+		addReward = DNT_checkSquadProgress,
+		remReward = DNT_checkSquadProgress,
 	},
 	DNT_Fartality = modApi.achievements:add{
 		id = "DNT_Fartality",
@@ -38,6 +40,8 @@ local achievements = {
 		image = mod.resourcePath.."img/achievements/placeholder.png",
 		objective = 1,
 		global = global,
+		addReward = DNT_checkSquadProgress,
+		remReward = DNT_checkSquadProgress,
 	},
 	DNT_UnstableGround = modApi.achievements:add{
 		id = "DNT_UnstableGround",
@@ -125,13 +129,13 @@ end
 
 -- local function HOOK_SkillStart(mission, pawn, weaponId, p1, p2)
 	-- if isMissionBoard() then
-	
+
 	-- end
 -- end
 
 -- local function HOOK_SkillEnd(mission, pawn, weaponId, p1, p2)
 	-- if isMissionBoard() then
-	
+
 	-- end
 -- end
 
@@ -178,5 +182,3 @@ local function EVENT_onModsLoaded()
 end
 
 modApi.events.onModsLoaded:subscribe(EVENT_onModsLoaded)
-
-

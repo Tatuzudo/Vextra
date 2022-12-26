@@ -56,8 +56,8 @@ local function init(self)
 	self.libs = {}
 	self.libs.modApiExt = modapiext
 	DNT_Vextra_ModApiExt = self.libs.modApiExt --I'm assuming this is safe
+	require(self.scriptPath.."NAH_achievements") --Has Important Global Functions
 	require(self.scriptPath.."achievements")
-	require(self.scriptPath.."NAH_achievements")
 	require(self.scriptPath.."enemies")
 	require(self.scriptPath.."enemyList")
 	require(self.scriptPath.."bosses")
@@ -85,7 +85,7 @@ local function load(self,options,version)
 	require(self.scriptPath .. "tips"):load(self.libs.modApiExt)
 
 	--Add Squad:
-	if options.DNT_Vextra_OSquad and options.DNT_Vextra_OSquad.enabled then
+	if modApi.achievements:isComplete("Djinn_NAH_Tatu_Vextra","DNT_SecretSquad") then
 		modApi:addSquad({
 			"Vextra Secret Squad",
 			"DNT_StinkbugMech",
@@ -120,12 +120,6 @@ local function metadata()
 		"Reset Tutorial Tooltips",
 		"Check to reset all tutorial tooltips for this profile.",
 		{ enabled = false }
-	)
-	modApi:addGenerationOption(
-		"DNT_Vextra_OSquad",
-		"Secret Squad",
-		"Enables the Secret Squad. Here till achievements are added. Restart required.",
-		{enabled = false}
 	)
 end
 
