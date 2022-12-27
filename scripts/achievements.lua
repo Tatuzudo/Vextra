@@ -46,7 +46,7 @@ local achievements = {
 	DNT_Picnic = modApi.achievements:add{
 		id = "DNT_Picnic",
 		name = "Safe for a Picnic",
-		tooltip = "Finish the Anthill Leader battle with no Ants left on the board (not working yet).",
+		tooltip = "Kill the Anthill Leader and finish the battle with no Ants left on the board.",
 		image = mod.resourcePath.."img/achievements/safe4picnic.png",
 		objective = 1,
 		global = global,
@@ -228,15 +228,36 @@ function Env_Lightning:GetAttackEffect(location) -- maybe change this later
 	return effect
 end
 
+local function Hook_MissionEnd(mission)
+	-- Picnic
+	if not achievements.DNT_Picnic:isComplete() and mission.Name == "Anthill Leader" then
+		local pawnList = extract_table(Board:GetPawns(TEAM_ENEMY))
+		if pawnList and #pawnList > 0 then
+			for i = 1, #pawnList do
+				local pawnName = Board:GetPawn(pawnList[i]):GetType()
+				local antNames = {"DNT_WorkerAnt", "DNT_FlyingAnt", "DNT_SoldierAnt", "DNT_Anthill"}
+				for i = 1, #antNames do
+					if pawnName:find(antNames[i]) then
+						return
+					end
+				end
+			end
+		end
+		achievements.DNT_Picnic:addProgress(1)
+	end
+end
+
 -- AddHooks
 local function EVENT_onModsLoaded()
+	-- modApiExt
 	DNT_Vextra_ModApiExt:addPawnKilledHook(HOOK_PawnKilled)
 	-- DNT_Vextra_ModApiExt:addSkillEndHook(HOOK_SkillEnd)
 	-- DNT_Vextra_ModApiExt:addSkillStartHook(HOOK_SkillStart)
 	DNT_Vextra_ModApiExt:addQueuedSkillEndHook(HOOK_QueuedSkillEnd)
 	DNT_Vextra_ModApiExt:addQueuedSkillStartHook(HOOK_QueuedSkillStart)
 	DNT_Vextra_ModApiExt:addPawnPositionChangedHook(HOOK_PawnPositionChanged)
-	-- DNT_Vextra_ModApiExt:addPawnKilledHook(HOOK_PawnKilled)
+	-- modApi
+	modApi:addMissionEndHook(Hook_MissionEnd)
 	-- modApi:addNextTurnHook(HOOK_nextTurn)
 end
 
