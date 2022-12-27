@@ -43,11 +43,28 @@ local achievements = {
 		addReward = DNT_checkSquadProgress,
 		remReward = DNT_checkSquadProgress,
 	},
+	DNT_Picnic = modApi.achievements:add{
+		id = "DNT_Picnic",
+		name = "Safe for a Picnic",
+		tooltip = "Finish the Anthill Leader battle with no Ants left on the board (not working yet).",
+		image = mod.resourcePath.."img/achievements/safe4picnic.png",
+		objective = 1,
+		global = global,
+	},
 	DNT_UnstableGround = modApi.achievements:add{
 		id = "DNT_UnstableGround",
 		name = "Unstable Ground",
 		tooltip = "Drop the Antlion Leader into a chasm by breaking the ground beneath it.",
 		image = mod.resourcePath.."img/achievements/placeholder.png",
+		objective = 1,
+		global = global,
+		secret = true,
+	},
+	DNT_LightningRod = modApi.achievements:add{
+		id = "DNT_LightningRod",
+		name = "Lightning Rod",
+		tooltip = "Have a Thunderbug be struck by a lightning tile.",
+		image = mod.resourcePath.."img/achievements/lightningrod.png",
 		objective = 1,
 		global = global,
 		secret = true,
@@ -98,6 +115,12 @@ local function HOOK_PawnKilled(mission, pawn)
 				achievements.DNT_DragonSlayer:addProgress(1)
 			end
 		end
+		-- Unstable Ground
+		if not achievements.DNT_UnstableGround:isComplete() then
+			if pawn:GetType():find("^DNT_AntlionBoss") and Board:GetTerrain(pawn:GetSpace()) == TERRAIN_HOLE then
+				achievements.DNT_UnstableGround:addProgress(1)
+			end
+		end
 	end
 end
 
@@ -121,9 +144,11 @@ local function HOOK_QueuedSkillEnd(mission, pawn, weaponId, p1, p2)
 			end
 		end
 		-- Dragon Slayer (End Fly attack)
-		if pawn:GetType():find("^DNT_Fly") and not pawn:IsMech() then
-			flyAttack = false
-		end
+		modApi:scheduleHook(500, function()
+			if pawn:GetType():find("^DNT_Fly") and not pawn:IsMech() then
+				flyAttack = false
+			end
+		end)
 	end
 end
 
@@ -158,15 +183,49 @@ local function HOOK_PawnPositionChanged(mission, pawn, oldPosition)
 	end
 end
 
-local function HOOK_PawnKilled(mission, pawn)
-	if isMissionBoard() then
-		-- Unstable Ground
-		if not achievements.DNT_UnstableGround:isComplete() then
-			if pawn:GetType():find("^DNT_AntlionBoss") and Board:GetTerrain(pawn:GetSpace()) == TERRAIN_HOLE then
-				achievements.DNT_UnstableGround:addProgress(1)
+-- Lightning Rog (not a hook)
+
+-- local Old_Env_Lightning = Env_Lightning.GetAttackEffect
+
+-- function Env_Lightning:GetAttackEffect(location)
+	-- local effect = Old_Env_Lightning(location)
+	
+	-- modApi:scheduleHook(1000, function()
+		-- if not achievements.DNT_LightningRod:isComplete() then
+			-- if Board:GetPawn(location) and Board:GetPawn(location):GetType():find("^DNT_Thunderbug") then
+				-- achievements.DNT_LightningRod:addProgress(1)
+			-- end
+		-- end
+	-- end)
+	
+	-- return effect
+-- end
+
+function Env_Lightning:GetAttackEffect(location) -- maybe change this later
+	
+	local effect = SkillEffect()
+	
+	local damage = SpaceDamage(location, DAMAGE_DEATH)
+	damage.sAnimation = "LightningBolt"..random_int(2)
+	
+	local rain = location - Point(1,1)
+	local script = "Board:SetWeather(3,"..RAIN_NORMAL..","..rain:GetString()..",Point(2,2),2)"
+	effect:AddScript(script)
+	effect:AddSound("/props/lightning_strike")
+	
+	effect:AddDelay(1)
+	
+	effect:AddDamage(damage)
+	
+	modApi:scheduleHook(1000, function()
+		if not achievements.DNT_LightningRod:isComplete() then
+			if Board:GetPawn(location) and Board:GetPawn(location):GetType():find("^DNT_Thunderbug") then
+				achievements.DNT_LightningRod:addProgress(1)
 			end
 		end
-	end
+	end)
+	
+	return effect
 end
 
 -- AddHooks
@@ -177,7 +236,7 @@ local function EVENT_onModsLoaded()
 	DNT_Vextra_ModApiExt:addQueuedSkillEndHook(HOOK_QueuedSkillEnd)
 	DNT_Vextra_ModApiExt:addQueuedSkillStartHook(HOOK_QueuedSkillStart)
 	DNT_Vextra_ModApiExt:addPawnPositionChangedHook(HOOK_PawnPositionChanged)
-	DNT_Vextra_ModApiExt:addPawnKilledHook(HOOK_PawnKilled)
+	-- DNT_Vextra_ModApiExt:addPawnKilledHook(HOOK_PawnKilled)
 	-- modApi:addNextTurnHook(HOOK_nextTurn)
 end
 
