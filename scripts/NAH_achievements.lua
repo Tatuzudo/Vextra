@@ -36,7 +36,7 @@ local achievements = {
 	DNT_SelfSmush = modApi.achievements:add{
 		id = "DNT_SelfSmush",
 		name = "Pest Control",
-		tooltip = "Finish off a Cockroach by smushing it with a another Vek.",
+		tooltip = "Finish off a Cockroach by smushing it with a another Vek",
 		image = mod.resourcePath.."img/achievements/selfsmush.png",
 		objective = 1,
 		global = global,
@@ -44,12 +44,36 @@ local achievements = {
 	DNT_PsychoDragonfly = modApi.achievements:add{
 		id = "DNT_PsychoDragonfly",
 		name = "We Didn't Start the Fire",
-		tooltip = "Ignite two Vek with an attack from a dragonfly.",
+		tooltip = "Ignite two Vek with an attack from a dragonfly",
 		image = mod.resourcePath.."img/achievements/placeholder.png",
 		objective = 1,
 		global = global,
 		addReward = DNT_checkSquadProgress,
 		remReward = DNT_checkSquadProgress,
+	},
+	--modApi.achievements:reset("Djinn_NAH_Tatu_Vextra", "DNT_Zoologist")
+	DNT_Zoologist = modApi.achievements:add{
+		id = "DNT_Zoologist",
+		name = "Zoologist",
+		tooltip = "Encounter all Vextra Bosses in their mission. \nEncountered: $count",
+		image = mod.resourcePath.."img/achievements/zoologist.png",
+		objective = {
+			Mission_ThunderbugBoss = true,
+			Mission_PillbugBoss = true,
+			Mission_MantisBoss = true,
+			Mission_SilkwormBoss = true,
+			Mission_AntlionBoss = true,
+			Mission_FlyBoss = true,
+			Mission_DragonflyBoss = true,
+			Mission_TermitesBoss = true,
+			Mission_StinkbugBoss = true,
+			Mission_AnthillBoss = true,
+			Mission_CockroachBoss = true,
+			Mission_IceCrawlerBoss = true,
+			Mission_JunebugBoss = true,
+			count = 13,
+		},
+		global = global,
 	},
 	DNT_SecretSquad = modApi.achievements:add{
 		id = "DNT_SecretSquad",
@@ -97,7 +121,7 @@ end
 local fireCount = 0
 local dragonflyAttack = false
 
-local function HOOK_MissionUpdateHook(mission, pawn) --My attempt to get the pawn working, it's commented out (below) for now
+local function HOOK_MissionUpdate(mission, pawn)
 	if isMissionBoard() then
 		--SelfSmush/PestControl Cockroach Achievement
 		if not achievements.DNT_SelfSmush:isComplete() then
@@ -150,14 +174,59 @@ local function HOOK_PawnIsFire(mission,pawn,isFire)
 	end
 end
 
+--for k, v in pairs(modApi.achievements:get("Djinn_NAH_Tatu_Vextra", "DNT_Zoologist"):getProgress()) do LOG(k);LOG(v) end
+
+local function Hook_MissionStart(mission)
+	if isMissionBoard() then
+		--Zoologist Boss Encounter
+		local missionId = mission.ID
+		if not achievements.DNT_Zoologist:isComplete() then
+			local progress = achievements.DNT_Zoologist:getProgress()
+			if not progress[missionId] and type(progress[missionId]) ~= "nil" then --Check if progress hasn't been made and it's a mission I'm checking for
+				--Long ass series of if statments cause I couldn't figure out how to do it easily )':
+				if missionId == "Mission_ThunderbugBoss" then
+					achievements.DNT_Zoologist:addProgress({Mission_ThunderbugBoss = true})
+				elseif missionId == "Mission_PillbugBoss" then
+					achievements.DNT_Zoologist:addProgress({Mission_PillbugBoss = true})
+				elseif missionId == "Mission_MantisBoss" then
+					achievements.DNT_Zoologist:addProgress({Mission_MantisBoss = true})
+				elseif missionId == "Mission_SilkwormBoss" then
+					achievements.DNT_Zoologist:addProgress({Mission_SilkwormBoss = true})
+				elseif missionId == "Mission_AntlionBoss" then
+					achievements.DNT_Zoologist:addProgress({Mission_AntlionBoss = true})
+				elseif missionId == "Mission_FlyBoss" then
+					achievements.DNT_Zoologist:addProgress({Mission_FlyBoss = true})
+				elseif missionId == "Mission_DragonflyBoss" then
+					achievements.DNT_Zoologist:addProgress({Mission_DragonflyBoss = true})
+				elseif missionId == "Mission_TermitesBoss" then
+					achievements.DNT_Zoologist:addProgress({Mission_TermitesBoss = true})
+				elseif missionId == "Mission_StinkbugBoss" then
+					achievements.DNT_Zoologist:addProgress({Mission_StinkbugBoss = true})
+				elseif missionId == "Mission_AnthillBoss" then
+					achievements.DNT_Zoologist:addProgress({Mission_AnthillBoss = true})
+				elseif missionId == "Mission_CockroachBoss" then
+					achievements.DNT_Zoologist:addProgress({Mission_CockroachBoss = true})
+				elseif missionId == "Mission_IceCrawlerBoss" then
+					achievements.DNT_Zoologist:addProgress({Mission_IceCrawlerBoss = true})
+				elseif missionId == "Mission_JunebugBoss" then
+					achievements.DNT_Zoologist:addProgress({Mission_JunebugBoss = true})
+				end
+				--achievements.DNT_Zoologist:addProgress({missionId = true})
+				achievements.DNT_Zoologist:addProgress({count = 1}) --Adds automatically even though I use an equal sign
+			end
+		end
+	end
+end
 
 -- AddHooks
 local function EVENT_onModsLoaded()
-	modApi:addMissionUpdateHook(HOOK_MissionUpdateHook)
+	modApi:addMissionUpdateHook(HOOK_MissionUpdate)
 
 	DNT_Vextra_ModApiExt:addQueuedSkillEndHook(HOOK_QueuedSkillEnd)
 	DNT_Vextra_ModApiExt:addQueuedSkillStartHook(HOOK_QueuedSkillStart)
 	DNT_Vextra_ModApiExt:addPawnIsFireHook(HOOK_PawnIsFire)
+
+	modApi:addMissionStartHook(Hook_MissionStart)
 	-- modApi:addNextTurnHook(HOOK_nextTurn)
 end
 
