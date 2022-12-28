@@ -51,6 +51,14 @@ local achievements = {
 		addReward = DNT_checkSquadProgress,
 		remReward = DNT_checkSquadProgress,
 	},
+	DNT_RedWedding = modApi.achievements:add{
+		id = "DNT_RedWedding",
+		name = "Red Wedding",
+		tooltip = "Kill the Junebug Boss and Ladybug Boss in the same turn.",
+		image = mod.resourcePath.."img/achievements/redwedding.png",
+		objective = 1,
+		global = global,
+	},
 	--modApi.achievements:reset("Djinn_NAH_Tatu_Vextra", "DNT_Zoologist")
 	DNT_Zoologist = modApi.achievements:add{
 		id = "DNT_Zoologist",
@@ -174,6 +182,36 @@ local function HOOK_PawnIsFire(mission,pawn,isFire)
 	end
 end
 
+local function HOOK_PawnKilled(mission,pawn)
+	if isMissionBoard() then
+		--Red Wedding Pawn Killed
+		if not achievements.DNT_RedWedding:isComplete() then
+			if pawn:GetType() == "DNT_JunebugBoss" then
+				mission.RW_Junebug = true
+				if mission.RW_Junebug and mission.RW_Ladybug and mission.RW_SameTurn then
+					DNT_VextraChevio("DNT_RedWedding")
+				end
+				mission.RW_SameTurn = true
+			elseif pawn:GetType() == "DNT_LadybugBoss" then
+				mission.RW_Ladybug = true
+				if mission.RW_Junebug and mission.RW_Ladybug and mission.RW_SameTurn then
+					DNT_VextraChevio("DNT_RedWedding")
+				end
+				mission.RW_SameTurn = true
+			end
+		end
+	end
+end
+
+local function HOOK_NextTurn(mission)
+	if isMissionBoard() then
+		--Red Wedding New Turn
+		if not achievements.DNT_RedWedding:isComplete() then
+			mission.RW_SameTurn = false
+		end
+	end
+end
+
 --for k, v in pairs(modApi.achievements:get("Djinn_NAH_Tatu_Vextra", "DNT_Zoologist"):getProgress()) do LOG(k);LOG(v) end
 
 local function Hook_MissionStart(mission)
@@ -227,7 +265,9 @@ local function EVENT_onModsLoaded()
 	DNT_Vextra_ModApiExt:addPawnIsFireHook(HOOK_PawnIsFire)
 
 	modApi:addMissionStartHook(Hook_MissionStart)
-	-- modApi:addNextTurnHook(HOOK_nextTurn)
+
+	modApi:addNextTurnHook(HOOK_NextTurn)
+	DNT_Vextra_ModApiExt:addPawnKilledHook(HOOK_PawnKilled)
 end
 
 modApi.events.onModsLoaded:subscribe(EVENT_onModsLoaded)
