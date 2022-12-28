@@ -21,8 +21,15 @@ local DNT_bosses = {
   "Mission_AnthillBoss",
 }
 
-
 for _, boss in pairs(DNT_bosses) do
   bossList:addBoss(boss)
   bossListCombined:addBoss(boss)
+end
+
+-- for spawning bosses in 4th island unfair
+for i = 1, #DNT_bosses do
+	local name = string.gsub(DNT_bosses[i], "Mission", "DNT")
+	if name ~= "DNT_AnthillBoss" and name ~= "DNT_JunebugBoss" then
+		BossesList[name] = true
+	end
 end

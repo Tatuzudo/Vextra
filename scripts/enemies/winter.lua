@@ -192,7 +192,7 @@ local DNT_PSION = "DNT_Winter1"
 
 local function DNT_PsionTarget(pawn)
 	if GetCurrentMission()[DNT_PSION] and pawn:GetType() ~= DNT_PSION then
-		if (pawn:GetTeam() == TEAM_PLAYER and pawn:IsMech()) or IsPassiveSkill("Psion_Leech") then
+		if (pawn:GetTeam() == TEAM_PLAYER and pawn:IsMech()) or (IsPassiveSkill("Psion_Leech") and pawn:GetTeam() == TEAM_ENEMY) then
 			if _G[pawn:GetType()].DefaultFaction ~= FACTION_BOTS and not _G[pawn:GetType()].Minor then
 				return true
 			end
@@ -283,6 +283,7 @@ local HOOK_pawnTracked = function(mission, pawn)
 				if Board:GetTurn() ~= 0 then
 					DNT_Sound_Buff()
 					Board:AddBurst(pawn:GetSpace(),BURST_UP,DIR_NONE)
+					mission[DNT_PSION][#mission[DNT_PSION]+1] = pawn:GetSpace()
 				end
 			end
 		end)
@@ -292,19 +293,17 @@ end
 local HOOK_pawnUntracked = function(mission, pawn)
 	if isMissionBoard() then
 		if pawn:GetType() == DNT_PSION then
-			mission[DNT_PSION] = nil
 			Game:TriggerSound("/ui/battle/buff_removed")
 			local pawnList = extract_table(Board:GetPawns(TEAM_ANY))
 			for i = 1, #pawnList do
 				local currPawn = Board:GetPawn(pawnList[i])
-				if currPawn:GetTeam() == TEAM_ENEMY or (IsPassiveSkill("Psion_Leech") and currPawn:IsMech()) then
-					if _G[currPawn:GetType()].DefaultFaction ~= FACTION_BOTS and not _G[currPawn:GetType()].Minor then
-						Board:Ping(currPawn:GetSpace(),GL_Color(255,50,50))
-						trait:update(currPawn:GetSpace())
-						Board:AddBurst(currPawn:GetSpace(),BURST_DOWN,DIR_NONE)
-					end
+				if DNT_PsionTarget(currPawn) then
+					Board:Ping(currPawn:GetSpace(),GL_Color(255,50,50))
+					trait:update(currPawn:GetSpace())
+					Board:AddBurst(currPawn:GetSpace(),BURST_DOWN,DIR_NONE)
 				end
 			end
+			mission[DNT_PSION] = nil
 		end
 	end
 end
@@ -370,6 +369,7 @@ local function HOOK_nextTurn(mission)
 			mission = GetCurrentMission()
 			if mission[DNT_PSION] then
 				if Game:GetTeamTurn() == TEAM_ENEMY then
+					-- freeze everything
 					if #mission[DNT_PSION] > 0 then
 						Game:TriggerSound("/props/snow_storm")
 						local effect = SkillEffect()
@@ -385,29 +385,33 @@ local function HOOK_nextTurn(mission)
 							effect:AddDamage(damage)
 						end
 						effect.iOwner = ENV_EFFECT
+						effect:AddDelay(2)
 						Board:AddEffect(effect)
 						mission[DNT_PSION] = {}
 					end
-				else
-					DNT_Sound_Buff()
-					local mechList = extract_table(Board:GetPawns(TEAM_PLAYER))
-					for i = 1, #mechList do
-						local currPawn = Board:GetPawn(mechList[i])
-						local p = currPawn:GetSpace()
-						local isbelt = false
-						if mission.LiveEnvironment and mission.LiveEnvironment.Belts then
-							isbelt = DNT_Contains(mission.LiveEnvironment.Belts, p)
-						end
-						if Game:GetTeamTurn() == TEAM_PLAYER and currPawn:IsMech() and not Board:IsEnvironmentDanger(p) and not isbelt then-- and not Board:IsTerrain(p,0) then
-							local p = currPawn:GetSpace()
-							mission[DNT_PSION][#mission[DNT_PSION]+1] = p
-							if Game:GetTeamTurn() == TEAM_PLAYER then
-								Board:Ping(p,GL_Color(0,255,0))
-								Board:AddBurst(p,BURST_UP,DIR_NONE)
-								trait:update(p)
+					-- mark spaces
+					local delayTime = math.min(Board:GetTurn()*3000,3000)
+					modApi:scheduleHook(delayTime, function()
+						DNT_Sound_Buff()
+						local pawnList = extract_table(Board:GetPawns(TEAM_ANY))
+						for i = 1, #pawnList do
+							local currPawn = Board:GetPawn(pawnList[i])
+							if DNT_PsionTarget(currPawn) then
+								local p = currPawn:GetSpace()
+								local isbelt = false
+								if mission.LiveEnvironment and mission.LiveEnvironment.Belts then
+									isbelt = DNT_Contains(mission.LiveEnvironment.Belts, p)
+								end
+								if Board:IsValid(p) and not Board:IsEnvironmentDanger(p) and not isbelt then-- and not Board:IsTerrain(p,0) then
+									local p = currPawn:GetSpace()
+									mission[DNT_PSION][#mission[DNT_PSION]+1] = p
+									Board:Ping(p,GL_Color(0,255,0))
+									Board:AddBurst(p,BURST_UP,DIR_NONE)
+									trait:update(p)
+								end
 							end
 						end
-					end
+					end)
 				end
 			end
 		end
@@ -441,12 +445,14 @@ local HOOK_MissionEnd = function(mission) -- delete farts on mission end
 end
 
 -- update marks
+TILE_TOOLTIPS.DNT_psionic_blizzard = {"Psionic Blizzard", "The Winter Psion will freeze this tile at the end of the turn."}
 local HOOK_MissionUpdate = function(mission)
 	if mission and mission[DNT_PSION] and #mission[DNT_PSION] > 0 then
 		for i = 1, #mission[DNT_PSION] do
 			local p = mission[DNT_PSION][i]
-			Board:MarkSpaceImage(p,"combat/tile_icon/tile_snowstorm.png",GL_Color(255, 180, 0 ,0.75))
-			Board:MarkSpaceDesc(p,"ice_storm")
+			Board:MarkSpaceImage(p,"combat/tile_icon/tile_snowstorm.png",GL_Color(0, 180, 255 ,0.75))
+			-- Board:MarkSpaceDesc(p,"ice_storm")
+			Board:MarkSpaceDesc(p,"DNT_psionic_blizzard")
 		end
 	end
 end
