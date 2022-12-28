@@ -422,3 +422,20 @@ modApi.events.onNextTurn:subscribe(function(mission)
 
 	Board:AddEffect(effect)
 end)
+
+--Hook to fix a bug where the cockroach corpse would show up when retreating/evacuating
+local function HOOK_MissionEnd(mission,effect)
+	local enemies = extract_table(Board:GetPawns(TEAM_ENEMY))
+	for _, id in pairs(enemies) do
+		local pawn = Board:GetPawn(id)
+		if pawn:GetType():find("^DNT_Cockroach") then
+			pawn:SetCorpse(false)
+		end
+	end
+end
+
+local function EVENT_onModsLoaded()
+	modApi:addMissionEndHook(HOOK_MissionEnd)
+end
+
+modApi.events.onModsLoaded:subscribe(EVENT_onModsLoaded)
