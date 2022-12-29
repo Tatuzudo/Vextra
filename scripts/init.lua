@@ -87,7 +87,8 @@ local function load(self,options,version)
 	--Add Squad:
 	if modApi.achievements:isComplete("Djinn_NAH_Tatu_Vextra","DNT_SecretSquad") then
 		modApi:addSquad({
-			"Vextra Secret Squad",
+			--"Vextra Secret Squad",
+			"Techno-Vextra" -- tatu change
 			"DNT_StinkbugMech",
 			"DNT_FlyMech",
 			"DNT_DragonflyMech",

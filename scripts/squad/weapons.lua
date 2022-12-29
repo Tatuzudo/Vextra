@@ -45,7 +45,8 @@ modApi:appendAsset("img/combat/icons/DNT_icon_stink_glow.png",resourcePath.."img
 -- weapon DNT_SS_AcridSpray
 DNT_SS_AcridSpray = Skill:new {
   Name = "Acrid Spray",
-  Description = "Strike a tile while placing short-lived stink clouds to both sides.",
+  -- Description = "Strike a tile while placing short-lived stink clouds to both sides.",
+  Description = "Strike a tile and place short-lived stink clouds to both sides.", -- tatu change
   Damage = 1,
   Class = "TechnoVek",
   SoundBase = "/enemy/mosquito_1",
@@ -115,7 +116,7 @@ end
 
 DNT_SS_AcridSpray_A = DNT_SS_AcridSpray:new{
 	CustomTipImage = "DNT_SS_AcridSpray_A_Tip",
-	UpgradeDescription = "Stink clouds extend to both sides infinitly until hitting an object.",
+	UpgradeDescription = "Stink clouds extend to both sides infinitely until hitting an object.",
 	FartRange = 8,
 }
 
@@ -286,7 +287,8 @@ DNT_SS_SappingProboscis_AB = DNT_SS_SappingProboscis:new{
 -- weapon DNT_SS_SparkHurl
 DNT_SS_SparkHurl = LineArtillery:new {
   Name = "Spark Hurl",
-  Description = "Hurl sparks that pushes the target. If there's smoke, it explodes in a T shape outwards, igniting and damaging targets. Otherwise, it only ignites the target doing one less damage.",
+  --Description = "Hurl sparks that pushes the target. If there's smoke, it explodes in a T shape outwards, igniting and damaging targets. Otherwise, it only ignites the target doing one less damage.",
+  Description = "Artillery that push, damage and ignite the target. Explode smoke tiles in a T shape.", -- tatu change
   Damage = 1,
   Fire = 1,
   Class = "TechnoVek",
@@ -297,7 +299,8 @@ DNT_SS_SparkHurl = LineArtillery:new {
   Explosion = "",
   UpShot = "effects/shotup_ignite_fireball.png",
   --UpgradeList = {+1 Damage, +1 Damage},
-  UpgradeCost = {1,3},
+  -- UpgradeCost = {1,3}
+  UpgradeCost = {2,3}, -- tatu change
   TipImage = {
 		Unit = Point(2,4),
 		Target = Point(2,2),
@@ -341,7 +344,8 @@ function DNT_SS_SparkHurl:GetSkillEffect(p1,p2)
 			end
 		end
 	else
-		damage = SpaceDamage(p2,self.Damage-1,dir)
+		-- damage = SpaceDamage(p2,self.Damage-1,dir)
+		damage = SpaceDamage(p2,self.Damage,dir)  -- tatu change
 		damage.iFire = self.Fire
 		damage.sSound = "/weapons/flamespreader"
 		damage.sAnimation = "ExploRaining1"
