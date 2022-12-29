@@ -246,13 +246,13 @@ local HOOK_pawnTracked = function(mission, pawn)
 						trait:update(currPawn:GetSpace())
 						Board:Ping(currPawn:GetSpace(),GL_Color(0,255,0))
 						Board:AddBurst(currPawn:GetSpace(),BURST_UP,DIR_NONE)
-						currPawn:SetAcid(false)
+						-- currPawn:SetAcid(false)
 					end
 				end
 			elseif DNT_PsionTarget(pawn) then
 				trait:update(pawn:GetSpace())
 				Board:Ping(pawn:GetSpace(),GL_Color(0,255,0))
-				pawn:SetAcid(false)
+				-- pawn:SetAcid(false)
 				if Board:GetTurn() ~= 0 then
 					DNT_Sound_Buff()
 					Board:AddBurst(pawn:GetSpace(),BURST_UP,DIR_NONE)
@@ -382,7 +382,7 @@ local function HOOK_nextTurn(mission)
 			end
 		end
 	end
-	if mission[DNT_PSION] and Game:GetTeamTurn() == TEAM_ENEMY then
+	if mission[DNT_PSION] and Game:GetTeamTurn() == TEAM_PLAYER then --TEAM_ENEMY then
 		local pawnList = extract_table(Board:GetPawns(TEAM_ANY))
 		for i = 1, #pawnList do
 			local currPawn = Board:GetPawn(pawnList[i])
