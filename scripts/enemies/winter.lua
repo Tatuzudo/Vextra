@@ -283,7 +283,7 @@ local HOOK_pawnTracked = function(mission, pawn)
 				if Board:GetTurn() ~= 0 then
 					DNT_Sound_Buff()
 					Board:AddBurst(pawn:GetSpace(),BURST_UP,DIR_NONE)
-					mission[DNT_PSION][#mission[DNT_PSION]+1] = pawn:GetSpace()
+					-- mission[DNT_PSION][#mission[DNT_PSION]+1] = pawn:GetSpace()
 				end
 			end
 		end)
@@ -389,9 +389,10 @@ local function HOOK_nextTurn(mission)
 						Board:AddEffect(effect)
 						mission[DNT_PSION] = {}
 					end
+				else
 					-- mark spaces
-					local delayTime = math.min(Board:GetTurn()*3000,3000)
-					modApi:scheduleHook(delayTime, function()
+					-- local delayTime = math.min(Board:GetTurn()*3000,3000)
+					-- modApi:scheduleHook(delayTime, function()
 						DNT_Sound_Buff()
 						local pawnList = extract_table(Board:GetPawns(TEAM_ANY))
 						for i = 1, #pawnList do
@@ -411,14 +412,14 @@ local function HOOK_nextTurn(mission)
 								end
 							end
 						end
-					end)
+					-- end)
 				end
 			end
 		end
 	)
 end
 
-local HOOK_MissionEnd = function(mission) -- delete farts on mission end
+local HOOK_MissionEnd = function(mission)
 	if mission[DNT_PSION] and #mission[DNT_PSION] > 0 then
 		Game:TriggerSound("/props/snow_storm")
 		local effect = SkillEffect()
@@ -450,9 +451,10 @@ local HOOK_MissionUpdate = function(mission)
 	if mission and mission[DNT_PSION] and #mission[DNT_PSION] > 0 then
 		for i = 1, #mission[DNT_PSION] do
 			local p = mission[DNT_PSION][i]
+			-- if not Board:IsEnvironmentDanger(p) then
 			Board:MarkSpaceImage(p,"combat/tile_icon/tile_snowstorm.png",GL_Color(0, 180, 255 ,0.75))
-			-- Board:MarkSpaceDesc(p,"ice_storm")
 			Board:MarkSpaceDesc(p,"DNT_psionic_blizzard")
+			-- end
 		end
 	end
 end

@@ -51,6 +51,14 @@ local achievements = {
 		objective = 1,
 		global = global,
 	},
+	DNT_SubZero = modApi.achievements:add{
+		id = "DNT_SubZero",
+		name = "Sub-Zero",
+		tooltip = "Freeze 7 enemies using the Winter Psion in a single island.\n\nEnemies frozen: $",
+		image = mod.resourcePath.."img/achievements/subzero.png",
+		objective = 7,
+		global = global,
+	},
 	DNT_UnstableGround = modApi.achievements:add{
 		id = "DNT_UnstableGround",
 		name = "Unstable Ground",
@@ -183,24 +191,7 @@ local function HOOK_PawnPositionChanged(mission, pawn, oldPosition)
 	end
 end
 
--- Lightning Rog (not a hook)
-
--- local Old_Env_Lightning = Env_Lightning.GetAttackEffect
-
--- function Env_Lightning:GetAttackEffect(location)
-	-- local effect = Old_Env_Lightning(location)
-	
-	-- modApi:scheduleHook(1000, function()
-		-- if not achievements.DNT_LightningRod:isComplete() then
-			-- if Board:GetPawn(location) and Board:GetPawn(location):GetType():find("^DNT_Thunderbug") then
-				-- achievements.DNT_LightningRod:addProgress(1)
-			-- end
-		-- end
-	-- end)
-	
-	-- return effect
--- end
-
+-- Lightning Rod (not a hook)
 function Env_Lightning:GetAttackEffect(location) -- maybe change this later
 	
 	local effect = SkillEffect()
@@ -245,6 +236,53 @@ local function Hook_MissionEnd(mission)
 		end
 		achievements.DNT_Picnic:addProgress(1)
 	end
+	-- Sub Zero
+	if mission["DNT_Winter1"] and #mission["DNT_Winter1"] > 0 then
+		for i = 1, #mission["DNT_Winter1"] do
+			local p = mission["DNT_Winter1"][i]
+			local pawn = Board:GetPawn(p)
+			if pawn and pawn:GetTeam() == TEAM_ENEMY and not pawn:IsFrozen() then
+				modApi:scheduleHook(900, function()
+					if not achievements.DNT_SubZero:isComplete() then
+						achievements.DNT_SubZero:addProgress(1)
+					end
+				end)
+			end
+		end
+	end
+end
+
+local function HOOK_nextTurn(mission)
+	-- Sub Zero
+	if Game:GetTeamTurn() == TEAM_ENEMY then
+		if mission["DNT_Winter1"] and #mission["DNT_Winter1"] > 0 then
+			for i = 1, #mission["DNT_Winter1"] do
+				local p = mission["DNT_Winter1"][i]
+				local pawn = Board:GetPawn(p)
+				if pawn and pawn:GetTeam() == TEAM_ENEMY and not pawn:IsFrozen() then
+					modApi:scheduleHook(900, function()
+						if not achievements.DNT_SubZero:isComplete() then
+							achievements.DNT_SubZero:addProgress(1)
+						end
+					end)
+				end
+			end
+		end
+	end
+end
+
+local function DNT_onIslandLeft(island)
+	-- Reset Sub Zero with Island
+	if not achievements.DNT_SubZero:isComplete() then
+		achievements.DNT_SubZero:addProgress(-achievements.DNT_SubZero:getProgress())
+	end
+end
+
+local function DNT_GameStart()
+	-- Reset Sub Zero with Game
+	if not achievements.DNT_SubZero:isComplete() then
+		achievements.DNT_SubZero:addProgress(-achievements.DNT_SubZero:getProgress())
+	end
 end
 
 -- AddHooks
@@ -258,7 +296,10 @@ local function EVENT_onModsLoaded()
 	DNT_Vextra_ModApiExt:addPawnPositionChangedHook(HOOK_PawnPositionChanged)
 	-- modApi
 	modApi:addMissionEndHook(Hook_MissionEnd)
-	-- modApi:addNextTurnHook(HOOK_nextTurn)
+	modApi:addNextTurnHook(HOOK_nextTurn)
 end
 
 modApi.events.onModsLoaded:subscribe(EVENT_onModsLoaded)
+
+modApi.events.onIslandLeft:subscribe(DNT_onIslandLeft)
+modApi.events.onPostStartGame:subscribe(DNT_GameStart)
