@@ -18,7 +18,6 @@ function DNT_checkSquadProgress() --This can be made local once combined
 	if count >= 3 then
 		modApi.achievements:trigger(modid,id)
 	end
-
 end
 
 -- Add Achievements
@@ -56,6 +55,15 @@ local achievements = {
 		name = "Red Wedding",
 		tooltip = "Kill the Junebug Boss and Ladybug Boss in the same turn.",
 		image = mod.resourcePath.."img/achievements/redwedding.png",
+		objective = 1,
+		global = global,
+	},
+	DNT_DoubleEdgedSword = modApi.achievements:add{ --Check In Weapon
+		id = "DNT_DoubleEdgedSword",
+		name = "Double Edged Sword",
+		tooltip = "Have the Ice Crawler Leader hit 3 enemies in a single attack",
+		image = mod.resourcePath.."img/achievements/doubleedgedsword.png",
+		secret = true,
 		objective = 1,
 		global = global,
 	},

@@ -143,6 +143,7 @@ function DNT_IceCrawlerAtk1:GetSkillEffect(p1,p2)
 	local dir = GetDirection(p2-p1)
 	local backdir = GetDirection(p1-p2)
 	local damage = nil
+	local DNT_DES_Count = 0 --achievement
 
 	local targets = {}
 	local curr = nil
@@ -191,6 +192,7 @@ function DNT_IceCrawlerAtk1:GetSkillEffect(p1,p2)
 		local tpawn = Board:GetPawn(target)
 		local burrower = false
 		if tpawn and _G[tpawn:GetType()].Burrows then burrower = true end
+		if tpawn and tpawn:GetTeam() == TEAM_ENEMY then DNT_DES_Count = DNT_DES_Count + 1 end
 
 		damage = SpaceDamage(target,currentDamage)
 		if Board:IsBlocked(target,PATH_PROJECTILE) and not Board:IsFrozen(target) and not burrower then -- do not freeze frozen things again or burrowers (they burrow anyway with damage)
@@ -206,6 +208,8 @@ function DNT_IceCrawlerAtk1:GetSkillEffect(p1,p2)
 				for i = -1, 2, 2 do
 					local currdir = (dir+i)%4
 					local curr = DIR_VECTORS[currdir] + target
+					local tpawn = Board:GetPawn(curr)
+					if tpawn and tpawn:GetTeam() == TEAM_ENEMY then DNT_DES_Count = DNT_DES_Count + 1 end
 					damage = SpaceDamage(curr,currentDamage)
 					damage.sAnimation = "chillthrower1_"..currdir
 					-- damage.sSound = self.SoundBase.."/attack"
@@ -233,6 +237,10 @@ function DNT_IceCrawlerAtk1:GetSkillEffect(p1,p2)
 		ret:AddQueuedDamage(selfdamage)
 	end
 
+	--Achievement Check
+	if DNT_DES_Count >= 3 and Board:GetPawn(p1):GetType() == "DNT_IceCrawlerBoss" then
+		ret:AddQueuedScript('DNT_VextraChevio("DNT_DoubleEdgedSword")')
+	end
 	return ret
 end
 
