@@ -59,6 +59,14 @@ local achievements = {
 		objective = 1,
 		global = global,
 	},
+	DNT_MissionImpossible = modApi.achievements:add{
+		id = "DNT_MissionImpossible",
+		name = "Mission Impossible",
+		tooltip = "Finish 4 Islands with the original \"Vextra Only\" enemy and boss list",
+		image = mod.resourcePath.."img/achievements/missionimpossible.png",
+		objective = 1,
+		global = global,
+	},
 	--modApi.achievements:reset("Djinn_NAH_Tatu_Vextra", "DNT_Zoologist")
 	DNT_Zoologist = modApi.achievements:add{
 		id = "DNT_Zoologist",
@@ -256,6 +264,60 @@ local function Hook_MissionStart(mission)
 	end
 end
 
+local function HOOK_PostStartGame()
+	if not achievements.DNT_MissionImpossible:isComplete() then
+		GAME.DNT_MI_Count = 0
+	end
+end
+
+local function EVENT_OnIslandLeft(island) --This event doesn't trigger after island 4
+	if not achievements.DNT_MissionImpossible:isComplete() then
+		GAME.DNT_MI_Count = GAME.DNT_MI_Count + 1
+	end
+end
+
+local function groupIsValid(given,expected)
+	for k, v in pairs(given) do
+		if not expected[v] then return false end --Unexpected enemy
+		expected[v] = false
+	end
+	for k, v in pairs(expected) do
+		if v then return false end --Enemy Not Found
+	end
+	return true
+end
+--GAME.DNT_MI_Count = 4
+local function HOOK_MissionEnd(mission,ret)
+	if not achievements.DNT_MissionImpossible:isComplete() then
+		if GAME.DNT_MI_Count < 3 or not mission.BossMission then return end --Trigger at end of last boss mission on final island
+		local islands = {"archive","rst","pinnacle","detritus"} --Doesn't work with Merida ):
+		for _, island in pairs(islands) do --All Islands Have "Vextra Only"
+			local islandComposite = easyEdit.islandComposite:get(island)
+			local enemyList = easyEdit.enemyList:get(islandComposite.enemyList)
+			local bossList = easyEdit.enemyList:get(islandComposite.bossList)
+			if enemyList._id ~= "Vextra Only" or bossList._id ~= "Vextra Only" then return end --Only checks the name, testing
+		end
+		--Vextra Only is Unedited
+		local coreEnemies = {DNT_Mantis=true,DNT_Antlion=true,DNT_Silkworm=true,DNT_Stinkbug=true,DNT_Fly=true}
+		local uniqueEnemies = {DNT_IceCrawler=true,DNT_Thunderbug=true,DNT_Dragonfly=true,DNT_Pillbug=true,DNT_Termites=true,DNT_Anthill=true,DNT_Cockroach=true}
+		--Don't care about bots
+		local leaderEnemies = {DNT_Acid=true,DNT_Reactive=true,DNT_Haste=true,DNT_Nurse=true,DNT_Winter=true}
+		local bossEnemies = {Mission_AnthillBoss=true,Mission_FlyBoss=true,Mission_JunebugBoss=true,Mission_MantisBoss=true,Mission_ThunderbugBoss=true,
+												Mission_TermitesBoss=true,Mission_StinkbugBoss=true,Mission_SilkwormBoss=true,Mission_CockroachBoss=true,
+												Mission_PillbugBoss=true,Mission_AntlionBoss=true,Mission_IceCrawlerBoss=true,Mission_DragonflyBoss=true}
+
+		local enemies = easyEdit.enemyList:get("Vextra Only").enemies
+		local bosses = easyEdit.bossList:get("Vextra Only").Bosses
+
+		if not groupIsValid(enemies.Core,coreEnemies) then return end
+		if not groupIsValid(enemies.Unique,uniqueEnemies) then return end
+		if not groupIsValid(enemies.Leaders,leaderEnemies) then return end
+		if not groupIsValid(bosses,bossEnemies) then return end
+
+		DNT_VextraChevio("DNT_MissionImpossible")
+	end
+end
+
 -- AddHooks
 local function EVENT_onModsLoaded()
 	modApi:addMissionUpdateHook(HOOK_MissionUpdate)
@@ -268,6 +330,16 @@ local function EVENT_onModsLoaded()
 
 	modApi:addNextTurnHook(HOOK_NextTurn)
 	DNT_Vextra_ModApiExt:addPawnKilledHook(HOOK_PawnKilled)
+
+	modApi:addPostStartGameHook(HOOK_PostStartGame)
+	modApi:addMissionEndHook(HOOK_MissionEnd)
 end
 
 modApi.events.onModsLoaded:subscribe(EVENT_onModsLoaded)
+modApi.events.onIslandLeft:subscribe(EVENT_OnIslandLeft)
+
+--Mission Impossible Testing:
+-- for k,v in pairs(easyEdit.islandComposite:get("archive")) do LOG(k) end
+--LOG(easyEdit.islandComposite:get("archive")["enemyList"]) --> "Vextra Only"
+--for k,v in pairs(easyEdit.enemyList:get(easyEdit.islandComposite:get("archive")["enemyList"])) do LOG(k); LOG(v) end
+--LOG(easyEdit.enemyList:get(easyEdit.islandComposite:get("archive")["enemyList"]))
