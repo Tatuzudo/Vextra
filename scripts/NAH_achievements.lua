@@ -67,6 +67,14 @@ local achievements = {
 		objective = 1,
 		global = global,
 	},
+	DNT_ShockAbsorber = modApi.achievements:add{
+		id = "DNT_ShockAbsorber",
+		name = "Shock Absorber",
+		tooltip = "Leave Reactive Psion alive from the beginning to the end of a mission without losing grid power.",
+		image = mod.resourcePath.."img/achievements/placeholder.png",
+		objective = 1,
+		global = global,
+	},
 	DNT_MissionImpossible = modApi.achievements:add{
 		id = "DNT_MissionImpossible",
 		name = "Mission Impossible",
@@ -219,11 +227,20 @@ local function HOOK_PawnKilled(mission,pawn)
 	end
 end
 
+--LOG(GetCurrentMission().DNT_Reactive1)
+--LOG(GetCurrentMission().DNT_SA_ReactivePsion)
+--LOG(GetCurrentMission().DNT_SA_GridPower)
 local function HOOK_NextTurn(mission)
 	if isMissionBoard() then
 		--Red Wedding New Turn
 		if not achievements.DNT_RedWedding:isComplete() then
 			mission.RW_SameTurn = false
+		end
+		--Shock Absorber
+		if not achievements.DNT_ShockAbsorber:isComplete() then
+			if Board:GetTurn() == 1 and Game:GetTeamTurn() == TEAM_PLAYER and mission.DNT_Reactive1 then
+				mission.DNT_SA_ReactivePsion = true
+			end
 		end
 	end
 end
@@ -269,6 +286,11 @@ local function Hook_MissionStart(mission)
 				achievements.DNT_Zoologist:addProgress({count = 1}) --Adds automatically even though I use an equal sign
 			end
 		end
+		--Shock Absorber
+		if not achievements.DNT_ShockAbsorber:isComplete() then
+			mission.DNT_SA_ReactivePsion = mission.DNT_SA_ReactivePsion or false
+			mission.DNT_SA_GridPower = mission.DNT_SA_GridPower or Game:GetPower():GetValue()
+		end
 	end
 end
 
@@ -294,8 +316,18 @@ local function groupIsValid(given,expected)
 	end
 	return true
 end
---GAME.DNT_MI_Count = 4
+
+
 local function HOOK_MissionEnd(mission,ret)
+	if not achievements.DNT_ShockAbsorber:isComplete() then
+		mission.DNT_SA_GridPower = mission.DNT_SA_GridPower or 0
+		if mission.DNT_SA_ReactivePsion and mission.DNT_Reactive1 and mission.DNT_SA_GridPower <= Game:GetPower():GetValue() then
+			DNT_VextraChevio("DNT_ShockAbsorber")
+		end
+	end
+
+	--THIS HAS TO BE AT THE BOTTOM IT HAS RETURN STATEMENTS!!!!!!!!!!!
+	--I could change it if neccesary though.
 	if not achievements.DNT_MissionImpossible:isComplete() then
 		if GAME.DNT_MI_Count < 3 or not mission.BossMission then return end --Trigger at end of last boss mission on final island
 		local islands = {"archive","rst","pinnacle","detritus"} --Doesn't work with Merida ):
