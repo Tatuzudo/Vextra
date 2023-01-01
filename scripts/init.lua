@@ -56,7 +56,7 @@ local function init(self)
 	self.libs = {}
 	self.libs.modApiExt = modapiext
 	DNT_Vextra_ModApiExt = self.libs.modApiExt --I'm assuming this is safe
-	require(self.scriptPath.."NAH_achievements") --Has Important Global Functions
+	--require(self.scriptPath.."NAH_achievements") --Has Important Global Functions
 	require(self.scriptPath.."achievements")
 	require(self.scriptPath.."enemies")
 	require(self.scriptPath.."enemyList")
