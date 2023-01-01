@@ -422,7 +422,7 @@ end
 local function HOOK_PawnPositionChanged(mission, pawn, oldPosition)
 	if isMissionBoard() then
 		-- Fartality
-		if not achievements.DNT_Fartality:isComplete() then
+		if not achievements.DNT_Fartality:isComplete() and pawn:GetType():find("^DNT_Stinkbug") then
 			local currPos = pawn:GetSpace()
 			local anim = IsPassiveSkill("Electric_Smoke") and "DNT_FartFrontDark" or "DNT_FartFront"
 			modApi:scheduleHook(500, function()
