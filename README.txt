@@ -1,8 +1,8 @@
 VEXTRA
-An Into the Breach Vek Mod By: Djinn, NamesAreHard, and Tatu
-vBETA.0.3.0
+An Into the Breach Vek Mod By: Djinn, NamesAreHard, Tatu, and Hedera
+v1.0.0
 
-We've heard your cries for more Vek, and we've delivered. Introducing "Vextra", the largest Vek mod created to date. With 5 new core Vek and 7 new unique Vek, and one custom boss, Vextra provides a new opportunity. Vextra can be merged with the vanilla Vek, but Vextra also provides the same variety as Vanilla did (pre-AE) and can be played standalone, for a fully unique experience.
+We've heard your cries for more Vek, and we've delivered. Introducing "Vextra", the largest Vek mod created to date. With a full team of 4 modders, we've added 5 new core Vek, 7 new unique Vek, 5 new psions, and a custom boss. With this, Vextra provides a new opportunity. Vextra can be merged with the vanilla Vek, but also provides the same variety as Vanilla did (pre-AE) and can be played standalone, for a fully unique experience.
 
 Instructions for Use:
 Modloader:
@@ -12,7 +12,7 @@ Once installing the modloader, extract "Vextra" into your mods folder located in
 Easy Edit:
 Easy Edit is embeded into the modloader now, so make sure you have it on in the Mod Loader Extensions (it should tell you if you don't)
 Using the Mod In Game:
-This information is written out by hand while easyEdit was still becoming a thing. Read this wiki for in-depth information, or this snippet for simple information
+This information was written out by hand while easyEdit was still becoming a thing. Read this wiki for in-depth information, or this snippet for simple information
 https://github.com/itb-community/ITB-Easy-Edit/wiki/EasyEdit
 This mod utilizes Easy Edit (by Lemonymous) to get the Vek in game. There's three main tabs you'll want to use located with the Mod Content Menu.
 Enemy Lists Editor:
@@ -28,8 +28,8 @@ Currently for the finale, you have to make it yourself. In the enemy list editor
 
 
 How to Report Bugs or Issues:
-1. Preferred Method: Add an Issue to the github, anyone can submit issues. Put your discord name in the post if it does not match with your github name. link will go here
-2. Report in the Vextras Thread on ItB or @NamesAreHard and @Tatu in the #modding-discussion channel
+1. Add an Issue to the github, anyone can submit issues. Put your discord name in the post if it does not match with your github name. https://github.com/Tatuzudo/Vextra/issues
+2. Report in the #Vextras Thread on the ItB Discord or @NamesAreHard and @Tatu in the #modding-discussion channel
 
 
 List of New Vek:
@@ -51,7 +51,7 @@ Boss:
 All of the previously mentioned Vek have boss variants with varying new characteristics
 Junebug: I'll let you discover it yourself (:
 
-Secret Squad Incoming! sssshhhhhhh....
+Unlock the Secret Squad by completing 3 specific achievements
 
 CREDITS:
 Art By: Djinn and Hedera
@@ -77,7 +77,8 @@ EndMark_3
 snakebag
 MasterSpider5
 Andrei.
-Could be YOU!
+Thanks to all playtesters who gave positive feedback throughout the project and helped find and destroy those nasty little bugs
 
 Ultra Special Thanks:
 Lemonymous: Provided insane help for the cockroach when it was looking grim, and like a million other things
+Thanks a ton

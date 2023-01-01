@@ -65,3 +65,18 @@ Fixed a bug where upon rebooting the game the island layouts would be the same
 Added the Winter Psion: Freezes the starting tile of all mechs at the end of each turn
 Edited the stinkbugs stink to show up in front of and behind pawns
 Changed the conditions that need to be met for the fly to steal life.
+
+Version 1.0.0
+Official Release! :party:
+Updated the Odds of Ice Spawning for Ice Crawler Leader
+	Building: 50% --> 30%
+	Other Tile: 30% --> 25%
+Fixed a name change for Isopod's tip
+Merged the Secret Squad in to the main branch
+	A Vextra Secret Squad now exists, complete the achievements to unlock it
+	(may there be a second one in the future?)
+Achievements!
+Tons of achievements to unlock of various difficulties and objectives
+Some Updates to Winter Psion to make its effects more readable
+Changes to Acid Psion
+Fixed a bug where Vextra Bosses wouldn't show up on the fourth island in Unfair Mode

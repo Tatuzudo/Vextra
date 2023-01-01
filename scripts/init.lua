@@ -56,7 +56,6 @@ local function init(self)
 	self.libs = {}
 	self.libs.modApiExt = modapiext
 	DNT_Vextra_ModApiExt = self.libs.modApiExt --I'm assuming this is safe
-	--require(self.scriptPath.."NAH_achievements") --Has Important Global Functions
 	require(self.scriptPath.."achievements")
 	require(self.scriptPath.."enemies")
 	require(self.scriptPath.."enemyList")
@@ -66,16 +65,12 @@ local function init(self)
 	require(self.scriptPath.."spawnerfix")
 	--Squad
 	require(self.scriptPath.."squad/init")
-	-- require(self.scriptPath.."modApiExt_fix")
 
 	--Scripts
 	for _, table in ipairs(DNT_Vextra_VekList) do
 		local name = table[1]
 		require(self.scriptPath .. "enemies/" .. string.lower(name))
 	end
-
-	--Weapon Texts (probably not for this project
-
 end
 
 
@@ -131,7 +126,7 @@ return {
 	description = "VEK + EXTRA",
 	modApiVersion = "2.8.0",
 	gameVersion = "1.2.83",
-  version = "0.3.0", --BETA
+  version = "1.0.0",
 	requirements = { "kf_ModUtils" },
 	dependencies = {
 		modApiExt = "1.17",
