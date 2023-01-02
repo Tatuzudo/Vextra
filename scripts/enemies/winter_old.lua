@@ -261,9 +261,6 @@ local function DNT_Sound_Buff()
 	Game:TriggerSound("/ui/map/map_open")
 end
 
--- point hash
-local function DNT_hash(point) return point.x + point.y*10 end
-
 -- psion spawn
 local HOOK_pawnTracked = function(mission, pawn)
 	if isMissionBoard() then
@@ -286,7 +283,7 @@ local HOOK_pawnTracked = function(mission, pawn)
 				if Board:GetTurn() ~= 0 then
 					DNT_Sound_Buff()
 					Board:AddBurst(pawn:GetSpace(),BURST_UP,DIR_NONE)
-					mission[DNT_PSION][DNT_hash(pawn:GetSpace())] = pawn:GetSpace()
+					-- mission[DNT_PSION][#mission[DNT_PSION]+1] = pawn:GetSpace()
 				end
 			end
 		end)
@@ -373,16 +370,16 @@ local function HOOK_nextTurn(mission)
 			if mission[DNT_PSION] then
 				if Game:GetTeamTurn() == TEAM_ENEMY then
 					-- freeze everything
-					if Board:GetTurn() > 0 then
+					if #mission[DNT_PSION] > 0 then
 						Game:TriggerSound("/props/snow_storm")
 						local effect = SkillEffect()
-						for i,p in pairs(mission[DNT_PSION]) do
-						-- for i = 1, #mission[DNT_PSION] do
+						for i = 1, #mission[DNT_PSION] do
+							local p = mission[DNT_PSION][i]
 							effect:AddEmitter(p,"DNT_Blizzard")
 						end
 						effect:AddDelay(1)
-						for i,p in pairs(mission[DNT_PSION]) do
-						-- for i = 1, #mission[DNT_PSION] do
+						for i = 1, #mission[DNT_PSION] do
+							local p = mission[DNT_PSION][i]
 							local damage = SpaceDamage(p, 0)
 							damage.iFrozen = EFFECT_CREATE
 							effect:AddDamage(damage)
@@ -392,10 +389,10 @@ local function HOOK_nextTurn(mission)
 						Board:AddEffect(effect)
 						mission[DNT_PSION] = {}
 					end
-					
+				else
 					-- mark spaces
-					local delayTime = math.min(Board:GetTurn()*3000,3000)
-					modApi:scheduleHook(delayTime, function()
+					-- local delayTime = math.min(Board:GetTurn()*3000,3000)
+					-- modApi:scheduleHook(delayTime, function()
 						DNT_Sound_Buff()
 						local pawnList = extract_table(Board:GetPawns(TEAM_ANY))
 						for i = 1, #pawnList do
@@ -406,15 +403,16 @@ local function HOOK_nextTurn(mission)
 								if mission.LiveEnvironment and mission.LiveEnvironment.Belts then
 									isbelt = DNT_Contains(mission.LiveEnvironment.Belts, p)
 								end
-								if Board:IsValid(p) and not Board:IsEnvironmentDanger(p) and not isbelt and not currPawn:IsFrozen() then
-									mission[DNT_PSION][DNT_hash(p)] = p
+								if Board:IsValid(p) and not Board:IsEnvironmentDanger(p) and not isbelt then-- and not Board:IsTerrain(p,0) then
+									local p = currPawn:GetSpace()
+									mission[DNT_PSION][#mission[DNT_PSION]+1] = p
 									Board:Ping(p,GL_Color(0,255,0))
 									Board:AddBurst(p,BURST_UP,DIR_NONE)
 									trait:update(p)
 								end
 							end
 						end
-					end)
+					-- end)
 				end
 			end
 		end
@@ -422,14 +420,16 @@ local function HOOK_nextTurn(mission)
 end
 
 local HOOK_MissionEnd = function(mission)
-	if mission[DNT_PSION] then
+	if mission[DNT_PSION] and #mission[DNT_PSION] > 0 then
 		Game:TriggerSound("/props/snow_storm")
 		local effect = SkillEffect()
-		for i,p in pairs(mission[DNT_PSION]) do
+		for i = 1, #mission[DNT_PSION] do
+			local p = mission[DNT_PSION][i]
 			effect:AddEmitter(p,"DNT_Blizzard")
 		end
 		effect:AddDelay(1)
-		for i,p in pairs(mission[DNT_PSION]) do
+		for i = 1, #mission[DNT_PSION] do
+			local p = mission[DNT_PSION][i]
 			if Board:GetPawn(p) and Board:GetPawn(p):GetTeam() == TEAM_ENEMY then
 				effect:AddAnimation(p,"IceBlock_Death")
 				effect:AddSound("/props/ice_break")
@@ -448,15 +448,13 @@ end
 -- update marks
 TILE_TOOLTIPS.DNT_psionic_blizzard = {"Psionic Blizzard", "The Winter Psion will freeze this tile at the end of the turn."}
 local HOOK_MissionUpdate = function(mission)
-	if mission and mission[DNT_PSION] then
-		-- LOG(mission[DNT_PSION][33])
-		for i,p in pairs(mission[DNT_PSION]) do
-			if Board:IsEnvironmentDanger(p) then
-				mission[DNT_PSION][i] = nil
-			else
-				Board:MarkSpaceImage(p,"combat/tile_icon/tile_snowstorm.png",GL_Color(0, 180, 255 ,0.75))
-				Board:MarkSpaceDesc(p,"DNT_psionic_blizzard")
-			end
+	if mission and mission[DNT_PSION] and #mission[DNT_PSION] > 0 then
+		for i = 1, #mission[DNT_PSION] do
+			local p = mission[DNT_PSION][i]
+			-- if not Board:IsEnvironmentDanger(p) then
+			Board:MarkSpaceImage(p,"combat/tile_icon/tile_snowstorm.png",GL_Color(0, 180, 255 ,0.75))
+			Board:MarkSpaceDesc(p,"DNT_psionic_blizzard")
+			-- end
 		end
 	end
 end
