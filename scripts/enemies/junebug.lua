@@ -318,11 +318,24 @@ local function UpdateAngryBoi(mission)
 	)
 end
 
+--Hook to fix a bug where the junebug corpse would show up when retreating/evacuating
+--Same as cockroach
+local function HOOK_MissionEnd(mission,effect)
+	local enemies = extract_table(Board:GetPawns(TEAM_ENEMY))
+	for _, id in pairs(enemies) do
+		local pawn = Board:GetPawn(id)
+		if pawn:GetType():find("^DNT_Junebug") then
+			pawn:SetCorpse(false)
+		end
+	end
+end
+
 function this:load(DNT_Vextra_ModApiExt)
 	local options = mod_loader.currentModContent[mod.id].options
 	DNT_Vextra_ModApiExt:addPawnKilledHook(PawnKilled)
 	DNT_Vextra_ModApiExt:addGameLoadedHook(UpdateAngryBoi)
 	DNT_Vextra_ModApiExt:addResetTurnHook(UpdateAngryBoi)
+	modApi:addMissionEndHook(HOOK_MissionEnd)
 end
 
 return this
