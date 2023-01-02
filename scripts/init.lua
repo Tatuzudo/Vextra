@@ -1,9 +1,3 @@
---[[
-local function scriptPath()
-	return debug.getinfo(2, "S").source:sub(2):match("(.*[/\\])")
-end
-require(scriptPath().."easyEdit/easyEdit")
-]]--
 local function init(self)
 	--init variables
 	local mod = mod_loader.mods[modApi.currentMod]

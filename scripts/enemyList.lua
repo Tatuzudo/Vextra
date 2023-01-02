@@ -21,8 +21,6 @@ enemyListCombined:copy(enemyListVanilla)
 for _, table in ipairs(DNT_Vextra_VekList) do
 	local name = "DNT_"..table[1]
 	local category = table[3]
-	--LOG(name)
-	--LOG(category)
 	if category ~= "None" then
 		enemyListSolo:addEnemy(name,category)
 		enemyListCombined:addEnemy(name,category)
