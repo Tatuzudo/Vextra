@@ -372,6 +372,7 @@ DNT_StinkbugBoss = Pawn:new
 		DefaultTeam = TEAM_ENEMY,
 		ImpactMaterial = IMPACT_INSECT,
 		Tier = TIER_ALPHA,
+		Massive = true
 	}
 AddPawn("DNT_StinkbugBoss")
 
