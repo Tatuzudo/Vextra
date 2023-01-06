@@ -344,6 +344,7 @@ DNT_AnthillBoss = Pawn:new
 		DefaultTeam = TEAM_ENEMY,
 		ImpactMaterial = IMPACT_INSECT,
 		Tier = TIER_Boss,
+		Massive = true
 	}
 AddPawn("DNT_AnthillBoss")
 

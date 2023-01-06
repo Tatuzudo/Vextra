@@ -81,6 +81,30 @@ tips:Add{
 	text = "The Junebug Boss has a corpse and a companion ladybug. If the ladybug dies, its weapon will be upgraded, and if the junebug dies, the ladybug will try to revive it."
 }
 
+tips:Add{
+	id = "Tip_DNT_Acid",
+	title = "Corrosive Psion",
+	text = "The Corrosive Psion removes A.C.I.D. from other vek every turn and causes their attacks to apply A.C.I.D."
+}
+
+tips:Add{
+	id = "Tip_DNT_Haste",
+	title = "Sonic Psion",
+	text = "The Haste Psion gives a +2 bonus movement to all Vek at the start of every turn."
+}
+
+tips:Add{
+	id = "Tip_DNT_Nurse",
+	title = "Nurse Psion",
+	text = "The Nurse Psion makes all the other Vek heal instead of damaging their allies with attacks."
+}
+
+tips:Add{
+	id = "Tip_DNT_Winter",
+	title = "Winter Psion",
+	text = "The Winter Psion freezes the starting tile of all mechs at the end of each turn."
+}
+
 --Put the hooks in here for pawn creation
 local this = {}
 

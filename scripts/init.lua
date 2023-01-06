@@ -28,11 +28,11 @@ local function init(self)
 		{"Fly",false,"Core",false},
 		{"Ladybug",true,"None",true},
 		{"Junebug",true,"None",true},
-		{"Haste",false,"Leaders",false},
-		{"Acid",false,"Leaders",false},
-		{"Reactive",false,"Leaders",false},
-		{"Nurse",false,"Leaders",false},
-		{"Winter",false,"Leaders",false},
+		{"Haste",false,"Leaders",true},
+		{"Acid",false,"Leaders",true},
+		{"Reactive",false,"Leaders",true},
+		{"Nurse",false,"Leaders",true},
+		{"Winter",false,"Leaders",true},
 	}
 
 	--[[ModApiExt
