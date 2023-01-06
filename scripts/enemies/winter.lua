@@ -126,7 +126,7 @@ DNT_Blizzard = Emitter:new{
 
 DNT_Winter_Passive = PassiveSkill:new{
 	Name = "Psionic Blizzard",
-	Description = "Freeze the starting tile of all mechs at the end of each turn.",
+	Description = "Freeze the starting tile of all unfrozen mechs at the end of each turn.",
 	Class = "Enemy",
 	Icon = "weapons/prime_lightning.png",
 	Passive = "DNT_Winter_Passive",
@@ -247,7 +247,7 @@ trait:add{
 	icon_glow = "img/combat/icons/icon_ice_glow.png",
 	icon_offset = Point(2,10),
 	desc_title = "Psionic Blizzard",
-	desc_text = "The Winter Psion will freeze the starting tile of all mechs at the end of each turn.",
+	desc_text = "The Winter Psion will freeze the starting tile of all unfrozen mechs at the end of each turn.",
 }
 
 ------------------------

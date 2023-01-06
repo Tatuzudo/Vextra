@@ -102,7 +102,7 @@ tips:Add{
 tips:Add{
 	id = "Tip_DNT_Winter",
 	title = "Winter Psion",
-	text = "The Winter Psion freezes the starting tile of all mechs at the end of each turn."
+	text = "The Winter Psion marks the starting tile of all unfrozen mechs and freezes anything standing on it at the END of each turn, after all the Vek attack."
 }
 
 --Put the hooks in here for pawn creation
