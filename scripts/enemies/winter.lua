@@ -275,9 +275,17 @@ local HOOK_pawnTracked = function(mission, pawn)
 				for i = 1, #pawnList do
 					local currPawn = Board:GetPawn(pawnList[i])
 					if DNT_PsionTarget(currPawn) then
-						trait:update(currPawn:GetSpace())
-						Board:Ping(currPawn:GetSpace(),GL_Color(0,255,0))
-						Board:AddBurst(currPawn:GetSpace(),BURST_UP,DIR_NONE)
+						local p = currPawn:GetSpace()
+						local isbelt = false
+						if mission.LiveEnvironment and mission.LiveEnvironment.Belts then
+							isbelt = DNT_Contains(mission.LiveEnvironment.Belts, p)
+						end
+						if Board:IsValid(p) and not Board:IsEnvironmentDanger(p) and not isbelt and not currPawn:IsFrozen() then
+							mission[DNT_PSION][DNT_hash(p)] = p
+							Board:Ping(p,GL_Color(0,255,0))
+							Board:AddBurst(p,BURST_UP,DIR_NONE)
+							trait:update(p)
+						end
 					end
 				end
 			elseif DNT_PsionTarget(pawn) then
