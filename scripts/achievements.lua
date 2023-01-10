@@ -315,8 +315,8 @@ local function Hook_MissionEnd(mission)
 	end
 
 	-- Sub Zero
-	if mission["DNT_Winter1"] and #mission["DNT_Winter1"] > 0 then
-		for i = 1, #mission["DNT_Winter1"] do
+	if mission["DNT_Winter1"] then
+		for i,p in pairs(mission["DNT_Winter1"]) do
 			local p = mission["DNT_Winter1"][i]
 			local pawn = Board:GetPawn(p)
 			if pawn and pawn:GetTeam() == TEAM_ENEMY and not pawn:IsFrozen() then
@@ -485,8 +485,8 @@ local function HOOK_nextTurn(mission)
 	if isMissionBoard() then
 		-- Sub Zero
 		if Game:GetTeamTurn() == TEAM_ENEMY then
-			if mission["DNT_Winter1"] and #mission["DNT_Winter1"] > 0 then
-				for i = 1, #mission["DNT_Winter1"] do
+			if mission["DNT_Winter1"] then
+				for i,p in pairs(mission["DNT_Winter1"]) do
 					local p = mission["DNT_Winter1"][i]
 					local pawn = Board:GetPawn(p)
 					if pawn and pawn:GetTeam() == TEAM_ENEMY and not pawn:IsFrozen() then
