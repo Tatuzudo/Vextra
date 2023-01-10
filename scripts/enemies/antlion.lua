@@ -98,7 +98,9 @@ function DNT_AntlionAtk1:GetSkillEffect(p1,p2)
 	for _, target in pairs(targets) do
 		--crack
 		local damage = SpaceDamage(target,0)
-		damage.iCrack = self.Crack
+		if Board:GetTerrain(target) ~= TERRAIN_ICE then
+			damage.iCrack = self.Crack
+		end
 		ret:AddDamage(damage)
 		ret:AddBurst(target,"Emitter_Crack_Start2",DIR_NONE)
 		ret:AddBounce(target,2)
