@@ -136,8 +136,8 @@ DNT_StinkbugAtk2 = DNT_StinkbugAtk1:new {
 
 DNT_StinkbugAtkBoss = DNT_StinkbugAtk1:new {
 	Name = "Abhorrent Spray",
-	Description = "Prepares to attack while surrounding itself with long short-lived stink clouds.",
-	Damage = 4,
+	Description = "Prepares to attack while surrounding itself with lines of short-lived stink clouds.",
+	Damage = 3,
 	FartRange = 8,
 	CustomTipImage = "DNT_StinkbugAtkBoss_Tip",
 }
@@ -363,7 +363,7 @@ AddPawn("DNT_Stinkbug2")
 DNT_StinkbugBoss = Pawn:new
 	{
 		Name = "Stinkbug Leader",
-		Health = 6,
+		Health = 5,
 		MoveSpeed = 3,
 		SkillList = {"DNT_StinkbugAtkBoss"},
 		Image = "DNT_stinkbug", --Image = "DNT_stinkbug",
