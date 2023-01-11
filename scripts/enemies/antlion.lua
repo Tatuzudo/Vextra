@@ -98,7 +98,7 @@ function DNT_AntlionAtk1:GetSkillEffect(p1,p2)
 	for _, target in pairs(targets) do
 		--crack
 		local damage = SpaceDamage(target,0)
-		if Board:GetTerrain(target) ~= TERRAIN_ICE then
+		if Board:GetTerrain(target) ~= TERRAIN_ICE or (Board:GetTerrain(target) == TERRAIN_ICE and Board:GetHealth(target) >= 2)then
 			damage.iCrack = self.Crack
 		end
 		ret:AddDamage(damage)
