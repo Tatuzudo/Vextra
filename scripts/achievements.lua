@@ -566,8 +566,6 @@ local function EVENT_onModsLoaded()
 
 	-- Misc.
 	modApi:addNextTurnHook(HOOK_nextTurn)
-
-	--Check for validity at mod load and game start, since it resets to false when exiting the game
 end
 
 modApi.events.onModsLoaded:subscribe(EVENT_onModsLoaded)
