@@ -162,9 +162,12 @@ local achievements = {
 	DNT_MissionImpossible = modApi.achievements:add{
 		id = "DNT_MissionImpossible",
 		name = "Mission Impossible",
-		tooltip = "Finish 4 Islands with the original \"Vextra Only\" enemy and boss list",
+		tooltip = "Finish 4 Islands with the original \"Vextra Only\" enemy and boss list\nValid Run: $valid\nIslands Finished: $islands",
 		image = mod.resourcePath.."img/achievements/missionimpossible.png",
-		objective = 1,
+		objective = {
+			islands = 4,
+			valid = true,
+		},
 		global = global,
 	},
 	DNT_SecretSquad = modApi.achievements:add{
@@ -329,44 +332,20 @@ local function Hook_MissionEnd(mission)
 		end
 	end
 
+	--Mission Impossible
+	if not achievements.DNT_MissionImpossible:isComplete() then
+		local progress = achievements.DNT_MissionImpossible:getProgress()
+		if mission.BossMission and progress.valid and progress.islands == 3 then --Third island boss and valid
+			achievements.DNT_MissionImpossible:trigger()
+		end
+	end
+
 	--Shock Absorber
 	if not achievements.DNT_ShockAbsorber:isComplete() then
 		mission.DNT_SA_GridPower = mission.DNT_SA_GridPower or 0
 		if mission.DNT_SA_ReactivePsion and mission.DNT_Reactive1 and mission.DNT_SA_GridPower <= Game:GetPower():GetValue() then
 			DNT_VextraChevio("DNT_ShockAbsorber")
 		end
-	end
-
-	--Mission Impossible
-	--THIS HAS TO BE AT THE BOTTOM IT HAS RETURN STATEMENTS!!!!!!!!!!!
-	--I could change it if neccesary though.
-	if not achievements.DNT_MissionImpossible:isComplete() then
-		if GAME.DNT_MI_Count < 3 or not mission.BossMission then return end --Trigger at end of last boss mission on final island
-		local islands = {"archive","rst","pinnacle","detritus"} --Doesn't work with Merida ):
-		for _, island in pairs(islands) do --All Islands Have "Vextra Only"
-			local islandComposite = easyEdit.islandComposite:get(island)
-			local enemyList = easyEdit.enemyList:get(islandComposite.enemyList)
-			local bossList = easyEdit.enemyList:get(islandComposite.bossList)
-			if enemyList._id ~= "Vextra Only" or bossList._id ~= "Vextra Only" then return end --Only checks the name, testing
-		end
-		--Vextra Only is Unedited
-		local coreEnemies = {DNT_Mantis=true,DNT_Antlion=true,DNT_Silkworm=true,DNT_Stinkbug=true,DNT_Fly=true}
-		local uniqueEnemies = {DNT_IceCrawler=true,DNT_Thunderbug=true,DNT_Dragonfly=true,DNT_Pillbug=true,DNT_Termites=true,DNT_Anthill=true,DNT_Cockroach=true}
-		--Don't care about bots
-		local leaderEnemies = {DNT_Acid=true,DNT_Reactive=true,DNT_Haste=true,DNT_Nurse=true,DNT_Winter=true}
-		local bossEnemies = {Mission_AnthillBoss=true,Mission_FlyBoss=true,Mission_JunebugBoss=true,Mission_MantisBoss=true,Mission_ThunderbugBoss=true,
-												Mission_TermitesBoss=true,Mission_StinkbugBoss=true,Mission_SilkwormBoss=true,Mission_CockroachBoss=true,
-												Mission_PillbugBoss=true,Mission_AntlionBoss=true,Mission_IceCrawlerBoss=true,Mission_DragonflyBoss=true}
-
-		local enemies = easyEdit.enemyList:get("Vextra Only").enemies
-		local bosses = easyEdit.bossList:get("Vextra Only").Bosses
-
-		if not groupIsValid(enemies.Core,coreEnemies) then return end
-		if not groupIsValid(enemies.Unique,uniqueEnemies) then return end
-		if not groupIsValid(enemies.Leaders,leaderEnemies) then return end
-		if not groupIsValid(bosses,bossEnemies) then return end
-
-		DNT_VextraChevio("DNT_MissionImpossible")
 	end
 end
 
@@ -522,10 +501,38 @@ local function DNT_onIslandLeft(island)
 	if not achievements.DNT_SubZero:isComplete() then
 		achievements.DNT_SubZero:addProgress(-achievements.DNT_SubZero:getProgress())
 	end
-	--Mission Impossible One More Mission Completed
-	if not achievements.DNT_MissionImpossible:isComplete() then
-		GAME.DNT_MI_Count = GAME.DNT_MI_Count + 1
+	--Mission Impossible Islands
+	local progress = achievements.DNT_MissionImpossible:getProgress()
+	if progress.valid then
+		achievements.DNT_MissionImpossible:addProgress({islands=1})
 	end
+end
+
+local function DNT_MI_IsValid()
+	local islands = {"archive","rst","pinnacle","detritus"} --Doesn't work with Merida ):
+	for _, island in pairs(islands) do --All Islands Have "Vextra Only"
+		local islandComposite = easyEdit.islandComposite:get(island)
+		local enemyList = easyEdit.enemyList:get(islandComposite.enemyList)
+		local bossList = easyEdit.enemyList:get(islandComposite.bossList)
+		if enemyList._id ~= "Vextra Only" or bossList._id ~= "Vextra Only" then return false end --Only checks the name, testing
+	end
+	--Vextra Only is Unedited
+	local coreEnemies = {DNT_Mantis=true,DNT_Antlion=true,DNT_Silkworm=true,DNT_Stinkbug=true,DNT_Fly=true}
+	local uniqueEnemies = {DNT_IceCrawler=true,DNT_Thunderbug=true,DNT_Dragonfly=true,DNT_Pillbug=true,DNT_Termites=true,DNT_Anthill=true,DNT_Cockroach=true}
+	--Don't care about bots
+	local leaderEnemies = {DNT_Acid=true,DNT_Reactive=true,DNT_Haste=true,DNT_Nurse=true,DNT_Winter=true}
+	local bossEnemies = {Mission_AnthillBoss=true,Mission_FlyBoss=true,Mission_JunebugBoss=true,Mission_MantisBoss=true,Mission_ThunderbugBoss=true,
+											Mission_TermitesBoss=true,Mission_StinkbugBoss=true,Mission_SilkwormBoss=true,Mission_CockroachBoss=true,
+											Mission_PillbugBoss=true,Mission_AntlionBoss=true,Mission_IceCrawlerBoss=true,Mission_DragonflyBoss=true}
+
+	local enemies = easyEdit.enemyList:get("Vextra Only").enemies
+	local bosses = easyEdit.bossList:get("Vextra Only").Bosses
+
+	if not groupIsValid(enemies.Core,coreEnemies) then return false end
+	if not groupIsValid(enemies.Unique,uniqueEnemies) then return false end
+	if not groupIsValid(enemies.Leaders,leaderEnemies) then return false end
+	if not groupIsValid(bosses,bossEnemies) then return false end
+	return true
 end
 
 local function DNT_GameStart()
@@ -533,9 +540,9 @@ local function DNT_GameStart()
 	if not achievements.DNT_SubZero:isComplete() then
 		achievements.DNT_SubZero:addProgress(-achievements.DNT_SubZero:getProgress())
 	end
-	--Mission Impossible 0 islands completed
+	local progress = achievements.DNT_MissionImpossible:getProgress()
 	if not achievements.DNT_MissionImpossible:isComplete() then
-		GAME.DNT_MI_Count = 0
+		achievements.DNT_MissionImpossible:setProgress({islands=0, valid = DNT_MI_IsValid()})
 	end
 end
 
@@ -559,6 +566,8 @@ local function EVENT_onModsLoaded()
 
 	-- Misc.
 	modApi:addNextTurnHook(HOOK_nextTurn)
+
+	--Check for validity at mod load and game start, since it resets to false when exiting the game
 end
 
 modApi.events.onModsLoaded:subscribe(EVENT_onModsLoaded)
