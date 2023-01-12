@@ -300,17 +300,19 @@ local HOOK_pawnKilled = function(mission, pawn)
 			blockMove:AddDelay(1)
 			Board:AddEffect(blockMove)
 			modApi:scheduleHook(1000, function()
-				local effect = SkillEffect()
-				local pos = pawn:GetSpace()
-				effect:AddAnimation(pos,"ExploRepulse3")
-				effect:AddSound("/weapons/science_repulse")
-				for i = DIR_START, DIR_END do
-					damage = SpaceDamage(pos + DIR_VECTORS[i], 0)
-					damage.iPush = i
-					damage.sAnimation = "airpush_"..i
-					effect:AddDamage(damage)
+				if mission[DNT_PSION] then
+					local effect = SkillEffect()
+					local pos = pawn:GetSpace()
+					effect:AddAnimation(pos,"ExploRepulse3")
+					effect:AddSound("/weapons/science_repulse")
+					for i = DIR_START, DIR_END do
+						damage = SpaceDamage(pos + DIR_VECTORS[i], 0)
+						damage.iPush = i
+						damage.sAnimation = "airpush_"..i
+						effect:AddDamage(damage)
+					end
+					Board:AddEffect(effect)
 				end
-				Board:AddEffect(effect)
 			end)
 		end
 	end
