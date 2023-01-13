@@ -131,9 +131,11 @@ a.DNT_cockroach_revive_beta = a.DNT_cockroachd_beta:new{
 	Lengths = {.15, .15, .15, .15, .15},
 }
 a.DNT_cockroach_revive_alpha = a.DNT_cockroachd_alpha:new{
+	Frames = {5,4,3,2,1},
 	Lengths = {.15, .15, .15, .15, .15},
 }
 a.DNT_cockroach_revive_leader = a.DNT_cockroachd_leader:new{
+	Frames = {5,4,3,2,1},
 	Lengths = {.15, .15, .15, .15, .15},
 }
 
@@ -152,7 +154,7 @@ modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."Boss.png",resourcePath..
 
 DNT_CockroachAtk1 = LineArtillery:new {
 	Name = "Organ Donor",
-	Description = "Damage itself to launch an artillery "
+	Description = "Damage the shooter to launch an artillery "
 				.."attack on two tiles, one tile apart.",
 	Damage = 1,
 	ArtillerySize = 4,
@@ -188,7 +190,7 @@ DNT_CockroachAtk2 = DNT_CockroachAtk1:new {
 
 DNT_CockroachAtkB = DNT_CockroachAtk1:new {
 	Name = "Organ Provider",
-	Description = "Damage itself to launch an artillery "
+	Description = "Damage the shooter to launch an artillery "
 				.."attack on four tiles, centered around one tile.",
 	Damage = 2,
 	ExtraTiles = true,

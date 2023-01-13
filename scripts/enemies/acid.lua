@@ -105,7 +105,7 @@ DNT_Acid_Down = Emitter:new{
 
 DNT_Acid_Passive = PassiveSkill:new{
 	Name = "Caustic Glands",
-	Description = "Remove A.C.I.D. from other vek every turn and cause their attacks to apply A.C.I.D.",
+	Description = "Removes A.C.I.D. from other vek every turn and causes their attacks to apply A.C.I.D.",
 	Class = "Enemy",
 	Icon = "weapons/prime_lightning.png",
 	Passive = "DNT_Acid_Passive",

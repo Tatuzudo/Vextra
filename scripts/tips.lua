@@ -59,8 +59,8 @@ tips:Add{
 
 tips:Add{
 	id = "Tip_DNT_Cockroach",
-	title = "Cockroachs",
-	text = "The Cockroach has an artillery attack, and revive if killed right before Vek spawn. Stomp them or damage them again to kill them for good!"
+	title = "Cockroaches",
+	text = "The Cockroach has a special trait, as dead Cockroaches will revive just before Vek spawn. Damage or stomp on the corpse to kill them for good!"
 }
 
 tips:Add{
@@ -78,7 +78,7 @@ tips:Add{
 tips:Add{
 	id = "Tip_DNT_Junebug",
 	title = "Junebug",
-	text = "The Junebug Boss has a corpse and a companion ladybug. If the ladybug dies, its weapon will be upgraded, and if the junebug dies, the ladybug will try to revive it."
+	text = "The Junebug Boss has a corpse and a companion Ladybug. If the Ladybug dies, the Junebug's weapon will be upgraded, and if the Junebug dies, the Ladybug will try to revive it."
 }
 
 tips:Add{

@@ -56,7 +56,7 @@ modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."Boss.png",resourcePath..
 DNT_AntlionAtk1 = Skill:new {
 	-- Name = "Shattering Mandibles", --This needs to be better
 	Name = "Seismic Pincers",
-	Description = "Crack the targets tile, preparing to strike it.",
+	Description = "Crack the target's tile, preparing to strike it.",
 	Damage = 1,
 	PathSize = 1,
 	Class = "Enemy",
@@ -96,14 +96,16 @@ function DNT_AntlionAtk1:GetSkillEffect(p1,p2)
 	end
 
 	for _, target in pairs(targets) do
-		--crack
-		local damage = SpaceDamage(target,0)
-		if Board:GetTerrain(target) ~= TERRAIN_ICE or (Board:GetTerrain(target) == TERRAIN_ICE and Board:GetHealth(target) >= 2)then
+
+		local damage = nil
+		--crack + bounce
+		if not Board:IsBuilding(target) and (Board:GetTerrain(target) ~= TERRAIN_ICE or (Board:GetTerrain(target) == TERRAIN_ICE and Board:GetHealth(target) >= 2)) then
+			damage = SpaceDamage(target,0)
 			damage.iCrack = self.Crack
+			ret:AddDamage(damage)
+			ret:AddBurst(target,"Emitter_Crack_Start2",DIR_NONE)
+			ret:AddBounce(target,2)
 		end
-		ret:AddDamage(damage)
-		ret:AddBurst(target,"Emitter_Crack_Start2",DIR_NONE)
-		ret:AddBounce(target,2)
 		ret:AddDelay(0.2)
 
 		--HOOK_pawnDamaged

@@ -117,6 +117,7 @@ DNT_IceCrawlerAtk2 = DNT_IceCrawlerAtk1:new {
 	}
 }
 DNT_IceCrawlerAtkB = DNT_IceCrawlerAtk1:new {
+	Name = "Subzero Chillthrower",
 	Description = "Release an icy gas in two directions with 3 range that deals more damage the farther it travels and freezes. Explodes existing ice out sideways. Stops at buildings and mountains.",
 	Damage = 3,
 	MinDamage = 1, --Starting Damage
