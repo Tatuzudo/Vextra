@@ -219,17 +219,36 @@ end
 -- Traits --
 ------------
 
-local ReactiveTrait = function(trait,pawn)
-	if pawn:GetSpace() == mouseTile() or pawn:IsSelected() then
-		return DNT_PsionTarget(pawn)
+local DNT_psionTrait = function(trait,pawn)
+	if _G[pawn:GetType()].Tier ~= TIER_BOSS then
+		if pawn:GetSpace() == mouseTile() or pawn:IsSelected() then
+			return DNT_PsionTarget(pawn)
+		end
+	end
+end
+
+local DNT_psionTraitB = function(trait,pawn)
+	if _G[pawn:GetType()].Tier == TIER_BOSS then
+		if pawn:GetSpace() == mouseTile() or pawn:IsSelected() then
+			return DNT_PsionTarget(pawn)
+		end
 	end
 end
 
 trait:add{
-	func = ReactiveTrait,
+	func = DNT_psionTrait,
 	icon = "img/icons/DNT_reactive_icon.png",
 	icon_glow = "img/icons/DNT_reactive_icon_glow.png",
 	icon_offset = Point(0,9),
+	desc_title = "Repulsive Decay",
+	desc_text = "The Reactive Psion causes other Vek to push adjacent tiles on death.",
+}
+
+trait:add{
+	func = DNT_psionTraitB,
+	icon = "img/icons/DNT_reactive_icon.png",
+	icon_glow = "img/icons/DNT_reactive_icon_glow.png",
+	icon_offset = Point(8,17),
 	desc_title = "Repulsive Decay",
 	desc_text = "The Reactive Psion causes other Vek to push adjacent tiles on death.",
 }

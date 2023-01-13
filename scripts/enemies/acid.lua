@@ -206,17 +206,36 @@ end
 -- Traits --
 ------------
 
-local acidTrait = function(trait,pawn)
-	if pawn:GetSpace() == mouseTile() or pawn:IsSelected() then
-		return DNT_PsionTarget(pawn)
+local DNT_psionTrait = function(trait,pawn)
+	if _G[pawn:GetType()].Tier ~= TIER_BOSS then
+		if pawn:GetSpace() == mouseTile() or pawn:IsSelected() then
+			return DNT_PsionTarget(pawn)
+		end
+	end
+end
+
+local DNT_psionTraitB = function(trait,pawn)
+	if _G[pawn:GetType()].Tier == TIER_BOSS then
+		if pawn:GetSpace() == mouseTile() or pawn:IsSelected() then
+			return DNT_PsionTarget(pawn)
+		end
 	end
 end
 
 trait:add{
-	func = acidTrait, -- maybe change this name?
+	func = DNT_psionTrait, -- maybe change this name?
 	icon = "img/combat/icons/icon_acid_immune.png", --"img/combat/icons/icon_acid_immune.png",
 	icon_glow = "img/combat/icons/icon_acid_immune_glow.png", --"img/combat/icons/icon_acid_glow_immune.png",
 	icon_offset = Point(0,9),
+	desc_title = "Caustic Glands",
+	desc_text = "The Corrosive Psion remove A.C.I.D. from other vek every turn and cause their attacks to apply A.C.I.D.",
+}
+
+trait:add{
+	func = DNT_psionTraitB, -- maybe change this name?
+	icon = "img/combat/icons/icon_acid_immune.png", --"img/combat/icons/icon_acid_immune.png",
+	icon_glow = "img/combat/icons/icon_acid_immune_glow.png", --"img/combat/icons/icon_acid_glow_immune.png",
+	icon_offset = Point(6,15),
 	desc_title = "Caustic Glands",
 	desc_text = "The Corrosive Psion remove A.C.I.D. from other vek every turn and cause their attacks to apply A.C.I.D.",
 }

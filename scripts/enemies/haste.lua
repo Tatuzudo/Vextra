@@ -177,17 +177,36 @@ end
 -- Traits --
 ------------
 
-local hasteTrait = function(trait,pawn)
-	if pawn:GetSpace() == mouseTile() or pawn:IsSelected() then
-		return DNT_PsionTarget(pawn)
+local DNT_psionTrait = function(trait,pawn)
+	if _G[pawn:GetType()].Tier ~= TIER_BOSS then
+		if pawn:GetSpace() == mouseTile() or pawn:IsSelected() then
+			return DNT_PsionTarget(pawn)
+		end
+	end
+end
+
+local DNT_psionTraitB = function(trait,pawn)
+	if _G[pawn:GetType()].Tier == TIER_BOSS then
+		if pawn:GetSpace() == mouseTile() or pawn:IsSelected() then
+			return DNT_PsionTarget(pawn)
+		end
 	end
 end
 
 trait:add{
-	func = hasteTrait,
+	func = DNT_psionTrait,
 	icon = "img/combat/icons/icon_kickoff.png",
 	icon_glow = "img/combat/icons/icon_kickoff_glow.png",
 	icon_offset = Point(0,9),
+	desc_title = "Gotta Go Fast",
+	desc_text = "The Sonic Psion will add +2 bonus movement to all Vek at the turn start.",
+}
+
+trait:add{
+	func = DNT_psionTraitB,
+	icon = "img/combat/icons/icon_kickoff.png",
+	icon_glow = "img/combat/icons/icon_kickoff_glow.png",
+	icon_offset = Point(-1,14),
 	desc_title = "Gotta Go Fast",
 	desc_text = "The Sonic Psion will add +2 bonus movement to all Vek at the turn start.",
 }

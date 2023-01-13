@@ -210,17 +210,36 @@ end
 -- Traits --
 ------------
 
-local nurseTrait = function(trait,pawn)
-	if pawn:GetSpace() == mouseTile() or pawn:IsSelected() then
-		return DNT_PsionTarget(pawn)
+local DNT_psionTrait = function(trait,pawn)
+	if _G[pawn:GetType()].Tier ~= TIER_BOSS then
+		if pawn:GetSpace() == mouseTile() or pawn:IsSelected() then
+			return DNT_PsionTarget(pawn)
+		end
+	end
+end
+
+local DNT_psionTraitB = function(trait,pawn)
+	if _G[pawn:GetType()].Tier == TIER_BOSS then
+		if pawn:GetSpace() == mouseTile() or pawn:IsSelected() then
+			return DNT_PsionTarget(pawn)
+		end
 	end
 end
 
 trait:add{
-	func = nurseTrait, -- maybe change this name?
+	func = DNT_psionTrait, -- maybe change this name?
 	icon = "img/icons/DNT_nurse_icon.png",
 	icon_glow = "img/icons/DNT_nurse_icon_glow.png",
 	icon_offset = Point(2,10),
+	desc_title = "Healing Strikes",
+	desc_text = "The Nurse Psion causes Vek to heal instead of damaging allies.",
+}
+
+trait:add{
+	func = DNT_psionTraitB, -- maybe change this name?
+	icon = "img/icons/DNT_nurse_icon.png",
+	icon_glow = "img/icons/DNT_nurse_icon_glow.png",
+	icon_offset = Point(6,16),
 	desc_title = "Healing Strikes",
 	desc_text = "The Nurse Psion causes Vek to heal instead of damaging allies.",
 }

@@ -235,17 +235,36 @@ end
 -- Traits --
 ------------
 
-local winterTrait = function(trait,pawn)
-	if pawn:GetSpace() == mouseTile() or pawn:IsSelected() then
-		return DNT_PsionTarget(pawn)
+local DNT_psionTrait = function(trait,pawn)
+	if _G[pawn:GetType()].Tier ~= TIER_BOSS then
+		if pawn:GetSpace() == mouseTile() or pawn:IsSelected() then
+			return DNT_PsionTarget(pawn)
+		end
+	end
+end
+
+local DNT_psionTraitB = function(trait,pawn)
+	if _G[pawn:GetType()].Tier == TIER_BOSS then
+		if pawn:GetSpace() == mouseTile() or pawn:IsSelected() then
+			return DNT_PsionTarget(pawn)
+		end
 	end
 end
 
 trait:add{
-	func = winterTrait,
+	func = DNT_psionTrait,
 	icon = "img/combat/icons/icon_ice.png",
 	icon_glow = "img/combat/icons/icon_ice_glow.png",
 	icon_offset = Point(2,10),
+	desc_title = "Psionic Blizzard",
+	desc_text = "The Winter Psion will freeze the starting tile of all unfrozen mechs at the end of each turn.",
+}
+
+trait:add{
+	func = DNT_psionTraitB,
+	icon = "img/combat/icons/icon_ice.png",
+	icon_glow = "img/combat/icons/icon_ice_glow.png",
+	icon_offset = Point(6,16),
 	desc_title = "Psionic Blizzard",
 	desc_text = "The Winter Psion will freeze the starting tile of all unfrozen mechs at the end of each turn.",
 }

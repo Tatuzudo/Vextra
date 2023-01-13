@@ -137,7 +137,7 @@ DNT_StinkbugAtk2 = DNT_StinkbugAtk1:new {
 DNT_StinkbugAtkBoss = DNT_StinkbugAtk1:new {
 	Name = "Abhorrent Spray",
 	Description = "Prepares to attack while surrounding itself with lines of short-lived stink clouds.",
-	Damage = 3,
+	Damage = 2,
 	FartRange = 8,
 	CustomTipImage = "DNT_StinkbugAtkBoss_Tip",
 }
@@ -160,6 +160,7 @@ function DNT_StinkbugAtk1:GetSkillEffect(p1,p2)
 			damage.sAnimation = FartAppear
 			damage.iSmoke = EFFECT_CREATE
 			ret:AddDamage(damage)
+			-- if Board:IsBlocked(p3,PATH_PROJECTILE) then L = false end
 			if Board:IsBlocked(p3,PATH_PROJECTILE) and not Board:IsPawnSpace(p3) then L = false end
 		end
 		if R then
@@ -170,6 +171,7 @@ function DNT_StinkbugAtk1:GetSkillEffect(p1,p2)
 			damage.sAnimation = FartAppear
 			damage.iSmoke = EFFECT_CREATE
 			ret:AddDamage(damage)
+			-- if Board:IsBlocked(p4,PATH_PROJECTILE) then R = false end
 			if Board:IsBlocked(p4,PATH_PROJECTILE) and not Board:IsPawnSpace(p4) then R = false end
 		end
 		ret:AddDelay(0.1)
@@ -371,7 +373,7 @@ DNT_StinkbugBoss = Pawn:new
 		ImageOffset = 2,
 		DefaultTeam = TEAM_ENEMY,
 		ImpactMaterial = IMPACT_INSECT,
-		Tier = TIER_ALPHA,
+		Tier = TIER_BOSS,
 		Massive = true
 	}
 AddPawn("DNT_StinkbugBoss")
