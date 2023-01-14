@@ -165,6 +165,7 @@ DNT_CockroachAtk1 = LineArtillery:new {
 	ImpactSound = "/impact/generic/explosion",
 	LaunchSound = "",
 	ExtraTiles = false,
+	CustomTipImage = "DNT_CockroachAtk1_Tip", --The cockroach dying causes some issues
 	TipImage = {
 		Unit = Point(2,4),
 		Enemy = Point(2,2),
@@ -178,6 +179,7 @@ DNT_CockroachAtk1 = LineArtillery:new {
 DNT_CockroachAtk2 = DNT_CockroachAtk1:new {
 	Name = "Organ Deliverer",
 	Damage = 3,
+	CustomTipImage = "",
 	TipImage = {
 		Unit = Point(2,4),
 		Enemy = Point(2,2),
@@ -194,11 +196,13 @@ DNT_CockroachAtkB = DNT_CockroachAtk1:new {
 				.."attack on four tiles, centered around one tile.",
 	Damage = 2,
 	ExtraTiles = true,
+	CustomTipImage = "",
 	TipImage = {
 		Unit = Point(2,4),
 		Enemy = Point(2,2),
 		Enemy2 = Point(2,1),
 		Building = Point(2,0),
+		Building = Point(3,1),
 		Target = Point(2,2),
 		CustomPawn = "DNT_CockroachBoss",
 	}
@@ -229,6 +233,16 @@ function DNT_CockroachAtk1:GetSkillEffect(p1,p2)
 	return ret
 end
 
+DNT_CockroachAtk1_Tip = DNT_CockroachAtk1:new{}
+
+function DNT_CockroachAtk1_Tip:GetSkillEffect(p1,p2)
+	Board:SetItem(p1,"")
+	Board:RemovePawn(p1)
+	Board:SetItem(p1,"")
+	Board:AddPawn("DNT_Cockroach1",p1)
+
+	return DNT_CockroachAtk1:GetSkillEffect(p1,p2)
+end
 ----------------------------- UNITS -----------------------------
 
 DNT_Cockroach1 = Pawn:new
