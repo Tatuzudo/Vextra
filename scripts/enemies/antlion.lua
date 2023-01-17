@@ -150,7 +150,7 @@ DNT_AntlionAtkB = DNT_AntlionAtk1:new { --Just an example
 DNT_Antlion1 = Pawn:new
 	{
 		Name = "Antlion",
-		Health = 3,
+		Health = 2,
 		MoveSpeed = 3,
 		Image = "DNT_antlion", --lowercase
 		SkillList = {"DNT_AntlionAtk1"},
@@ -165,7 +165,7 @@ AddPawn("DNT_Antlion1")
 DNT_Antlion2 = Pawn:new
 	{
 		Name = "Alpha Antlion",
-		Health = 5,
+		Health = 4,
 		MoveSpeed = 3,
 		SkillList = {"DNT_AntlionAtk2"},
 		Image = "DNT_antlion",

@@ -14,7 +14,6 @@ local function IsTipImage()
 	return Board:GetSize() == Point(6,6)
 end
 
-
 -------------
 --  Icons  --
 -------------
@@ -79,7 +78,8 @@ a.DNT_FartFront = Animation:new{
 	Loop = false,
 	PosX = -23,
 	PosY = 0,
-	Time = 0.4
+	Time = 0.4,
+	Layer = ANIMS.LAYER_FRONT
 }
 
 a.DNT_FartFrontDark = a.DNT_FartFront:new{
@@ -136,9 +136,9 @@ DNT_StinkbugAtk2 = DNT_StinkbugAtk1:new {
 
 DNT_StinkbugAtkBoss = DNT_StinkbugAtk1:new {
 	Name = "Abhorrent Spray",
-	Description = "Prepares to attack while surrounding itself with lines of short-lived stink clouds.",
-	Damage = 2,
-	FartRange = 8,
+	Description = "Prepares to attack while surrounding itself with short-lived stink clouds.",
+	Damage = 3,
+	FartRange = 2,
 	CustomTipImage = "DNT_StinkbugAtkBoss_Tip",
 }
 
@@ -161,7 +161,7 @@ function DNT_StinkbugAtk1:GetSkillEffect(p1,p2)
 			damage.iSmoke = EFFECT_CREATE
 			ret:AddDamage(damage)
 			-- if Board:IsBlocked(p3,PATH_PROJECTILE) then L = false end
-			if Board:IsBlocked(p3,PATH_PROJECTILE) and not Board:IsPawnSpace(p3) then L = false end
+			-- if Board:IsBlocked(p3,PATH_PROJECTILE) and not Board:IsPawnSpace(p3) then L = false end
 		end
 		if R then
 			local dir3 = dir-1 < 0 and 3 or dir-1
@@ -172,7 +172,7 @@ function DNT_StinkbugAtk1:GetSkillEffect(p1,p2)
 			damage.iSmoke = EFFECT_CREATE
 			ret:AddDamage(damage)
 			-- if Board:IsBlocked(p4,PATH_PROJECTILE) then R = false end
-			if Board:IsBlocked(p4,PATH_PROJECTILE) and not Board:IsPawnSpace(p4) then R = false end
+			-- if Board:IsBlocked(p4,PATH_PROJECTILE) and not Board:IsPawnSpace(p4) then R = false end
 		end
 		ret:AddDelay(0.1)
 	end
@@ -250,7 +250,7 @@ DNT_StinkbugAtk2_Tip = DNT_StinkbugAtk_Tip:new {
 }
 DNT_StinkbugAtkBoss_Tip = DNT_StinkbugAtk_Tip:new {
 	Damage = DNT_StinkbugAtkBoss.Damage,
-	FartRange = 8,
+	FartRange = 2,
 	TipImage = {
 		Unit = Point(2,2),
 		Target = Point(2,1),
@@ -271,7 +271,7 @@ function DNT_StinkbugAtk_Tip:GetSkillEffect(p1,p2)
 	local p4 = p1 + DIR_VECTORS[dir3]
 	
 	local anim1 = IsPassiveSkill("Electric_Smoke") and "DNT_FartFrontDark" or "DNT_FartFront"
-	-- local anim2 = IsPassiveSkill("Electric_Smoke") and "DNT_FartBackDark" or "DNT_FartBack"
+	local anim2 = IsPassiveSkill("Electric_Smoke") and "DNT_FartBackDark" or "DNT_FartBack"
 	local anim3 = IsPassiveSkill("Electric_Smoke") and "DNT_FartAppearDark" or "DNT_FartAppear"
 	
 	local damage = SpaceDamage(p2,self.Damage) -- attack
@@ -290,11 +290,16 @@ function DNT_StinkbugAtk_Tip:GetSkillEffect(p1,p2)
 	damage = SpaceDamage(p3,0) -- smoke
 	damage.sAnimation = anim1
 	ret:AddDamage(damage)
+	damage.sAnimation = anim2
+	ret:AddDamage(damage)
 	damage.loc = p4
+	damage.sAnimation = anim1
+	ret:AddDamage(damage)
+	damage.sAnimation = anim2
 	ret:AddDamage(damage)
 	
 	if self.FartRange > 1 then -- for the boss
-		for i = 1, 2 do
+		for i = 1, 1 do
 			damage = SpaceDamage(p3 + DIR_VECTORS[dir2]*i,0) -- smoke
 			damage.sAnimation = anim3
 			damage.iSmoke = EFFECT_CREATE
@@ -305,23 +310,39 @@ function DNT_StinkbugAtk_Tip:GetSkillEffect(p1,p2)
 			damage.loc = p3 + DIR_VECTORS[dir2]*i,0
 			damage.sAnimation = anim1
 			ret:AddDamage(damage)
+			damage.sAnimation = anim2
+			ret:AddDamage(damage)
 			damage.loc = p4 + DIR_VECTORS[dir3]*i,0
+			damage.sAnimation = anim1
+			ret:AddDamage(damage)
+			damage.sAnimation = anim2
 			ret:AddDamage(damage)
 		end
 	end
 	
 	ret:AddDelay(0.4) -- prolong the animation for Tip
 	damage.loc = p4
+	damage.sAnimation = anim1
+	ret:AddDamage(damage)
+	damage.sAnimation = anim2
 	ret:AddDamage(damage)
 	damage.loc = p3
+	damage.sAnimation = anim1
+	ret:AddDamage(damage)
+	damage.sAnimation = anim2
 	ret:AddDamage(damage)
 	
 	if self.FartRange > 1 then -- for the boss
-		for i = 1, 2 do
+		for i = 1, 1 do
 			damage.loc = p3 + DIR_VECTORS[dir2]*i
 			damage.sAnimation = anim1
 			ret:AddDamage(damage)
+			damage.sAnimation = anim2
+			ret:AddDamage(damage)
 			damage.loc = p4 + DIR_VECTORS[dir3]*i
+			damage.sAnimation = anim1
+			ret:AddDamage(damage)
+			damage.sAnimation = anim2
 			ret:AddDamage(damage)
 		end
 	end
@@ -365,7 +386,7 @@ AddPawn("DNT_Stinkbug2")
 DNT_StinkbugBoss = Pawn:new
 	{
 		Name = "Stinkbug Leader",
-		Health = 5,
+		Health = 6,
 		MoveSpeed = 3,
 		SkillList = {"DNT_StinkbugAtkBoss"},
 		Image = "DNT_stinkbug", --Image = "DNT_stinkbug",
@@ -384,6 +405,7 @@ AddPawn("DNT_StinkbugBoss")
 
 local reFart = 20 --timer
 
+-- update marks
 local HOOK_MissionUpdate = function(mission)
 	if mission and mission.DNT_FartList then
 		local farts = mission.DNT_FartList
@@ -401,10 +423,18 @@ local HOOK_MissionUpdate = function(mission)
 						customAnim:Add(mission,farts[i],anim1)
 						customAnim:Add(mission,farts[i],anim2)
 					end
-				elseif customAnim:Is(mission,farts[i],anim1) then  -- remove effects on tiles without smoke
-					customAnim:Rem(mission,farts[i],anim1)
-					customAnim:Rem(mission,farts[i],anim2)
-					Board:AddAnimation(farts[i],anim3,ANIM_REVERSE)
+				elseif customAnim:Is(mission,farts[i],"DNT_FartFront") then  -- remove effects on tiles without smoke
+					customAnim:Rem(mission,farts[i],"DNT_FartFront")
+					customAnim:Rem(mission,farts[i],"DNT_FartBack")
+					Board:AddAnimation(farts[i],"DNT_FartAppear",ANIM_REVERSE)
+				elseif customAnim:Is(mission,farts[i],"DNT_FartFrontDark") then  -- remove effects on tiles without electric smoke
+					customAnim:Rem(mission,farts[i],"DNT_FartFrontDark")
+					customAnim:Rem(mission,farts[i],"DNT_FartBackDark")
+					Board:AddAnimation(farts[i],"DNT_FartAppearDark",ANIM_REVERSE)
+				end
+				-- tile tip
+				if not Board:IsEnvironmentDanger(farts[i]) then
+					Board:MarkSpaceDesc(farts[i],"DNT_fart_tile")
 				end
 			end
 			if reFart > 0 then
@@ -413,6 +443,7 @@ local HOOK_MissionUpdate = function(mission)
 		end
 	end
 end
+
 
 local HOOK_resetTurn = function(mission) -- reset reFart
 	reFart = 20
@@ -458,6 +489,7 @@ local HOOK_MissionEnd = function(mission) -- delete farts on mission end
 end
 
 local function EVENT_onModsLoaded()
+	TILE_TOOLTIPS.DNT_fart_tile = {"Stink Cloud", "Will disperse at the end of the turn."} -- why this only works here?
 	DNT_Vextra_ModApiExt:addResetTurnHook(HOOK_resetTurn)
 	modApi:addNextTurnHook(HOOK_nextTurn)
 	modApi:addMissionUpdateHook(HOOK_MissionUpdate)

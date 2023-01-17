@@ -166,8 +166,8 @@ end
 
 DNT_Thunderbug1 = Pawn:new{
 	Name = "Thunderbug",
-	Health = 2,
-	MoveSpeed = 3,
+	Health = 3,
+	MoveSpeed = 4,
 	Image = "DNT_thunderbug",
 	SkillList = { "DNT_ThunderbugAtk1" },
 	SoundLocation = "/enemy/beetle_1/",
@@ -178,8 +178,8 @@ AddPawn("DNT_Thunderbug1")
 
 DNT_Thunderbug2 = Pawn:new{
 	Name = "Alpha Thunderbug",
-	Health = 4,
-	MoveSpeed = 3,
+	Health = 5,
+	MoveSpeed = 4,
 	Image = "DNT_thunderbug",
 	ImageOffset = 1,
 	SkillList = { "DNT_ThunderbugAtk2" },
@@ -193,7 +193,7 @@ AddPawn("DNT_Thunderbug2")
 DNT_ThunderbugBoss = Pawn:new{
 	Name = "Thunderbug Leader",
 	Health = 6,
-	MoveSpeed = 3,
+	MoveSpeed = 4,
 	Image = "DNT_thunderbug",
 	ImageOffset = 2,
 	SkillList = { "DNT_ThunderbugAtkB" },

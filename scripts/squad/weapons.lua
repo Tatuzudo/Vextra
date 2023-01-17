@@ -83,28 +83,29 @@ function DNT_SS_AcridSpray:GetSkillEffect(p1,p2)
 
   local L = true
   local R = true
+  local FartAppear = IsPassiveSkill("Electric_Smoke") and "DNT_FartAppearDark" or "DNT_FartAppear"
   for i = 1, self.FartRange do
     if L then
       local dir2 = dir+1 > 3 and 0 or dir+1
       local p3 = p1 + DIR_VECTORS[dir2]*i
       ret:AddScript(string.format("table.insert(GetCurrentMission().DNT_FartList,%s)",p3:GetString())) -- insert point in fart list
       local damage = SpaceDamage(p3,0) -- smoke
-      damage.sAnimation = "DNT_FartAppear"
+      damage.sAnimation = FartAppear
       damage.iSmoke = EFFECT_CREATE
 			damage.sImageMark = "combat/icons/DNT_icon_stink.png"
       ret:AddDamage(damage)
-      if Board:IsBlocked(p3,PATH_PROJECTILE) and not Board:IsPawnSpace(p3) then L = false end
+      -- if Board:IsBlocked(p3,PATH_PROJECTILE) and not Board:IsPawnSpace(p3) then L = false end
     end
     if R then
       local dir3 = dir-1 < 0 and 3 or dir-1
       local p4 = p1 + DIR_VECTORS[dir3]*i
       ret:AddScript(string.format("table.insert(GetCurrentMission().DNT_FartList,%s)",p4:GetString())) -- insert other fart point
       local damage = SpaceDamage(p4,0) -- smoke
-      damage.sAnimation = "DNT_FartAppear"
+      damage.sAnimation = FartAppear
       damage.iSmoke = EFFECT_CREATE
 			damage.sImageMark = "combat/icons/DNT_icon_stink.png"
       ret:AddDamage(damage)
-      if Board:IsBlocked(p4,PATH_PROJECTILE) and not Board:IsPawnSpace(p4) then R = false end
+      -- if Board:IsBlocked(p4,PATH_PROJECTILE) and not Board:IsPawnSpace(p4) then R = false end
     end
     ret:AddDelay(0.1)
   end
@@ -116,8 +117,9 @@ end
 
 DNT_SS_AcridSpray_A = DNT_SS_AcridSpray:new{
 	CustomTipImage = "DNT_SS_AcridSpray_A_Tip",
-	UpgradeDescription = "Stink clouds extend to both sides infinitely until hitting an object.",
-	FartRange = 8,
+	-- UpgradeDescription = "Stink clouds extend to both sides infinitely until hitting an object.",
+	UpgradeDescription = "Places another stink cloud to both sides.",
+	FartRange = 2,
 }
 
 DNT_SS_AcridSpray_B = DNT_SS_AcridSpray:new{
@@ -128,92 +130,112 @@ DNT_SS_AcridSpray_B = DNT_SS_AcridSpray:new{
 
 DNT_SS_AcridSpray_AB = DNT_SS_AcridSpray:new{
 	CustomTipImage = "DNT_SS_AcridSpray_AB_Tip",
-	FartRange = 8,
+	FartRange = 2,
 	Damage = 3,
 }
 
 
 DNT_SS_AcridSpray_Tip = DNT_SS_AcridSpray:new{}
 DNT_SS_AcridSpray_A_Tip = DNT_SS_AcridSpray_Tip:new{
-	FartRange = 8,
+	FartRange = 2,
 }
 DNT_SS_AcridSpray_B_Tip = DNT_SS_AcridSpray_Tip:new{
 	Damage = 3,
 }
 DNT_SS_AcridSpray_AB_Tip = DNT_SS_AcridSpray_Tip:new{
-	FartRange = 8,
+	FartRange = 2,
 	Damage = 3,
 }
 
 function DNT_SS_AcridSpray_Tip:GetSkillEffect(p1,p2)
 	local ret = SkillEffect()
 	local dir = GetDirection(p2 - p1)
-
+	
 	local dir2 = dir+1 > 3 and 0 or dir+1
 	local p3 = p1 + DIR_VECTORS[dir2]
 
 	local dir3 = dir-1 < 0 and 3 or dir-1
 	local p4 = p1 + DIR_VECTORS[dir3]
-
-	local damage = SpaceDamage(p2,self.Damage,dir) -- attack
-  damage.sAnimation = "explomosquito_"..dir
-  damage.sSound = self.SoundBase.."/attack"
-	ret:AddMelee(p1,damage)
+	
+	local anim1 = IsPassiveSkill("Electric_Smoke") and "DNT_FartFrontDark" or "DNT_FartFront"
+	local anim2 = IsPassiveSkill("Electric_Smoke") and "DNT_FartBackDark" or "DNT_FartBack"
+	local anim3 = IsPassiveSkill("Electric_Smoke") and "DNT_FartAppearDark" or "DNT_FartAppear"
+	
+	local damage = SpaceDamage(p2,self.Damage) -- attack
+	damage.sAnimation = "explomosquito_"..dir
+	damage.sSound = self.SoundBase.."/attack"
+	ret:AddQueuedMelee(p1,damage)
 
 	damage = SpaceDamage(p3,0) -- smoke
-	damage.sAnimation = "DNT_FartAppear"
+	damage.sAnimation = anim3
 	damage.iSmoke = EFFECT_CREATE
-	--damage.sImageMark = "combat/icons/DNT_icon_stink.png" --Not sure why it doesn't work on this one.
 	ret:AddDamage(damage)
 	damage.loc = p4
 	ret:AddDamage(damage)
 
 	ret:AddDelay(0.24) -- delay for adding smoke anim
 	damage = SpaceDamage(p3,0) -- smoke
-	damage.sAnimation = "DNT_FartFront"
-	damage.sImageMark = "combat/icons/DNT_icon_stink_glow.png"
+	damage.sAnimation = anim1
+	ret:AddDamage(damage)
+	damage.sAnimation = anim2
 	ret:AddDamage(damage)
 	damage.loc = p4
+	damage.sAnimation = anim1
 	ret:AddDamage(damage)
-
+	damage.sAnimation = anim2
+	ret:AddDamage(damage)
+	
 	if self.FartRange > 1 then -- for the boss
-		for i = 1, 2 do
+		for i = 1, 1 do
 			damage = SpaceDamage(p3 + DIR_VECTORS[dir2]*i,0) -- smoke
-			damage.sAnimation = "DNT_FartAppear"
+			damage.sAnimation = anim3
 			damage.iSmoke = EFFECT_CREATE
-			damage.sImageMark = "combat/icons/DNT_icon_stink.png" --Some glow some don't get over it
 			ret:AddDamage(damage)
-			--damage.loc = p4 + DIR_VECTORS[dir3]*i,0 --ADDED A MOUNTAIN
-			--ret:AddDamage(damage)
+			damage.loc = p4 + DIR_VECTORS[dir3]*i,0
+			ret:AddDamage(damage)
 			ret:AddDelay(0.24) -- delay for adding smoke anim
 			damage.loc = p3 + DIR_VECTORS[dir2]*i,0
-			damage.sAnimation = "DNT_FartFront"
+			damage.sAnimation = anim1
 			ret:AddDamage(damage)
-			--damage.loc = p4 + DIR_VECTORS[dir3]*i,0 --ADDED A MOUNTAIN
-			--ret:AddDamage(damage)
+			damage.sAnimation = anim2
+			ret:AddDamage(damage)
+			damage.loc = p4 + DIR_VECTORS[dir3]*i,0
+			damage.sAnimation = anim1
+			ret:AddDamage(damage)
+			damage.sAnimation = anim2
+			ret:AddDamage(damage)
 		end
 	end
-
-	--ret:AddDelay(0.2) -- prolong the animation for Tip
+	
+	ret:AddDelay(0.4) -- prolong the animation for Tip
 	damage.loc = p4
+	damage.sAnimation = anim1
+	ret:AddDamage(damage)
+	damage.sAnimation = anim2
 	ret:AddDamage(damage)
 	damage.loc = p3
+	damage.sAnimation = anim1
 	ret:AddDamage(damage)
-  --[[Tatu I'm not sure what this code is haha, but this is what makes it work so I'm going with this
+	damage.sAnimation = anim2
+	ret:AddDamage(damage)
+	
 	if self.FartRange > 1 then -- for the boss
-		for i = 1, 2 do
+		for i = 1, 1 do
 			damage.loc = p3 + DIR_VECTORS[dir2]*i
-			damage.sAnimation = "DNT_FartFront"
+			damage.sAnimation = anim1
+			ret:AddDamage(damage)
+			damage.sAnimation = anim2
 			ret:AddDamage(damage)
 			damage.loc = p4 + DIR_VECTORS[dir3]*i
+			damage.sAnimation = anim1
+			ret:AddDamage(damage)
+			damage.sAnimation = anim2
 			ret:AddDamage(damage)
 		end
 	end
-	--]]
+	
 	return ret
 end
-
-
 
 -----------
 --- Fly ---

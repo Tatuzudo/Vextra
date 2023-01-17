@@ -106,8 +106,8 @@ DNT_Nurse_Down = Emitter:new{
 -------------
 
 DNT_Nurse_Passive = PassiveSkill:new{
-	Name = "Healing Strikes",
-	Description = "All other Vek heal instead of damaging allies.",
+	Name = "Healing Burst",
+	Description = "All other Vek heal with friendly damage.",--"All other Vek heal instead of damaging allies.",
 	Class = "Enemy",
 	Icon = "weapons/prime_lightning.png",
 	Passive = "DNT_Nurse_Passive",
@@ -231,8 +231,8 @@ trait:add{
 	icon = "img/icons/DNT_nurse_icon.png",
 	icon_glow = "img/icons/DNT_nurse_icon_glow.png",
 	icon_offset = Point(2,10),
-	desc_title = "Healing Strikes",
-	desc_text = "The Nurse Psion causes Vek to heal instead of damaging allies.",
+	desc_title = "Healing Burst",--"Healing Strikes",
+	desc_text = "The Nurse Psion causes other Vek to heal with friendly damage.",--"The Nurse Psion causes Vek to heal instead of damaging allies.",
 }
 
 trait:add{
@@ -240,8 +240,8 @@ trait:add{
 	icon = "img/icons/DNT_nurse_icon.png",
 	icon_glow = "img/icons/DNT_nurse_icon_glow.png",
 	icon_offset = Point(6,16),
-	desc_title = "Healing Strikes",
-	desc_text = "The Nurse Psion causes Vek to heal instead of damaging allies.",
+	desc_title = "Healing Burst",
+	desc_text = "The Nurse Psion causes other Vek to heal with friendly damage.",
 }
 
 ------------------------
@@ -306,13 +306,17 @@ end
 -- psion acid attack / no friendly fire
 local DNT_NurseAttack = function(mission, p1, skillEffect)
 	local pawn = Board:GetPawn(p1)
-	if mission and mission[DNT_PSION] and pawn and DNT_PsionTarget(pawn) then
+	-- if mission and mission[DNT_PSION] and pawn and DNT_PsionTarget(pawn) then
+	local validPawn
+	if pawn then validPawn = (_G[pawn:GetType()].Minor or pawn:GetTeam() == TEAM_PLAYER) end
+	if mission and mission[DNT_PSION] and pawn and (DNT_PsionTarget(pawn) or validPawn) then
 		if skillEffect.q_effect ~= nil then -- and pawn:GetTeam() == TEAM_ENEMY then
 			for i = 1, skillEffect.q_effect:size() do
 				local spaceDamage = skillEffect.q_effect:index(i)
 				local damage = spaceDamage.iDamage
 				local dpawn = Board:GetPawn(spaceDamage.loc)
-				if dpawn and dpawn:GetTeam() == pawn:GetTeam() and _G[dpawn:GetType()].DefaultFaction ~= FACTION_BOTS then
+				-- if dpawn and dpawn:GetTeam() == pawn:GetTeam() and _G[dpawn:GetType()].DefaultFaction ~= FACTION_BOTS then
+				if dpawn and pawn:GetTeam() == dpawn:GetTeam() and DNT_PsionTarget(dpawn) then
 					if damage > 0 and damage ~= DAMAGE_DEATH then -- and dpawn then
 						if pawn:GetTeam() == TEAM_ENEMY and not IsTipImage() then
 							if IsPassiveSkill("Passive_FriendlyFire") then damage = damage + 1 end
@@ -330,7 +334,8 @@ local DNT_NurseAttack = function(mission, p1, skillEffect)
 				local spaceDamage = skillEffect.effect:index(i)
 				local damage = spaceDamage.iDamage
 				local dpawn = Board:GetPawn(spaceDamage.loc)
-				if dpawn and dpawn:GetTeam() == pawn:GetTeam() and _G[dpawn:GetType()].DefaultFaction ~= FACTION_BOTS then
+				-- if dpawn and dpawn:GetTeam() == pawn:GetTeam() and _G[dpawn:GetType()].DefaultFaction ~= FACTION_BOTS then
+				if dpawn and pawn:GetTeam() == dpawn:GetTeam() and DNT_PsionTarget(dpawn) then
 					if damage > 0 and damage ~= DAMAGE_DEATH then -- and dpawn then
 						if pawn:GetTeam() == TEAM_ENEMY and not IsTipImage() then
 							if IsPassiveSkill("Passive_FriendlyFire") then damage = damage + 1 end
