@@ -323,7 +323,7 @@ function DNT_Cockroach1:GetDeathEffect(p)
 			-- before we swap out the unit
 			-- with an item.
 
-			ret:AddDelay(0.5)
+			ret:AddDelay(0.2)
 			ret:AddScript(string.format([[
 				local pawnId, item = %s, %q
 				local pawn = Board:GetPawn(pawnId)
