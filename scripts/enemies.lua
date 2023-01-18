@@ -32,8 +32,8 @@ local enemies = {
 		max_pawns = 2,
 	},
 	DNT_Antlion = {
-		weakpawn = true,
-		--ExclusiveElement = "Jelly_Explode", Not stable, so this is uneeded
+		weakpawn = false,--true,
+		ExclusiveElement = "Jelly_Explode",
 		max_pawns = 3,
 	},
 	DNT_Stinkbug = {
@@ -47,7 +47,7 @@ local enemies = {
 		IslandLocks = 2,
 	},
 	DNT_Termites = {
-		weakpawn = false,
+		weakpawn = true,--false,
 		max_pawns = 2,
 		IslandLocks = 2,
 	},
