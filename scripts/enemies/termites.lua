@@ -55,7 +55,8 @@ modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."Boss.png",resourcePath..
 
 DNT_TermitesAtk1 = Skill:new {
 	Name = "Termite Rush",
-	Description = "Rush forward through all solid objects till an empty space, dealing damage, and leaving a rock on the starting space. If it can't dash, do a basic melee strike instead.",
+	-- Description = "Rush forward through all solid objects till an empty space, dealing damage, and leaving a rock on the starting space. If it can't dash, do a basic melee strike instead.",
+	Description = "Tear through obstacles, leaving a rock. If not possible, strike an adjacent tile.",
 	PathSize = 1,
 	Damage = 1,
 	Class = "Enemy",
@@ -70,7 +71,9 @@ DNT_TermitesAtk1 = Skill:new {
 		CustomPawn = "DNT_Termites1",
 	}
 }
+
 DNT_TermitesAtk2 = DNT_TermitesAtk1:new { --Just an example
+	Name = "Termite Charge",
 	Damage = 3,
 	TipImage = { --This is all tempalate and probably needs to change
 		Unit = Point(2,4),
@@ -84,8 +87,11 @@ DNT_TermitesAtk2 = DNT_TermitesAtk1:new { --Just an example
 }
 
 DNT_TermitesAtkB = DNT_TermitesAtk1:new { --Just an example
+	Name = "Termite Frenzy",
 	Damage = 3,
-	Description = "Create a rock in front, rushing forward through all solid objects till an empty space, dealing damage, and leaving a rock on the starting space. If it can't dash, do a basic melee strike instead.",
+	Description = "Create a rock in front, tearing through obstacles and leaving another rock. If not possible, strike an adjacent tile.",
+	-- Description = "Create a rock in front, rushing forward through all solid objects till an empty space, dealing damage, and leaving a rock on the starting space. If it can't dash, do a basic melee strike instead.",
+	-- Description = "Tear through obstacles, leaving an explosive rock. If not possible, strike an adjacent tile.",
 	TipImage = { --This is all tempalate and probably needs to change
 		Unit = Point(2,4),
 		Target = Point(2,3),
