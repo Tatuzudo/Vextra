@@ -18,10 +18,8 @@ end
 --  Icons  --
 -------------
 
-modApi:appendAsset("img/icons/DNT_acid_icon.png",resourcePath.."img/icons/DNT_acid_icon.png") --TEMPORARY
-	Location["icons/DNT_acid_icon.png"] = Point(0,0)
-modApi:appendAsset("img/icons/DNT_acid_icon_glow.png",resourcePath.."img/icons/DNT_acid_icon_glow.png") --TEMPORARY
-	Location["icons/DNT_acid_icon_glow.png"] = Point(0,0)
+-- modApi:copyAsset("img/combat/icons/icon_acid_immune_glow.png", "img/combat/icons/DNT_acid_immune.png")
+	-- Location["combat/icons/DNT_acid_immune.png"] = Point(0,4)--Point(-17,4)
 
 -------------
 --   Art   --
@@ -65,8 +63,8 @@ modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."1.png",resourcePath.."im
 
 local BURST_UP = "DNT_Acid_Up"
 DNT_Acid_Up = Emitter:new{
-	image = "icons/DNT_acid_icon.png",
-	x = -12,
+	image = "combat/icons/icon_acid_immune.png",
+	x = -11,
 	y = 5,
 	max_alpha = 1.0,
 	min_alpha = 1.0,
@@ -84,8 +82,8 @@ DNT_Acid_Up = Emitter:new{
 
 local BURST_DOWN = "DNT_Acid_Down"
 DNT_Acid_Down = Emitter:new{
-	image = "icons/DNT_acid_icon.png",
-	x = -12,
+	image = "combat/icons/icon_acid_immune.png",
+	x = -11,
 	y = -5,
 	max_alpha = 0.5,
 	min_alpha = 0.5,
@@ -107,7 +105,7 @@ DNT_Acid_Down = Emitter:new{
 
 DNT_Acid_Passive = PassiveSkill:new{
 	Name = "Caustic Glands",
-	Description = "All other Vek leave A.C.I.D. on death and apply it to adjacent enemies at the start of the player's turn.",
+	Description = "Removes A.C.I.D. from other vek every turn and causes their attacks to apply A.C.I.D.",
 	Class = "Enemy",
 	Icon = "weapons/prime_lightning.png",
 	Passive = "DNT_Acid_Passive",
@@ -116,8 +114,8 @@ DNT_Acid_Passive = PassiveSkill:new{
 		Unit = Point(2,3),
 		CustomPawn = "DNT_Acid1",
 		Target = Point(2,2),
-		Friend = Point(2,1),
-		Enemy = Point(3,1),
+		Friend = Point(1,1),
+		Enemy = Point(2,1),
 	}
 }
 
@@ -128,38 +126,19 @@ end
 DNT_Acid_Passive_Tip = DNT_Acid_Passive:new{}
 
 function DNT_Acid_Passive_Tip:GetSkillEffect(p1,p2) -- for passive preview
-	local p1 = Point(2,1)
-	local p2 = Point(3,1)
-	
 	local ret = SkillEffect()
-	Board:Ping(p1,GL_Color(0,255,0))
-	Board:AddBurst(p1,BURST_UP,DIR_NONE)
-	
-	effect = SkillEffect()
-	local damage = SpaceDamage(p2)
-	damage.sAnimation = "ExploFirefly2"
-	damage.iAcid = EFFECT_CREATE
-	effect:AddProjectile(p1,damage,"effects/shot_firefly2",NO_DELAY)
-	
-	if IsPassiveSkill("Psion_Leech") then -- psionic receiver
-		Board:Ping(p2,GL_Color(0,255,0))
-		Board:AddBurst(p2,BURST_UP,DIR_NONE)
-		
-		damage.loc = p1
-		damage.sAnimation = "ExploFirefly2"
-		effect:AddProjectile(p2,damage,"effects/shot_firefly2",NO_DELAY)
+	Board:Ping(Point(1,1),GL_Color(0,255,0))
+	Board:AddBurst(Point(1,1),BURST_UP,DIR_NONE)
+	if IsPassiveSkill("Psion_Leech") then
+		Board:Ping(Point(2,1),GL_Color(0,255,0))
+		Board:AddBurst(Point(2,1),BURST_UP,DIR_NONE)
 	end
-	
-	Board:AddEffect(effect)
-	
-	damage = SpaceDamage(p1,0) -- acid on death effect
+
+	local damage = SpaceDamage(Point(2,1),1)
 	damage.iAcid = EFFECT_CREATE
-	ret:AddDamage(damage)
-	
-	damage = SpaceDamage(p1,3,3)
-	ret:AddMelee(p2,damage)
+	ret:AddMelee(Point(1,1),damage)
 	ret:AddDelay(1)
-	
+
 	return ret
 end
 
@@ -244,21 +223,21 @@ local DNT_psionTraitB = function(trait,pawn)
 end
 
 trait:add{
-	func = DNT_psionTrait,
-	icon = "img/icons/DNT_acid_icon.png",
-	icon_glow = "img/icons/DNT_acid_icon_glow.png",
+	func = DNT_psionTrait, -- maybe change this name?
+	icon = "img/combat/icons/icon_acid_immune.png", --"img/combat/icons/icon_acid_immune.png",
+	icon_glow = "img/combat/icons/icon_acid_immune_glow.png", --"img/combat/icons/icon_acid_glow_immune.png",
 	icon_offset = Point(0,9),
 	desc_title = "Caustic Glands",
-	desc_text = "The Corrosive Psion causes Vek to leave A.C.I.D. on death and apply it to adjacent enemies at the start of the player's turn.",
+	desc_text = "The Corrosive Psion remove A.C.I.D. from other vek every turn and cause their attacks to apply A.C.I.D.",
 }
 
 trait:add{
-	func = DNT_psionTraitB,
-	icon = "img/icons/DNT_acid_icon.png",
-	icon_glow = "img/icons/DNT_acid_icon_glow.png",
-	icon_offset = Point(8,17),
+	func = DNT_psionTraitB, -- maybe change this name?
+	icon = "img/combat/icons/icon_acid_immune.png", --"img/combat/icons/icon_acid_immune.png",
+	icon_glow = "img/combat/icons/icon_acid_immune_glow.png", --"img/combat/icons/icon_acid_glow_immune.png",
+	icon_offset = Point(6,15),
 	desc_title = "Caustic Glands",
-	desc_text = "The Corrosive Psion causes Vek to leave A.C.I.D. on death and apply it to adjacent enemies at the start of the player's turn.",
+	desc_text = "The Corrosive Psion remove A.C.I.D. from other vek every turn and cause their attacks to apply A.C.I.D.",
 }
 
 ------------------------
@@ -322,6 +301,55 @@ local HOOK_pawnUntracked = function(mission, pawn)
 	end
 end
 
+-- psion acid attack / no friendly fire
+
+local DNT_AcidAttack = function(mission, p1, skillEffect)
+	local pawn = Board:GetPawn(p1)
+	if mission and mission[DNT_PSION] and pawn and DNT_PsionTarget(pawn) then
+		if skillEffect.q_effect ~= nil then -- and pawn:GetTeam() == TEAM_ENEMY then
+			for i = 1, skillEffect.q_effect:size() do
+				local spaceDamage = skillEffect.q_effect:index(i)
+				local damage = spaceDamage.iDamage
+				if damage > 0 then -- and dpawn then
+					spaceDamage.iAcid = EFFECT_CREATE
+				end
+			end
+		end
+
+		if skillEffect.effect ~= nil then -- and pawn:GetTeam() == TEAM_ENEMY then
+			for i = 1, skillEffect.effect:size() do
+				local spaceDamage = skillEffect.effect:index(i)
+				local damage = spaceDamage.iDamage
+				if damage > 0 and damage ~= DAMAGE_DEATH then
+					spaceDamage.iAcid = EFFECT_CREATE
+				end
+			end
+		end
+	end
+end
+
+local HOOK_onSkillBuild = function(mission, pawn, weaponId, p1, p2, skillEffect)
+	DNT_AcidAttack(mission, p1, skillEffect)
+end
+
+
+local HOOK_onFinalEffectBuild = function(mission, pawn, weaponId, p1, p2, p3, skillEffect)
+	DNT_AcidAttack(mission, p1, skillEffect)
+end
+
+-- -- psion acid immune / acid heal
+-- local function HOOK_PawnIsAcid(mission, pawn, isAcid)
+	-- if mission[DNT_PSION] and isAcid and pawn:GetType() ~= DNT_PSION then
+		-- if _G[pawn:GetType()].DefaultFaction ~= FACTION_BOTS and not _G[pawn:GetType()].Minor then
+			-- if pawn:GetTeam() == TEAM_ENEMY or (pawn:IsMech() and IsPassiveSkill("Psion_Leech")) then
+				-- pawn:SetAcid(false)
+				-- -- Board:DamageSpace(pawn:GetSpace(), -1)
+			-- end
+		-- end
+	-- end
+-- end
+
+
 -- add / remove trait when selected / highlighted
 local HOOK_tileHighlighted = function(mission, point)
 	if isMissionBoard() then
@@ -373,45 +401,20 @@ local function HOOK_nextTurn(mission)
 			end
 		end
 	end
-	if mission[DNT_PSION] and Game:GetTeamTurn() == TEAM_PLAYER then
+	if mission[DNT_PSION] and Game:GetTeamTurn() == TEAM_PLAYER then --TEAM_ENEMY then
 		local pawnList = extract_table(Board:GetPawns(TEAM_ANY))
-		local pNumber = false
 		for i = 1, #pawnList do
 			local currPawn = Board:GetPawn(pawnList[i])
-			if DNT_PsionTarget(currPawn) then
-				local effect = SkillEffect()
-				local p1 = currPawn:GetSpace()
-				for i = DIR_START, DIR_END do
-					local p2 = p1 + DIR_VECTORS[i]
-					local adjPawn = Board:GetPawn(p2)
-					if adjPawn and adjPawn:GetTeam() ~= currPawn:GetTeam() and adjPawn:GetTeam() ~= TEAM_NONE then
-						pNumber = true
-						adjPawn:SetAcid(true) -- instead of adding on damage for reset turn to work
-						local damage = SpaceDamage(p2)
-						damage.sSound = "/props/acid_splash"
-						-- damage.sAnimation = "ExploFirefly2" -- has too much delay
-						damage.sScript = string.format("Board:AddAnimation(%s,'ExploFirefly2',ANIM_NO_DELAY)",p2:GetString())
-						effect:AddProjectile(p1,damage,"effects/shot_firefly2",NO_DELAY)
-					end
-				end
-				Board:AddEffect(effect)
-				-- if pNumber then
-					-- Board:Ping(currPawn:GetSpace(), GL_Color(0,255,0))
-					-- Board:AddBurst(currPawn:GetSpace(),BURST_UP,DIR_NONE)
-				-- end
+			local pNumber = false
+			if DNT_PsionTarget(currPawn) and currPawn:IsAcid() then
+				pNumber = true
+				currPawn:SetAcid(false)
+				Board:Ping(currPawn:GetSpace(),GL_Color(0,255,0))
+				Board:AddBurst(currPawn:GetSpace(),BURST_UP,DIR_NONE)
 			end
-		end
-		if pNumber then
-			-- DNT_Sound_Buff()
-			-- Game:TriggerSound("/props/acid_splash")
-		end
-	end
-end
-
-local HOOK_pawnKilled = function(mission, pawn)
-	if isMissionBoard() then
-		if DNT_PsionTarget(pawn) then
-			pawn:SetAcid(true)
+			if pNumber then
+				DNT_Sound_Buff()
+			end
 		end
 	end
 end
@@ -421,9 +424,8 @@ local function EVENT_onModsLoaded()
 	------------------------ add your hooks here------------------------
 	DNT_Vextra_ModApiExt:addPawnTrackedHook(HOOK_pawnTracked)
 	DNT_Vextra_ModApiExt:addPawnUntrackedHook(HOOK_pawnUntracked)
-	DNT_Vextra_ModApiExt:addPawnKilledHook(HOOK_pawnKilled)
-	-- DNT_Vextra_ModApiExt:addSkillBuildHook(HOOK_onSkillBuild)
-	-- DNT_Vextra_ModApiExt:addFinalEffectBuildHook(HOOK_onFinalEffectBuild)
+	DNT_Vextra_ModApiExt:addSkillBuildHook(HOOK_onSkillBuild)
+	DNT_Vextra_ModApiExt:addFinalEffectBuildHook(HOOK_onFinalEffectBuild)
 	-- DNT_Vextra_ModApiExt:addPawnIsAcidHook(HOOK_PawnIsAcid)
 
 	------------------------ do not change this -------------------------
