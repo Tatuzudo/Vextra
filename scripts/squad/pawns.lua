@@ -15,6 +15,7 @@ for _, ptname in pairs(names) do
 		Sex = SEX_VEK,
 		Rarity = 0,
 		Skill = "Survive_Death",
+		Blacklist = {"Invulnerable", "Popular"},
 	}
 end
 
