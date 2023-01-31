@@ -80,16 +80,16 @@ modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."Boss.png",resourcePath..
 -------------
 
 DNT_IceCrawlerAtk1 = Skill:new {
-	Name = "Cryo Chillthrower",
-	Description = "Release an icy gas with 3 range that deals more damage the farther it travels and freezes. Stops at buildings and mountains.",
-	Damage = 2,
-	MinDamage = 0, --Starting Damage
+	Name = "Freezing Chillthrower",
+	Description = "Release an icy gas with 3 range that freezes and damages. Stops at buildings and mountains.",
+	Damage = 1,
+	--MinDamage = 0, --Starting Damage
 	Range = 3,
 	Class = "Enemy",
 	FreezeSelf = false, -- set true and uncomment the hooks to test with self freeze
 	ExplodeIce = false,
 	ExtraTiles = false,
-	DamageIncrease = 1,
+	DamageIncrease = 0,
 	LaunchSound = "/weapons/flamespreader",
 	ImpactSound = "/impact/generic/explosion",
 	Projectile = "effects/shot_tankice",
@@ -106,8 +106,9 @@ DNT_IceCrawlerAtk1 = Skill:new {
 }
 
 DNT_IceCrawlerAtk2 = DNT_IceCrawlerAtk1:new {
-	Damage = 3,
-	MinDamage = 1, --Starting Damage
+	Name = "Cryo Chillthrower",
+	Damage = 2,
+	--MinDamage = 1, --Starting Damage
 	TipImage = {
 		Unit = Point(2,3),
 		Target = Point(2,2),
@@ -118,11 +119,11 @@ DNT_IceCrawlerAtk2 = DNT_IceCrawlerAtk1:new {
 }
 DNT_IceCrawlerAtkB = DNT_IceCrawlerAtk1:new {
 	Name = "Subzero Chillthrower",
-	Description = "Release an icy gas in two directions with 3 range that deals more damage the farther it travels and freezes. Explodes existing ice out sideways. Stops at buildings and mountains.",
-	Damage = 3,
-	MinDamage = 1, --Starting Damage
+	Description = "Release an icy gas with 3 range that freezes and damages. Explodes existing ice out sideways. Stops at buildings and mountains.",
+	Damage = 2,
+	--MinDamage = 1, --Starting Damage
 	ExplodeIce = true,
-	ExtraTiles = true,
+	ExtraTiles = false,
 	TipImage = {
 		Unit = Point(2,3),
 		Target = Point(2,2),
@@ -130,7 +131,6 @@ DNT_IceCrawlerAtkB = DNT_IceCrawlerAtk1:new {
 		Building = Point(2,1),
 		Enemy2 = Point(1,2),
 		Building2 = Point(3,1),
-		Mountain = Point(2,4),
 		Second_Origin = Point(2,3),
 		Second_Target = Point(2,2),
 		CustomPawn = "DNT_IceCrawlerBoss",
@@ -189,7 +189,7 @@ function DNT_IceCrawlerAtk1:GetSkillEffect(p1,p2)
 			ret:AddQueuedDamage(animation2)
 		end
 
-		local currentDamage = (currentDistance+self.MinDamage-1)*self.DamageIncrease
+		local currentDamage = ((currentDistance-1)*self.DamageIncrease)+self.Damage--self.MinDamage
 		local tpawn = Board:GetPawn(target)
 		local burrower = false
 		if tpawn and _G[tpawn:GetType()].Burrows then burrower = true end
@@ -239,7 +239,7 @@ function DNT_IceCrawlerAtk1:GetSkillEffect(p1,p2)
 	end
 
 	--Achievement Check
-	if DNT_DES_Count >= 3 and Board:GetPawn(p1):GetType() == "DNT_IceCrawlerBoss" then
+	if DNT_DES_Count >= 3 then -- and Board:GetPawn(p1):GetType() == "DNT_IceCrawlerBoss"
 		ret:AddQueuedScript('DNT_VextraChevio("DNT_DoubleEdgedSword")')
 	end
 	return ret
@@ -274,7 +274,7 @@ DNT_IceCrawler1 = Pawn:new
 	{
 		Name = "Ice Crawler",
 		Health = 2,
-		MoveSpeed = 3,
+		MoveSpeed = 4,
 		Ranged = 1,
 		Image = "DNT_icecrawler", --Image = "DNT_IceCrawler"
 		SkillList = {"DNT_IceCrawlerAtk1"},
@@ -289,7 +289,7 @@ DNT_IceCrawler2 = Pawn:new
 	{
 		Name = "Alpha Ice Crawler",
 		Health = 4,
-		MoveSpeed = 3,
+		MoveSpeed = 4,
 		Ranged = 1,
 		SkillList = {"DNT_IceCrawlerAtk2"},
 		MoveSkill = "DNT_IceCrawlerMove",
@@ -306,7 +306,7 @@ DNT_IceCrawlerBoss = Pawn:new
 	{
 		Name = "Ice Crawler Leader",
 		Health = 6,
-		MoveSpeed = 3,
+		MoveSpeed = 4,
 		Ranged = 1,
 		SkillList = {"DNT_IceCrawlerAtkB"},
 		MoveSkill = "DNT_IceCrawlerMove",
