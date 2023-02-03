@@ -97,7 +97,7 @@ local achievements = {
 	DNT_DoubleEdgedSword = modApi.achievements:add{ --Check In Weapon
 		id = "DNT_DoubleEdgedSword",
 		name = "Double Edged Sword",
-		tooltip = "Have the Ice Crawler hit 3 enemies in a single attack",
+		tooltip = "Have an Ice Crawler hit 3 enemies in a single attack",
 		image = mod.resourcePath.."img/achievements/doubleedgedsword.png",
 		objective = 1,
 		global = global,
@@ -226,6 +226,7 @@ end
 local flyAttack = false -- Dragon Slayer
 local fireCount = 0 -- We Didn't Start the Fire
 local dragonflyAttack = false -- We Didn't Start the Fire
+local pillbugAttack = false -- Suicidal
 
 -- Hook Functions
 --Mission Hooks
@@ -383,6 +384,13 @@ local function HOOK_PawnKilled(mission, pawn)
 				mission.RW_SameTurn = true
 			end
 		end
+		
+		--Suicidal
+		if not achievements.DNT_Suicidal:isComplete() then
+			if pawn:GetId() == pillbugAttack then
+				achievements.DNT_Suicidal:addProgress(1)
+			end
+		end
 	end
 end
 
@@ -430,18 +438,18 @@ local function HOOK_QueuedSkillStart(mission, pawn, weaponId, p1, p2)
 			dragonflyAttack = true
 			fireCount = 0
 		end
+		-- Suicidal
+		if not achievements.DNT_Suicidal:isComplete() and pawn:GetType():find("^DNT_Pillbug") then
+			pillbugAttack = pawn:GetId()
+		end
 	end
 end
 
 local function HOOK_QueuedSkillEnd(mission, pawn, weaponId, p1, p2)
 	if isMissionBoard() then
 		-- Suicidal
-		if not achievements.DNT_Suicidal:isComplete() and pawn:GetType():find("^DNT_Pillbug") then
-			local terrain = Board:GetTerrain(p2)
-			local terrainDeadly = (terrain == TERRAIN_WATER and _G[pawn:GetType()].Massive == false) or terrain == TERRAIN_HOLE
-			if terrainDeadly and not Board:GetPawn(p2) then
-				achievements.DNT_Suicidal:addProgress(1)
-			end
+		if pawn:GetType():find("^DNT_Pillbug") and not pawn:IsMech() then
+			pillbugAttack = false
 		end
 		-- Dragon Slayer (End Fly attack)
 		modApi:scheduleHook(500, function()

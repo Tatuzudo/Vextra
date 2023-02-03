@@ -315,9 +315,6 @@ end
 local HOOK_pawnKilled = function(mission, pawn)
 	if isMissionBoard() then
 		if DNT_PsionTarget(pawn) then
-			local blockMove = SkillEffect()
-			blockMove:AddDelay(1)
-			Board:AddEffect(blockMove)
 			modApi:scheduleHook(1000, function()
 				if mission[DNT_PSION] then
 					local effect = SkillEffect()
@@ -330,6 +327,7 @@ local HOOK_pawnKilled = function(mission, pawn)
 						damage.sAnimation = "airpush_"..i
 						effect:AddDamage(damage)
 					end
+					effect:AddDelay(1.0)
 					Board:AddEffect(effect)
 				end
 			end)
