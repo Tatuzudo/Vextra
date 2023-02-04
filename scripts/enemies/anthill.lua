@@ -58,7 +58,7 @@ a.DNT_workerantd = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Loop
 
 
 
-name = "flyingant"
+name = "fant"
 
 modApi:appendAsset(writepath.."DNT_"..name..".png", readpath.."DNT_"..name..".png")
 modApi:appendAsset(writepath.."DNT_"..name.."a.png", readpath.."DNT_"..name.."a.png")
@@ -66,9 +66,9 @@ modApi:appendAsset(writepath.."DNT_"..name.."_death.png", readpath.."DNT_"..name
 
 local base = a.EnemyUnit:new{Image = imagepath .. "DNT_"..name..".png", PosX = -26, PosY = -6, Height = 1}
 
-a.DNT_flyingant = base
-a.DNT_flyinganta = base:new{ Image = imagepath.."DNT_"..name.."a.png", NumFrames = 4 }
-a.DNT_flyingantd = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Loop = false, NumFrames = 6, Time = .15 } --Numbers copied for now
+a.DNT_fant = base
+a.DNT_fanta = base:new{ Image = imagepath.."DNT_"..name.."a.png", NumFrames = 4 }
+a.DNT_fantd = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Loop = false, NumFrames = 6, Time = .15 } --Numbers copied for now
 
 
 
@@ -86,7 +86,7 @@ a.DNT_soldierantd = base:new{ Image = imagepath.."DNT_"..name.."_death.png", Loo
 
 --projectiles
 modApi:appendAsset("img/effects/DNT_WorkerAnt1_upshot.png", resourcePath .. "img/effects/DNT_WorkerAnt1_upshot.png")
-modApi:appendAsset("img/effects/DNT_FlyingAnt1_upshot.png", resourcePath .. "img/effects/DNT_FlyingAnt1_upshot.png")
+modApi:appendAsset("img/effects/DNT_FAnt1_upshot.png", resourcePath .. "img/effects/DNT_FAnt1_upshot.png")
 modApi:appendAsset("img/effects/DNT_SoldierAnt1_upshot.png", resourcePath .. "img/effects/DNT_SoldierAnt1_upshot.png")
 
 -----------------
@@ -101,7 +101,7 @@ modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."Boss.png",resourcePath..
 
 -- Ants
 modApi:appendAsset("img/portraits/enemy/DNT_WorkerAnt1.png",resourcePath.."img/portraits/enemy/DNT_WorkerAnt1.png")
-modApi:appendAsset("img/portraits/enemy/DNT_FlyingAnt1.png",resourcePath.."img/portraits/enemy/DNT_FlyingAnt1.png")
+modApi:appendAsset("img/portraits/enemy/DNT_FAnt1.png",resourcePath.."img/portraits/enemy/DNT_FAnt1.png")
 modApi:appendAsset("img/portraits/enemy/DNT_SoldierAnt1.png",resourcePath.."img/portraits/enemy/DNT_SoldierAnt1.png")
 
 -------------
@@ -116,7 +116,7 @@ DNT_AnthillAtk1 = Skill:new {
 	Class = "Enemy",
 	LaunchSound = "/enemy/shaman_1/attack_launch",
 	ImpactSound = "/enemy/spider_boss_1/attack_egg_land",
-	Spawns = {"DNT_WorkerAnt1","DNT_FlyingAnt1","DNT_SoldierAnt1"},
+	Spawns = {"DNT_WorkerAnt1","DNT_FAnt1","DNT_SoldierAnt1"},
 	DoubleSpawn = false,
 	TipImage = {
 		Unit = Point(2,2),
@@ -129,7 +129,7 @@ DNT_AnthillAtk1 = Skill:new {
 }
 
 DNT_AnthillAtk2 = DNT_AnthillAtk1:new {
-	Spawns = {"DNT_WorkerAnt1","DNT_WorkerAnt1","DNT_FlyingAnt1","DNT_FlyingAnt1","DNT_SoldierAnt1"},
+	Spawns = {"DNT_WorkerAnt1","DNT_WorkerAnt1","DNT_FAnt1","DNT_FAnt1","DNT_SoldierAnt1"},
 	TipImage = {
 		Unit = Point(2,2),
 		Building = Point(2,1),
@@ -143,7 +143,7 @@ DNT_AnthillAtk2 = DNT_AnthillAtk1:new {
 DNT_AnthillAtkBoss = DNT_AnthillAtk1:new {
 	Name = "Ant Rain",
 	Description = "Spawn two soldier, flying or worker ants. Spawn stronger ants at higher health.",
-	Spawns = {"DNT_WorkerAnt1","DNT_FlyingAnt1","DNT_FlyingAnt1","DNT_SoldierAnt1"},
+	Spawns = {"DNT_WorkerAnt1","DNT_FAnt1","DNT_FAnt1","DNT_SoldierAnt1"},
 	DoubleSpawn = true,
 	TipImage = {
 		Unit = Point(2,2),
@@ -265,7 +265,7 @@ function DNT_WorkerAntAtk:GetSkillEffect(p1,p2)
 	return ret
 end
 
-DNT_FlyingAntAtk = DNT_WorkerAntAtk:new {
+DNT_FAntAtk = DNT_WorkerAntAtk:new {
 	Name = "Sharp Sting",
 	Description = "Prepares to sting an adjacent tile",
 	Damage = 1,
@@ -273,11 +273,11 @@ DNT_FlyingAntAtk = DNT_WorkerAntAtk:new {
 		Unit = Point(2,2),
 		Target = Point(2,1),
 		Enemy = Point(2,1),
-		CustomPawn = "DNT_FlyingAnt1",
+		CustomPawn = "DNT_FAnt1",
 	}
 }
 
-function DNT_FlyingAntAtk:GetSkillEffect(p1,p2)
+function DNT_FAntAtk:GetSkillEffect(p1,p2)
 	local ret = SkillEffect()
 	local dir = GetDirection(p2 - p1)
 	local damage = SpaceDamage(p2,self.Damage)
@@ -364,22 +364,22 @@ DNT_WorkerAnt1 = Pawn:new
 	}
 AddPawn("DNT_WorkerAnt1")
 
--- FlyingAnt
-DNT_FlyingAnt1 = Pawn:new
+-- FAnt
+DNT_FAnt1 = Pawn:new
 	{
 		Name = "Flying Ant",
 		Health = 1,
 		MoveSpeed = 3,
 		Flying = true,
 		SpawnLimit = false,
-		Image = "DNT_flyingant", --lowercase
-		SkillList = {"DNT_FlyingAntAtk"},
+		Image = "DNT_fant", --lowercase
+		SkillList = {"DNT_FAntAtk"},
 		SoundLocation = "/enemy/hornet_1/",
 		DefaultTeam = TEAM_ENEMY,
 		ImpactMaterial = IMPACT_INSECT,
 		Minor = true,
 	}
-AddPawn("DNT_FlyingAnt1")
+AddPawn("DNT_FAnt1")
 
 -- SoldierAnt
 DNT_SoldierAnt1 = Pawn:new
