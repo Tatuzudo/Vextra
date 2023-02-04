@@ -370,6 +370,9 @@ local mine_damage_leader = SpaceDamage(0)
 mine_damage_beta.sAnimation = "DNT_cockroach_explo_beta"
 mine_damage_alpha.sAnimation = "DNT_cockroach_explo_alpha"
 mine_damage_leader.sAnimation = "DNT_cockroach_explo_leader"
+mine_damage_beta.sSound = "/enemy/hornet_1/death"
+mine_damage_alpha.sSound = "/enemy/hornet_1/death"
+mine_damage_leader.sSound = "/enemy/hornet_1/death"
 
 
 DNT_Item_Blank = {

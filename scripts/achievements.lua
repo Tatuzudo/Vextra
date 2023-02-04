@@ -307,7 +307,7 @@ local function Hook_MissionEnd(mission)
 		if pawnList and #pawnList > 0 then
 			for i = 1, #pawnList do
 				local pawnName = Board:GetPawn(pawnList[i]):GetType()
-				local antNames = {"DNT_WorkerAnt", "DNT_FlyingAnt", "DNT_SoldierAnt", "DNT_Anthill"}
+				local antNames = {"DNT_WorkerAnt", "DNT_FAnt", "DNT_SoldierAnt", "DNT_Anthill"}
 				for i = 1, #antNames do
 					if pawnName:find(antNames[i]) then
 						return
@@ -384,7 +384,7 @@ local function HOOK_PawnKilled(mission, pawn)
 				mission.RW_SameTurn = true
 			end
 		end
-		
+
 		--Suicidal
 		if not achievements.DNT_Suicidal:isComplete() then
 			if pawn:GetId() == pillbugAttack then
