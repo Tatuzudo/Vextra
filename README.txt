@@ -1,6 +1,6 @@
 VEXTRA
 An Into the Breach Vek Mod By: Djinn, NamesAreHard, Tatu, and Hedera
-v1.0.0
+v1.0.1
 
 We've heard your cries for more Vek, and we've delivered. Introducing "Vextra", the largest Vek mod created to date. With a full team of 4 modders, we've added 5 new core Vek, 7 new unique Vek, 5 new psions, and a custom boss. With this, Vextra provides a new opportunity. Vextra can be merged with the vanilla Vek, but also provides the same variety as Vanilla did (pre-AE) and can be played standalone, for a fully unique experience.
 
@@ -82,3 +82,9 @@ Thanks to all playtesters who gave positive feedback throughout the project and 
 Ultra Special Thanks:
 Lemonymous: Provided insane help for the cockroach when it was looking grim, and like a million other things
 Thanks a ton
+
+Bug and Balance Reports After Playtesting:
+Paradoxica
+tosx
+Elekitu
+Moaneytoe

@@ -80,3 +80,48 @@ Tons of achievements to unlock of various difficulties and objectives
 Some Updates to Winter Psion to make its effects more readable
 Changes to Acid Psion
 Fixed a bug where Vextra Bosses wouldn't show up on the fourth island in Unfair Mode
+
+Version 1.0.1
+Bug Fixes:
+Fixed an issue where antlion would crack cracked ice, resulting in instant objective kills
+Fixed an issue with the subzero achievement where it wouldn't trigger at the end of a mission
+Fixed an issue with the reactive psion where you could move before it activated
+Overhauled Mission Impossible Achievement
+	Closing the game no longer invalidates the achievement
+	It now checks the lists at the start of the game so if they are changed mid run it still works
+	The achievement now tells you whether your current run is valid, and how many islands are complete
+Fixed many cockroach bugs:
+	Alpha and leader revive animation no longer plays in reverse
+	Beta Cockroach no longer disappears in its tooltip
+	Arachnoids properly spawn after resetting or quitting the game and then killing a cockroach
+		We got no clue on that one
+Blacklisted Popular Hero and Invulnerable on Secret Squad pilots now that we can do that
+Optimized the isopod achievement to work more consistently
+Fixed an issue where flying ants would cause a console error when spawning and could trigger the Dragonslayer achievement
+
+Balance Changes:
+Nerfed Stinkbug Leader so it's line of stink only goes out two tiles instead of infinitely
+	This nerf also goes to the secret squad
+Antlion Hp Core: 3 --> 2 Unique: 5 --> 4
+Thunderbug got a small stat buff to help solidify its place in Unique
+Nurse Psion can now be killed by friendly fire
+Termites are now Core Enemies and Antlions are now Unique
+	Burrowers in Core were causing issues, and preventing termites attack was too easy
+Chagned Acid Psion
+	Vek Leave A.C.I.D. on death and apply it to adjacent enemies at the start of the player's turn
+Changed Termite to be less confusing
+	If the space in front of them is empty they will dash forward one space and leave a rock
+	The leader no longer spawns a rock in front before dashing, but now spawns explosive rocks
+Changed Ice Crawler to be less confusing:
+	Increased Damage is now removed: Core: 1 Unique: 2 Leader: 2
+	Leader no longer has two directions, but still has ice explosion
+	Changed the achievement to match: Have an Ice Crawler hit 3 enemies in a single attack
+
+Misc.
+Updated some portraits
+Fixed some typos
+Made Antlion Animation more readable
+Updated how Psion Icons works
+Optimized stink clouds and added a description
+Updated Winter psion text
+Added sounds to killing a cockroach corpse
