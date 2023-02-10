@@ -111,6 +111,12 @@ local function metadata()
 		"Check to reset all tutorial tooltips for this profile.",
 		{ enabled = false }
 	)
+	modApi:addGenerationOption(
+		"DNT_WindExceptions",
+		"Ladybug Wind Torrent Exception",
+		"Check to prevent the Ladybug from affecting wind torrent. (restart required)",
+		{ enabled = false }
+	)
 end
 
 return {

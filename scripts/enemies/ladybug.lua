@@ -1,4 +1,5 @@
 local mod = mod_loader.mods[modApi.currentMod]
+local options = mod_loader.currentModContent[mod.id].options
 local resourcePath = mod.resourcePath
 local scriptPath = mod.scriptPath
 --local previewer = require(scriptPath.."weaponPreview/api")
@@ -8,6 +9,7 @@ local writepath = "img/units/aliens/"
 local readpath = resourcePath .. writepath
 local imagepath = writepath:sub(5,-1)
 local a = ANIMS
+
 
 local function IsTipImage()
 	return Board:GetSize() == Point(6,6)
@@ -220,7 +222,7 @@ end
 local function AdjustTargetArea(mission, pawn, weaponId, p1, targetArea)
 	--Only when there's a ladybug
 	if not mission then return end
-	if mission.DNT_LadybugID and Board:IsPawnAlive(mission.DNT_LadybugID) and pawn:GetTeam() == TEAM_PLAYER then
+	if mission.DNT_LadybugID and Board:IsPawnAlive(mission.DNT_LadybugID) and pawn:GetTeam() == TEAM_PLAYER and not _G[weaponId].DNT_LadybugException then
 		local targets = extract_table(targetArea)
 		for _, point in pairs(targets) do
 			if isLadybug(Board:GetPawn(point)) then
@@ -253,64 +255,14 @@ function this:load(DNT_Vextra_ModApiExt)
 
 end
 
+--Wind Torrent Exception
+if options.DNT_WindExceptions and options.DNT_WindExceptions.enabled then
+	Support_Wind = Support_Wind:new{
+		DNT_LadybugException = true
+	}
+	Support_Wind_A = Support_Wind_A:new{
+		DNT_LadybugException = true
+	}
+end
+
 return this
-
-
-
-
---[[Hook that baits mechs
-local function SkillBuild(mission, pawn, weaponId, p1, p2, skillEffect)
-	if pawn:GetTeam() == TEAM_PLAYER and pawn:IsMech() and not IsTipImage() then --?
-		local pawn = Board:GetPawn(p2)
-		if isLadybug(pawn) then --Don't go on, we're targetting a ladybug
-			return
-		end
-		local weapon = _G[weaponId]
-		local areaPoints = weapon:GetTargetArea(p1)
-		for _,v in pairs(extract_table(areaPoints)) do
-			pawn = Board:GetPawn(v)
-			if isLadybug(pawn) then --There is a ladybug and we aren't targetting it
-				--Ping the ladybug(s) and add damage
-				local point = pawn:GetSpace()
-				skillEffect:AddScript("
-					local v = Point("..v:GetString()..")
-					Board:Ping(v, GL_Color(255, 0, 0))
-					Board:AddAlert(v, 'DIDN\'T TARGET')
-				")
-				local punishmentDmg = _G[pawn:GetType()].PunishmentDamage
-
-				local icon = SpaceDamage(point, 0)
-				icon.sImageMark = "icons/DNT_ladybug_icon.png"
-				skillEffect:AddDamage(icon)
-
-				--Save old effect
-				local oldEffect = skillEffect.effect
-				local oldEffectCopy = DamageList()
-				--Make a copy
-				for i = 1, oldEffect:size() do
-					local oldDamage = oldEffect:index(i);
-					oldEffectCopy:push_back(oldDamage)
-				end
-
-				--ADD SELF DAMAGE TO SKILL EFFECT
-				skillEffect.effect = DamageList()
-				local damage = SpaceDamage(p1, punishmentDmg) --Add up? Biggest One? This is temporary
-				--damage.sImageMark = "icons/fail.png"
-				--damage.sImageMark = "icons/DNT_ladybug_icon.png"
-				skillEffect.effect:push_back(damage)
-
-				--Add old effect back in
-				for i = 1, oldEffectCopy:size() do
-					oldDamage = oldEffectCopy:index(i);
-					skillEffect.effect:push_back(oldDamage)
-				end
-			end
-		end
-	end
-end
---]]
---[[
-local function PawnHealedHook(mission, pawn, healingTaken)
-	LOG(pawn:GetType() .. " was healed for " .. healingTaken .. " damage!")
-end
-]]--
