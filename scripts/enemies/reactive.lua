@@ -312,25 +312,39 @@ local HOOK_pawnUntracked = function(mission, pawn)
 	end
 end
 
+local canExplode = true
 local HOOK_pawnKilled = function(mission, pawn)
 	if isMissionBoard() then
 		if DNT_PsionTarget(pawn) then
-			modApi:scheduleHook(1000, function()
-				if mission[DNT_PSION] then
-					local effect = SkillEffect()
-					local pos = pawn:GetSpace()
-					effect:AddAnimation(pos,"ExploRepulse3")
-					effect:AddSound("/weapons/science_repulse")
-					for i = DIR_START, DIR_END do
-						damage = SpaceDamage(pos + DIR_VECTORS[i], 0)
-						damage.iPush = i
-						damage.sAnimation = "airpush_"..i
-						effect:AddDamage(damage)
-					end
-					effect:AddDelay(1.0)
-					Board:AddEffect(effect)
+			
+			modApi:conditionalHook(
+				function()
+					-- return Board and Board:GetBusyState() == 0
+					return canExplode
+				end,
+				function()
+					canExplode = false
+					local makeBusy = SkillEffect()
+					makeBusy:AddDelay(1.0)
+					Board:AddEffect(makeBusy)
+					modApi:scheduleHook(1000, function()
+						if mission[DNT_PSION] then
+							local effect = SkillEffect()
+							local pos = pawn:GetSpace()
+							effect:AddAnimation(pos,"ExploRepulse3")
+							effect:AddSound("/weapons/science_repulse")
+							for i = DIR_START, DIR_END do
+								damage = SpaceDamage(pos + DIR_VECTORS[i], 0)
+								damage.iPush = i
+								damage.sAnimation = "airpush_"..i
+								effect:AddDamage(damage)
+							end
+							Board:AddEffect(effect)
+						end
+						canExplode = true
+					end)
 				end
-			end)
+			)
 		end
 	end
 end
