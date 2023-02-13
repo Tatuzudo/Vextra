@@ -14,6 +14,8 @@ local function IsTipImage()
 	return Board:GetSize() == Point(6,6)
 end
 
+local function DNT_hash(point) return point.x + point.y*10 end
+
 -------------
 --  Icons  --
 -------------
@@ -155,7 +157,8 @@ function DNT_StinkbugAtk1:GetSkillEffect(p1,p2)
 		if L then
 			local dir2 = dir+1 > 3 and 0 or dir+1
 			local p3 = p1 + DIR_VECTORS[dir2]*i
-			ret:AddScript(string.format("table.insert(GetCurrentMission().DNT_FartList,%s)",p3:GetString())) -- insert point in fart list
+			-- ret:AddScript(string.format("table.insert(GetCurrentMission().DNT_FartList,%s)",p3:GetString())) -- insert point in fart list
+			ret:AddScript("GetCurrentMission().DNT_FartList["..DNT_hash(p3).."] = "..p3:GetString()) -- insert point in fart list
 			local damage = SpaceDamage(p3,0) -- smoke
 			damage.sAnimation = FartAppear
 			damage.iSmoke = EFFECT_CREATE
@@ -166,7 +169,8 @@ function DNT_StinkbugAtk1:GetSkillEffect(p1,p2)
 		if R then
 			local dir3 = dir-1 < 0 and 3 or dir-1
 			local p4 = p1 + DIR_VECTORS[dir3]*i
-			ret:AddScript(string.format("table.insert(GetCurrentMission().DNT_FartList,%s)",p4:GetString())) -- insert other fart point
+			-- ret:AddScript(string.format("table.insert(GetCurrentMission().DNT_FartList,%s)",p4:GetString())) -- insert other fart point
+			ret:AddScript("GetCurrentMission().DNT_FartList["..DNT_hash(p4).."] = "..p4:GetString()) -- insert point in fart list
 			local damage = SpaceDamage(p4,0) -- smoke
 			damage.sAnimation = FartAppear
 			damage.iSmoke = EFFECT_CREATE
@@ -413,28 +417,28 @@ local HOOK_MissionUpdate = function(mission)
 			local anim1 = IsPassiveSkill("Electric_Smoke") and "DNT_FartFrontDark" or "DNT_FartFront"
 			local anim2 = IsPassiveSkill("Electric_Smoke") and "DNT_FartBackDark" or "DNT_FartBack"
 			local anim3 = IsPassiveSkill("Electric_Smoke") and "DNT_FartAppearDark" or "DNT_FartAppear"
-			for i = 1, #farts do
-				if Board:IsSmoke(farts[i]) then -- add effects on tiles with smoke
+			for i,p in pairs(farts) do
+				if Board:IsSmoke(p) then -- add effects on tiles with smoke
 					if reFart == 1 then -- remove first when loading game
-						customAnim:Rem(mission,farts[i],anim1)
-						customAnim:Rem(mission,farts[i],anim2)
+						customAnim:Rem(mission,p,anim1)
+						customAnim:Rem(mission,p,anim2)
 					end
-					if not customAnim:Is(mission,farts[i],anim1) then
-						customAnim:Add(mission,farts[i],anim1)
-						customAnim:Add(mission,farts[i],anim2)
+					if not customAnim:Is(mission,p,anim1) then
+						customAnim:Add(mission,p,anim1)
+						customAnim:Add(mission,p,anim2)
 					end
-				elseif customAnim:Is(mission,farts[i],"DNT_FartFront") then  -- remove effects on tiles without smoke
-					customAnim:Rem(mission,farts[i],"DNT_FartFront")
-					customAnim:Rem(mission,farts[i],"DNT_FartBack")
-					Board:AddAnimation(farts[i],"DNT_FartAppear",ANIM_REVERSE)
-				elseif customAnim:Is(mission,farts[i],"DNT_FartFrontDark") then  -- remove effects on tiles without electric smoke
-					customAnim:Rem(mission,farts[i],"DNT_FartFrontDark")
-					customAnim:Rem(mission,farts[i],"DNT_FartBackDark")
-					Board:AddAnimation(farts[i],"DNT_FartAppearDark",ANIM_REVERSE)
+				elseif customAnim:Is(mission,p,"DNT_FartFront") then  -- remove effects on tiles without smoke
+					customAnim:Rem(mission,p,"DNT_FartFront")
+					customAnim:Rem(mission,p,"DNT_FartBack")
+					Board:AddAnimation(p,"DNT_FartAppear",ANIM_REVERSE)
+				elseif customAnim:Is(mission,p,"DNT_FartFrontDark") then  -- remove effects on tiles without electric smoke
+					customAnim:Rem(mission,p,"DNT_FartFrontDark")
+					customAnim:Rem(mission,p,"DNT_FartBackDark")
+					Board:AddAnimation(p,"DNT_FartAppearDark",ANIM_REVERSE)
 				end
 				-- tile tip
-				if not Board:IsEnvironmentDanger(farts[i]) then
-					Board:MarkSpaceDesc(farts[i],"DNT_fart_tile")
+				if not Board:IsEnvironmentDanger(p) then
+					Board:MarkSpaceDesc(p,"DNT_fart_tile")
 				end
 			end
 			if reFart > 0 then
@@ -456,12 +460,12 @@ local HOOK_nextTurn = function(mission) -- delete farts after all the vek attack
 			local anim1 = IsPassiveSkill("Electric_Smoke") and "DNT_FartFrontDark" or "DNT_FartFront"
 			local anim2 = IsPassiveSkill("Electric_Smoke") and "DNT_FartBackDark" or "DNT_FartBack"
 			local anim3 = IsPassiveSkill("Electric_Smoke") and "DNT_FartAppearDark" or "DNT_FartAppear"
-			for i = 1, #farts do
-				if Board:IsSmoke(farts[i]) and customAnim:Is(mission,farts[i],anim1) then -- only delete farts, not normal smoke
-					Board:SetSmoke(farts[i],false,false)
-					customAnim:Rem(mission,farts[i],anim1)
-					customAnim:Rem(mission,farts[i],anim2)
-					Board:AddAnimation(farts[i],anim3,ANIM_REVERSE)
+			for i,p in pairs(farts) do
+				if Board:IsSmoke(p) and customAnim:Is(mission,p,anim1) then -- only delete farts, not normal smoke
+					Board:SetSmoke(p,false,false)
+					customAnim:Rem(mission,p,anim1)
+					customAnim:Rem(mission,p,anim2)
+					Board:AddAnimation(p,anim3,ANIM_REVERSE)
 				end
 			end
 			mission.DNT_FartList = {}
@@ -475,22 +479,40 @@ local HOOK_MissionEnd = function(mission) -- delete farts on mission end
 		local anim1 = IsPassiveSkill("Electric_Smoke") and "DNT_FartFrontDark" or "DNT_FartFront"
 		local anim2 = IsPassiveSkill("Electric_Smoke") and "DNT_FartBackDark" or "DNT_FartBack"
 		local anim3 = IsPassiveSkill("Electric_Smoke") and "DNT_FartAppearDark" or "DNT_FartAppear"
-		for i = 1, #farts do
-			if Board:IsSmoke(farts[i]) then
-				if customAnim:Is(mission,farts[i],anim1) then -- only delete farts, not normal smoke
-					Board:SetSmoke(farts[i],false,false)
-					customAnim:Rem(mission,farts[i],anim1)
-					customAnim:Rem(mission,farts[i],anim2)
-					Board:AddAnimation(farts[i],anim3,ANIM_REVERSE)
+		for i,p in pairs(farts) do
+			if Board:IsSmoke(p) then
+				if customAnim:Is(mission,p,anim1) then -- only delete farts, not normal smoke
+					Board:SetSmoke(p,false,false)
+					customAnim:Rem(mission,p,anim1)
+					customAnim:Rem(mission,p,anim2)
+					Board:AddAnimation(p,anim3,ANIM_REVERSE)
 				end
 			end
 		end
 	end
 end
 
+local HOOK_skillEnd = function(mission, pawn, weaponId, p1, p2) -- remove points
+	if mission and mission.DNT_FartList and weaponId ~= "Move" then
+		modApi:conditionalHook(
+			function()
+				return Board and Board:GetBusyState() == 0
+			end,
+			function()
+				for i,p in pairs(mission.DNT_FartList) do
+					if not Board:IsSmoke(p) then
+						mission.DNT_FartList[i] = nil
+					end
+				end
+			end
+		)
+	end
+end
+
 local function EVENT_onModsLoaded()
 	TILE_TOOLTIPS.DNT_fart_tile = {"Stink Cloud", "Will disperse at the end of the turn."} -- why this only works here?
 	DNT_Vextra_ModApiExt:addResetTurnHook(HOOK_resetTurn)
+	DNT_Vextra_ModApiExt:addSkillEndHook(HOOK_skillEnd)
 	modApi:addNextTurnHook(HOOK_nextTurn)
 	modApi:addMissionUpdateHook(HOOK_MissionUpdate)
 	modApi:addMissionEndHook(HOOK_MissionEnd)

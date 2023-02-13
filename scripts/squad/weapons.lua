@@ -8,6 +8,8 @@ local function IsTipImage()
 	return Board:GetSize() == Point(6,6)
 end
 
+local function DNT_hash(point) return point.x + point.y*10 end
+
 ----------------
 --- Upgrades ---
 ----------------
@@ -88,7 +90,8 @@ function DNT_SS_AcridSpray:GetSkillEffect(p1,p2)
     if L then
       local dir2 = dir+1 > 3 and 0 or dir+1
       local p3 = p1 + DIR_VECTORS[dir2]*i
-      ret:AddScript(string.format("table.insert(GetCurrentMission().DNT_FartList,%s)",p3:GetString())) -- insert point in fart list
+      -- ret:AddScript(string.format("table.insert(GetCurrentMission().DNT_FartList,%s)",p3:GetString())) -- insert point in fart list
+	  ret:AddScript("GetCurrentMission().DNT_FartList["..DNT_hash(p3).."] = "..p3:GetString()) -- insert point in fart list
       local damage = SpaceDamage(p3,0) -- smoke
       damage.sAnimation = FartAppear
       damage.iSmoke = EFFECT_CREATE
@@ -99,7 +102,8 @@ function DNT_SS_AcridSpray:GetSkillEffect(p1,p2)
     if R then
       local dir3 = dir-1 < 0 and 3 or dir-1
       local p4 = p1 + DIR_VECTORS[dir3]*i
-      ret:AddScript(string.format("table.insert(GetCurrentMission().DNT_FartList,%s)",p4:GetString())) -- insert other fart point
+      -- ret:AddScript(string.format("table.insert(GetCurrentMission().DNT_FartList,%s)",p4:GetString())) -- insert other fart point
+	  ret:AddScript("GetCurrentMission().DNT_FartList["..DNT_hash(p4).."] = "..p4:GetString()) -- insert point in fart list
       local damage = SpaceDamage(p4,0) -- smoke
       damage.sAnimation = FartAppear
       damage.iSmoke = EFFECT_CREATE
