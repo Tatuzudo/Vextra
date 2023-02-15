@@ -100,11 +100,13 @@ function DNT_AntlionAtk1:GetSkillEffect(p1,p2)
 		local damage = nil
 		--crack + bounce
 		if not Board:IsBuilding(target) and (Board:GetTerrain(target) ~= TERRAIN_ICE or (Board:GetTerrain(target) == TERRAIN_ICE and Board:GetHealth(target) >= 2)) then
-			damage = SpaceDamage(target,0)
-			damage.iCrack = self.Crack
-			ret:AddDamage(damage)
-			ret:AddBurst(target,"Emitter_Crack_Start2",DIR_NONE)
-			ret:AddBounce(target,2)
+			if not Board:IsPod(target) then
+				damage = SpaceDamage(target,0)
+				damage.iCrack = self.Crack
+				ret:AddDamage(damage)
+				ret:AddBurst(target,"Emitter_Crack_Start2",DIR_NONE)
+				ret:AddBounce(target,2)
+			end
 		end
 		ret:AddDelay(0.2)
 
