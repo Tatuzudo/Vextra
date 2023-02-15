@@ -125,3 +125,13 @@ Updated how Psion Icons works
 Optimized stink clouds and added a description
 Updated Winter psion text
 Added sounds to killing a cockroach corpse
+
+Version 1.0.2
+Bug Fixes:
+Fixed an issue with the reactive psion where you could move before it activated (for real this time).
+Improved the delays on reactive psion to prevent corpse pushing.
+Stoped the antlion leader to create cracks on timepods, intantly destroying them.
+Stink clouds will no longer reappear if you create smoke on their place after their removal.
+
+Misc:
+Created an exception variable that can be added to weapons for ladybug to ignore: DNT_LadybugException
