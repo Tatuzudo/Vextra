@@ -164,6 +164,29 @@ function DNT_TermitesAtk1:GetSkillEffect(p1,p2)
 	return ret
 end
 
+function DNT_TermitesAtk1:GetTargetScore(p1,p2)
+	local ret = Skill.GetTargetScore(self, p1, p2)
+	local dir = GetDirection(p2 - p1)
+
+	local order = extract_table(Board:GetPawns(TEAM_ENEMY))
+	local selfOrder = 0
+	local friendOrder = 0
+	
+	for i = 1, #order do -- get move order
+		if Board:GetPawn(p1) and order[i] == Board:GetPawn(p1):GetId() then
+			selfOrder = i
+		elseif Board:GetPawn(p2) and order[i] == Board:GetPawn(p2):GetId() then
+			friendOrder = i
+		end
+	end
+
+	if friendOrder > selfOrder then -- only target friends that already moved.
+		ret = 0
+	end
+
+    return ret
+end
+
 -----------
 -- Pawns --
 -----------
