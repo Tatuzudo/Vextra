@@ -143,7 +143,7 @@ elseif exclusiveElements then --1.2.79+
 end
 
 if FlyingEnemies then --Flying table, seperate from Exlcuisve Elements
-	local new_flying = {DNT_Dragonfly = true}
+	local new_flying = {DNT_Dragonfly = true, DNT_Fly = true}
 	FlyingEnemies = add_tables(FlyingEnemies, new_flying)
 end
 
