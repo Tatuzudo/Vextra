@@ -30,12 +30,25 @@ modApi:appendAsset("img/icons/DNT_ladybug_icon.png",resourcePath.."img/icons/DNT
 ------------
 
 trait:add{
-	pawnType = "DNT_LadybugBoss",
+	pawnType = "DNT_Ladybug1",
 	icon = resourcePath.."img/combat/traits/DNT_ladybug_trait.png",
 	desc_title = "Mesmerizing Shell",
 	desc_text = "If this unit can be targeted by a mech it must be targeted by that mech.",
 }
 
+trait:add{
+	pawnType = "DNT_Ladybug2",
+	icon = resourcePath.."img/combat/traits/DNT_ladybug_trait.png",
+	desc_title = "Mesmerizing Shell",
+	desc_text = "If this unit can be targeted by a mech it must be targeted by that mech.",
+}
+
+trait:add{
+	pawnType = "DNT_LadybugBoss",
+	icon = resourcePath.."img/combat/traits/DNT_ladybug_trait.png",
+	desc_title = "Mesmerizing Shell",
+	desc_text = "If this unit can be targeted by a mech it must be targeted by that mech.",
+}
 
 -------------
 --   Art   --
@@ -64,8 +77,8 @@ a.DNT_ladybugw = base:new{ Image = imagepath.."DNT_"..name.."_Bw.png", PosY = 0}
 -----------------
 
 local ptname = "Ladybug"
---modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."1.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."1.png")
---modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."2.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."2.png")
+modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."1.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."1.png")
+modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."2.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."2.png")
 modApi:appendAsset("img/portraits/enemy/DNT_"..ptname.."Boss.png",resourcePath.."img/portraits/enemy/DNT_"..ptname.."Boss.png")
 
 -----------------
@@ -119,13 +132,35 @@ function DNT_LadybugAtkBoss:GetTargetScore(p1,p2)
 	local ret = 0
 	if mission.BossID then
 		ret = 0-p1:Manhattan(Board:GetPawnSpace(mission.BossID)) --More negative the farther away
-	else
-		ret = 1 --If we're not in the mission, which this shouldn't happen but just in case, everything is 1
+	-- else
+		-- ret = 1 --If we're not in the mission, which this shouldn't happen but just in case, everything is 1
 	end
 	local pawn = Board:GetPawn(p2)
 	if pawn and pawn:GetType() == self.Junebug then
 		ret = ret + 100
 	end
+	
+	-- bonus for hitting allies that already moved (for outside the mission)
+	local order = extract_table(Board:GetPawns(TEAM_ENEMY))
+	local selfOrder = 0
+	local friendOrder = 0
+	
+	if pawn and pawn:GetTeam() == TEAM_ENEMY then
+		for i = 1, #order do -- get move order
+			if Board:GetPawn(p1) and order[i] == Board:GetPawn(p1):GetId() then
+				selfOrder = i
+			elseif Board:GetPawn(p2) and order[i] == Board:GetPawn(p2):GetId() then
+				friendOrder = i
+			end
+		end
+	end
+
+	if friendOrder < selfOrder then -- only target friends that already moved.
+		ret = 10
+	elseif friendOrder > selfOrder then
+		ret = 1
+	end
+	
 	return ret
 end
 
@@ -188,6 +223,41 @@ end
 -- Pawns --
 -----------
 
+DNT_Ladybug1 = Pawn:new
+	{
+		Name = "Ladybug",
+		Health = 3,
+		MoveSpeed = 4,
+		Image = "DNT_ladybug",
+		VoidShockImmune = true,
+		SkillList = {"DNT_LadybugAtkBoss"},
+		SoundLocation = "/enemy/beetle_1/",
+		DefaultTeam = TEAM_ENEMY,
+		ImpactMaterial = IMPACT_INSECT,
+		PunishmentDamage = 2,
+		Tier = TIER_BETA,
+		Ranged = 1,
+	}
+AddPawn("DNT_Ladybug1")
+
+DNT_Ladybug2 = Pawn:new
+	{
+		Name = "Alpha Ladybug",
+		Health = 5,
+		MoveSpeed = 4,
+		Image = "DNT_ladybug",
+		ImageOffset = 1,
+		VoidShockImmune = true,
+		SkillList = {"DNT_LadybugAtkBoss"},
+		SoundLocation = "/enemy/beetle_1/",
+		DefaultTeam = TEAM_ENEMY,
+		ImpactMaterial = IMPACT_INSECT,
+		PunishmentDamage = 2,
+		Tier = TIER_ALPHA,
+		Ranged = 1,
+	}
+AddPawn("DNT_Ladybug2")
+
 DNT_LadybugBoss = Pawn:new
 	{
 		Name = "Ladybug",
@@ -206,6 +276,7 @@ DNT_LadybugBoss = Pawn:new
 AddPawn("DNT_LadybugBoss")
 
 
+
 -----------
 -- Hooks --
 -----------
@@ -214,7 +285,8 @@ AddPawn("DNT_LadybugBoss")
 local function isLadybug(pawn)
 	if pawn then
 		local type = pawn:GetType()
-		return type == "DNT_LadybugBoss"
+		-- return type == "DNT_LadybugBoss"
+		return type:find("^DNT_Ladybug")
 	end
 	return false
 end
@@ -266,3 +338,4 @@ if options.DNT_WindExceptions and options.DNT_WindExceptions.enabled then
 end
 
 return this
+

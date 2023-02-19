@@ -166,7 +166,6 @@ end
 
 function DNT_TermitesAtk1:GetTargetScore(p1,p2)
 	local ret = Skill.GetTargetScore(self, p1, p2)
-	local dir = GetDirection(p2 - p1)
 
 	local order = extract_table(Board:GetPawns(TEAM_ENEMY))
 	local selfOrder = 0

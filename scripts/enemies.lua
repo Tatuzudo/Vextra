@@ -24,7 +24,7 @@ local enemies = {
 	},
 	DNT_Ladybug = {
 		weakpawn = false,
-		max_pawns = 2,
+		max_pawns = 1,
 		IslandLocks = 2,
 	},
 	DNT_Dragonfly = {
@@ -171,6 +171,7 @@ end
 -- end
 
 
+-- block spawns
 local myPsions = {
 	"DNT_Haste",
 	"DNT_Acid",
@@ -179,15 +180,21 @@ local myPsions = {
 	"DNT_Winter",
 }
 
+local myLadybug = {
+	"DNT_Ladybug",
+}
+
 modApi.events.onPreMissionAvailable:subscribe(function(mission)
     if true
         and mission.BossPawn ~= nil
         and _G[mission.BossPawn] ~= nil
         and _G[mission.BossPawn].Leader ~= LEADER_NONE
     then
-        -- for _, myPsion in ipairs(myPsions) do
-            -- mission:GetSpawner():BlockPawns(myPsion)
-        -- end
 		mission:GetSpawner():BlockPawns(myPsions)
+	end
+	
+    if mission.BossPawn == "DNT_JunebugBoss" then
+		mission:GetSpawner():BlockPawns(myLadybug)
     end
+	
 end)
