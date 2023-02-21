@@ -175,10 +175,12 @@ AddPawn("DNT_Nurse1")
 local DNT_PSION = "DNT_Nurse1"
 
 local function DNT_PsionTarget(pawn)
-	if GetCurrentMission()[DNT_PSION] and pawn:GetType() ~= DNT_PSION then
-		if pawn:GetTeam() == TEAM_ENEMY or (IsPassiveSkill("Psion_Leech") and pawn:IsMech()) then
-			if _G[pawn:GetType()].DefaultFaction ~= FACTION_BOTS and not _G[pawn:GetType()].Minor then
-				return true
+	if GetCurrentMission() and pawn then
+		if GetCurrentMission()[DNT_PSION] and pawn:GetType() ~= DNT_PSION then
+			if pawn:GetTeam() == TEAM_ENEMY or (IsPassiveSkill("Psion_Leech") and pawn:IsMech()) then
+				if _G[pawn:GetType()].DefaultFaction ~= FACTION_BOTS and not _G[pawn:GetType()].Minor then
+					return true
+				end
 			end
 		end
 	end
