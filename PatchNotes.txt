@@ -128,11 +128,17 @@ Added sounds to killing a cockroach corpse
 
 Version 1.0.2
 Bug Fixes:
-Fixed an issue with the reactive psion where you could move before it activated (for real this time).
-Improved the delays on reactive psion to prevent corpse pushing.
-Stoped the antlion leader to create cracks on timepods, intantly destroying them.
+Fixed an issue with the Reactive Psion where you could move before it activated (for real this time).
+Improved the delays on Reactive Psion to prevent corpse pushing.
+Stoped the Antlion Leader to create cracks on timepods, intantly destroying them.
 Stink clouds will no longer reappear if you create smoke on their place after their removal.
+Fixed (hopefully) a Psion console error.
+
+Balance Changes:
+Fly added to the flying enemies exclusive table
+Adjusted Termites target score to make them slightly less stupid.
 
 Misc:
-Created an exception variable that can be added to weapons for Ladybug to ignore: DNT_LadybugException
 Ladybugs now can be added as normal enemies in easy edit and will properly target allies in normal missions.
+Adds the DNT_LadybugException tag to except weapons from the ladybugs attacks.
+Also included an option to add the tag to Wind Torrent.
