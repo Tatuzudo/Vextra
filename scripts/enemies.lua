@@ -102,7 +102,7 @@ for id, v in pairs(enemies) do
 		if ExclusiveElements then
 			ExclusiveElements[id] = v.exclusive_element
 		elseif exclusiveElements then
-			table.insert(exclusiveElements, {string.format("%q",id), v.ExclusiveElement})
+			table.insert(exclusiveElements, {string.format("%s",id), v.ExclusiveElement})
 		end
 	end
 end
@@ -192,9 +192,9 @@ modApi.events.onPreMissionAvailable:subscribe(function(mission)
     then
 		mission:GetSpawner():BlockPawns(myPsions)
 	end
-	
+
     if mission.BossPawn == "DNT_JunebugBoss" then
 		mission:GetSpawner():BlockPawns(myLadybug)
     end
-	
+
 end)
