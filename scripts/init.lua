@@ -126,7 +126,7 @@ return {
 	description = "VEK + EXTRA",
 	modApiVersion = "2.8.0",
 	gameVersion = "1.2.83",
-  version = "1.0.1",
+  version = "1.0.2",
 	requirements = { "kf_ModUtils" },
 	dependencies = {
 		modApiExt = "1.17",

@@ -133,6 +133,7 @@ Improved the delays on Reactive Psion to prevent corpse pushing.
 Stoped the Antlion Leader to create cracks on timepods, intantly destroying them.
 Stink clouds will no longer reappear if you create smoke on their place after their removal.
 Fixed (hopefully) a Psion console error.
+Fixed a bug where some exclusions wouldn't work
 
 Balance Changes:
 Fly added to the flying enemies exclusive table
