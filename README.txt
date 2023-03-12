@@ -38,12 +38,12 @@ Stinkbug- Has a basic melee attack, but puts gaseous smoke on either side of its
 Fly- Shoots a projectile that pulls and damages the target while healing the fly, but it starts with only some of its health.
 Mantis- Attacks two diagonal tiles.
 Silkworm- Shoots a projectile forward while webbing backwards.
-Antlion- Cracks the target, preparing to attack it and send the unit down a chasm. Burrows.
+Termites- Dashes through solid objects, leaving a rock in its place.
 Unique:
 Isopod- Launches itself as an artillery shot, dealing damage as it bounces backwards from its target till landing on empty ground.
-Ice Crawler- Shoots an icy gas 3 tiles that does more damage the farther away it is and freezes.
+Ice Crawler- Shoots an icy gas 3 tiles that does damage and freezes.
 Dragonfly- Smoke the target, preparing to explode the smoke, dealing damage with fire outwards in a cone shape. If there's no smoke, it damages and lights the target on fire. Flies.
-Termites- Dashes through solid objects, leaving a rock in its place.
+Antlion- Cracks the target, preparing to attack it and send the unit down a chasm. Burrows.
 Cockroach- Shoots an artillery that self damages, but can revive at the end of the turn if it doesn't get damaged again or stepped on.
 Anthill- Deploys ants based on health; more health equals stronger ants.
 Thunderbug- Damages its target and chains lightning to adjacent targets.
@@ -66,13 +66,11 @@ Lemonymous
 
 Brainstorming and Design Support:
 Loss
-Hedera
 Useless
 The Ghost of Hornet's Past
 Machin
 
 Playtesting:
-Hedera
 EndMark_3
 snakebag
 MasterSpider5
@@ -84,7 +82,9 @@ Lemonymous: Provided insane help for the cockroach when it was looking grim, and
 Thanks a ton
 
 Bug and Balance Reports After Playtesting:
-Paradoxica
+Pilot_Arrogant
 tosx
 Elekitu
 Moaneytoe
+GenericCorporatePilot n°2005
+
