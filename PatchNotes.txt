@@ -143,3 +143,6 @@ Misc:
 Ladybugs now can be added as normal enemies in easy edit and will properly target allies in normal missions.
 Adds the DNT_LadybugException tag to except weapons from the ladybugs attacks.
 Also included an option to add the tag to Wind Torrent.
+
+Version 1.0.3 Hot Fix
+Bug Fix: Fixed Mission Impossible so it worked with the v1.0.1 category swap

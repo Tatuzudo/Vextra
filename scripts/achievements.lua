@@ -525,8 +525,8 @@ local function DNT_MI_IsValid()
 		if enemyList._id ~= "Vextra Only" or bossList._id ~= "Vextra Only" then return false end --Only checks the name, testing
 	end
 	--Vextra Only is Unedited
-	local coreEnemies = {DNT_Mantis=true,DNT_Antlion=true,DNT_Silkworm=true,DNT_Stinkbug=true,DNT_Fly=true}
-	local uniqueEnemies = {DNT_IceCrawler=true,DNT_Thunderbug=true,DNT_Dragonfly=true,DNT_Pillbug=true,DNT_Termites=true,DNT_Anthill=true,DNT_Cockroach=true}
+	local coreEnemies = {DNT_Mantis=true,DNT_Termites=true,DNT_Silkworm=true,DNT_Stinkbug=true,DNT_Fly=true}
+	local uniqueEnemies = {DNT_IceCrawler=true,DNT_Thunderbug=true,DNT_Dragonfly=true,DNT_Pillbug=true,DNT_Antlion=true,DNT_Anthill=true,DNT_Cockroach=true}
 	--Don't care about bots
 	local leaderEnemies = {DNT_Acid=true,DNT_Reactive=true,DNT_Haste=true,DNT_Nurse=true,DNT_Winter=true}
 	local bossEnemies = {Mission_AnthillBoss=true,Mission_FlyBoss=true,Mission_JunebugBoss=true,Mission_MantisBoss=true,Mission_ThunderbugBoss=true,
