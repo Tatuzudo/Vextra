@@ -139,12 +139,12 @@ function DNT_LadybugAtkBoss:GetTargetScore(p1,p2)
 	if pawn and pawn:GetType() == self.Junebug then
 		ret = ret + 100
 	end
-	
+
 	-- bonus for hitting allies that already moved (for outside the mission)
 	local order = extract_table(Board:GetPawns(TEAM_ENEMY))
 	local selfOrder = 0
 	local friendOrder = 0
-	
+
 	if pawn and pawn:GetTeam() == TEAM_ENEMY then
 		for i = 1, #order do -- get move order
 			if Board:GetPawn(p1) and order[i] == Board:GetPawn(p1):GetId() then
@@ -160,7 +160,7 @@ function DNT_LadybugAtkBoss:GetTargetScore(p1,p2)
 	elseif friendOrder > selfOrder then
 		ret = 1
 	end
-	
+
 	return ret
 end
 
@@ -294,7 +294,7 @@ end
 local function AdjustTargetArea(mission, pawn, weaponId, p1, targetArea)
 	--Only when there's a ladybug
 	if not mission then return end
-	if mission.DNT_LadybugID and Board:IsPawnAlive(mission.DNT_LadybugID) and pawn:GetTeam() == TEAM_PLAYER and not _G[weaponId].DNT_LadybugException then
+	if mission.DNT_LadybugID and Board:IsPawnAlive(mission.DNT_LadybugID) and pawn and pawn:GetTeam() == TEAM_PLAYER and not _G[weaponId].DNT_LadybugException then
 		local targets = extract_table(targetArea)
 		for _, point in pairs(targets) do
 			if isLadybug(Board:GetPawn(point)) then
@@ -338,4 +338,3 @@ if options.DNT_WindExceptions and options.DNT_WindExceptions.enabled then
 end
 
 return this
-
