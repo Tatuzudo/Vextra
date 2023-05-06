@@ -149,7 +149,7 @@ function DNT_StinkbugAtk1:GetSkillEffect(p1,p2)
 	local dir = GetDirection(p2 - p1)
 	local mission = GetCurrentMission()
     if not mission.DNT_FartList then mission.DNT_FartList = {} end
-	
+
 	local L = true
 	local R = true
 	local FartAppear = IsPassiveSkill("Electric_Smoke") and "DNT_FartAppearDark" or "DNT_FartAppear"
@@ -180,12 +180,12 @@ function DNT_StinkbugAtk1:GetSkillEffect(p1,p2)
 		end
 		ret:AddDelay(0.1)
 	end
-	
+
 	local damage = SpaceDamage(p2,self.Damage) -- attack
 	damage.sAnimation = "explomosquito_"..dir
 	damage.sSound = self.SoundBase.."/attack"
 	ret:AddQueuedMelee(p1,damage)
-	
+
 	ret:AddDelay(0.24) -- delay for adding smoke anim (hook)
 
 	return ret
@@ -267,17 +267,17 @@ DNT_StinkbugAtkBoss_Tip = DNT_StinkbugAtk_Tip:new {
 function DNT_StinkbugAtk_Tip:GetSkillEffect(p1,p2)
 	local ret = SkillEffect()
 	local dir = GetDirection(p2 - p1)
-	
+
 	local dir2 = dir+1 > 3 and 0 or dir+1
 	local p3 = p1 + DIR_VECTORS[dir2]
 
 	local dir3 = dir-1 < 0 and 3 or dir-1
 	local p4 = p1 + DIR_VECTORS[dir3]
-	
+
 	local anim1 = IsPassiveSkill("Electric_Smoke") and "DNT_FartFrontDark" or "DNT_FartFront"
 	local anim2 = IsPassiveSkill("Electric_Smoke") and "DNT_FartBackDark" or "DNT_FartBack"
 	local anim3 = IsPassiveSkill("Electric_Smoke") and "DNT_FartAppearDark" or "DNT_FartAppear"
-	
+
 	local damage = SpaceDamage(p2,self.Damage) -- attack
 	damage.sAnimation = "explomosquito_"..dir
 	damage.sSound = self.SoundBase.."/attack"
@@ -301,7 +301,7 @@ function DNT_StinkbugAtk_Tip:GetSkillEffect(p1,p2)
 	ret:AddDamage(damage)
 	damage.sAnimation = anim2
 	ret:AddDamage(damage)
-	
+
 	if self.FartRange > 1 then -- for the boss
 		for i = 1, 1 do
 			damage = SpaceDamage(p3 + DIR_VECTORS[dir2]*i,0) -- smoke
@@ -323,7 +323,7 @@ function DNT_StinkbugAtk_Tip:GetSkillEffect(p1,p2)
 			ret:AddDamage(damage)
 		end
 	end
-	
+
 	ret:AddDelay(0.4) -- prolong the animation for Tip
 	damage.loc = p4
 	damage.sAnimation = anim1
@@ -335,7 +335,7 @@ function DNT_StinkbugAtk_Tip:GetSkillEffect(p1,p2)
 	ret:AddDamage(damage)
 	damage.sAnimation = anim2
 	ret:AddDamage(damage)
-	
+
 	if self.FartRange > 1 then -- for the boss
 		for i = 1, 1 do
 			damage.loc = p3 + DIR_VECTORS[dir2]*i
@@ -350,7 +350,7 @@ function DNT_StinkbugAtk_Tip:GetSkillEffect(p1,p2)
 			ret:AddDamage(damage)
 		end
 	end
-	
+
 	return ret
 end
 
@@ -420,20 +420,20 @@ local HOOK_MissionUpdate = function(mission)
 			for i,p in pairs(farts) do
 				if Board:IsSmoke(p) then -- add effects on tiles with smoke
 					if reFart == 1 then -- remove first when loading game
-						customAnim:Rem(mission,p,anim1)
-						customAnim:Rem(mission,p,anim2)
+						customAnim:rem(p,anim1)
+						customAnim:rem(p,anim2)
 					end
-					if not customAnim:Is(mission,p,anim1) then
-						customAnim:Add(mission,p,anim1)
-						customAnim:Add(mission,p,anim2)
+					if not customAnim:get(p,anim1) then
+						customAnim:add(p,anim1)
+						customAnim:add(p,anim2)
 					end
-				elseif customAnim:Is(mission,p,"DNT_FartFront") then  -- remove effects on tiles without smoke
-					customAnim:Rem(mission,p,"DNT_FartFront")
-					customAnim:Rem(mission,p,"DNT_FartBack")
+				elseif customAnim:get(p,"DNT_FartFront") then  -- remove effects on tiles without smoke
+					customAnim:rem(p,"DNT_FartFront")
+					customAnim:rem(p,"DNT_FartBack")
 					Board:AddAnimation(p,"DNT_FartAppear",ANIM_REVERSE)
-				elseif customAnim:Is(mission,p,"DNT_FartFrontDark") then  -- remove effects on tiles without electric smoke
-					customAnim:Rem(mission,p,"DNT_FartFrontDark")
-					customAnim:Rem(mission,p,"DNT_FartBackDark")
+				elseif customAnim:get(p,"DNT_FartFrontDark") then  -- remove effects on tiles without electric smoke
+					customAnim:rem(p,"DNT_FartFrontDark")
+					customAnim:rem(p,"DNT_FartBackDark")
 					Board:AddAnimation(p,"DNT_FartAppearDark",ANIM_REVERSE)
 				end
 				-- tile tip
@@ -461,10 +461,10 @@ local HOOK_nextTurn = function(mission) -- delete farts after all the vek attack
 			local anim2 = IsPassiveSkill("Electric_Smoke") and "DNT_FartBackDark" or "DNT_FartBack"
 			local anim3 = IsPassiveSkill("Electric_Smoke") and "DNT_FartAppearDark" or "DNT_FartAppear"
 			for i,p in pairs(farts) do
-				if Board:IsSmoke(p) and customAnim:Is(mission,p,anim1) then -- only delete farts, not normal smoke
+				if Board:IsSmoke(p) and customAnim:get(p,anim1) then -- only delete farts, not normal smoke
 					Board:SetSmoke(p,false,false)
-					customAnim:Rem(mission,p,anim1)
-					customAnim:Rem(mission,p,anim2)
+					customAnim:rem(p,anim1)
+					customAnim:rem(p,anim2)
 					Board:AddAnimation(p,anim3,ANIM_REVERSE)
 				end
 			end
@@ -481,10 +481,10 @@ local HOOK_MissionEnd = function(mission) -- delete farts on mission end
 		local anim3 = IsPassiveSkill("Electric_Smoke") and "DNT_FartAppearDark" or "DNT_FartAppear"
 		for i,p in pairs(farts) do
 			if Board:IsSmoke(p) then
-				if customAnim:Is(mission,p,anim1) then -- only delete farts, not normal smoke
+				if customAnim:get(p,anim1) then -- only delete farts, not normal smoke
 					Board:SetSmoke(p,false,false)
-					customAnim:Rem(mission,p,anim1)
-					customAnim:Rem(mission,p,anim2)
+					customAnim:rem(p,anim1)
+					customAnim:rem(p,anim2)
 					Board:AddAnimation(p,anim3,ANIM_REVERSE)
 				end
 			end

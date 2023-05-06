@@ -413,7 +413,7 @@ local function HOOK_PawnPositionChanged(mission, pawn, oldPosition)
 			local currPos = pawn:GetSpace()
 			local anim = IsPassiveSkill("Electric_Smoke") and "DNT_FartFrontDark" or "DNT_FartFront"
 			modApi:scheduleHook(500, function()
-				if customAnim:Is(mission,pawn:GetSpace(),anim) and currPos == pawn:GetSpace() then
+				if customAnim:get(pawn:GetSpace(),anim) and currPos == pawn:GetSpace() then
 					mission.DNT_FartProgress = mission.DNT_FartProgress or 0
 					mission.DNT_FartProgress = mission.DNT_FartProgress + 1
 					if mission.DNT_FartProgress >= 3 then
