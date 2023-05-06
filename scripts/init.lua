@@ -112,11 +112,18 @@ local function metadata()
 		{ enabled = false }
 	)
 	modApi:addGenerationOption(
+		"DNT_VextraFinale",
+		"Add Vextra to Finale List",
+		"Check to add Vextra enemies and bosses to the finale lists. (restart required and default may be needed)",
+		{ enabled = true }
+	)
+	modApi:addGenerationOption(
 		"DNT_WindExceptions",
 		"Ladybug Wind Torrent Exception",
 		"Check to prevent the Ladybug from affecting wind torrent. (restart required)",
 		{ enabled = false }
 	)
+
 end
 
 return {
