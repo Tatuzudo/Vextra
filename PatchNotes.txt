@@ -146,3 +146,15 @@ Also included an option to add the tag to Wind Torrent.
 
 Version 1.0.3 Hot Fix
 Bug Fix: Fixed Mission Impossible so it worked with the v1.0.1 category swap
+
+Version 1.0.4
+Update customAnim lib to 1.0.2
+Added a pawn check to the ladybug for getTargetArea's that don't have a pawn attached
+Adds an option that allows you to add Vextra to the finale enemy and boss list. This is on by default.
+	This is prompted by the change in easyEdit that allows the enemy and boss lists
+	to automatically update if they haven't been edited. That means that if Vextra is
+	on, and then a player turns it off, the game will now properly remove Vextra Vek
+	from the finale lists, preventing errors. This assumes the player didn't update it
+	themselves, but I assume that if they do, they have a good idea of how to use easyEdit
+	Overall, it allows easy integration of Vextra into finale lists if desired
+Updated Extension Versions
