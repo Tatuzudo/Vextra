@@ -222,7 +222,7 @@ local DNT_SPEED = 2
 local HOOK_pawnTracked = function(mission, pawn)
 	if isMissionBoard() then
 		modApi:scheduleHook(1500, function()
-			if pawn:GetType() == DNT_PSION then
+			if pawn:GetType() == DNT_PSION and not pawn:IsMinor() then
 				mission[DNT_PSION] = true
 				local pawnList = extract_table(Board:GetPawns(TEAM_ANY))
 				for i = 1, #pawnList do
@@ -242,7 +242,7 @@ end
 
 local HOOK_pawnUntracked = function(mission, pawn)
 	if isMissionBoard() then
-		if pawn:GetType() == DNT_PSION then
+		if pawn:GetType() == DNT_PSION and not pawn:IsMinor() then
 			mission[DNT_PSION] = nil
 			Game:TriggerSound("/ui/battle/buff_removed")
 			local pawnList = extract_table(Board:GetPawns(TEAM_ANY))

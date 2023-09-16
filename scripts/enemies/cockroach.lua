@@ -306,7 +306,7 @@ function DNT_Cockroach1:GetDeathEffect(p)
 	local pawn = Board:GetPawn(p)
 	local item = self.CorpseItem
 
-	if pawn then
+	if pawn and not pawn:IsMinor() then
 		local pawnId = pawn:GetId()
 		local terrain = Board:GetTerrain(p)
 
@@ -336,6 +336,9 @@ function DNT_Cockroach1:GetDeathEffect(p)
 				end
 			]], pawnId, item))
 		end
+	elseif pawn then
+		local pawnId = pawn:GetId()
+		ret:AddScript(string.format("Board:GetPawn(%s):SetCorpse(false)", pawnId))
 	end
 
 	return ret
