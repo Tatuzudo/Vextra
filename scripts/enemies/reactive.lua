@@ -345,6 +345,20 @@ local HOOK_pawnKilled = function(mission, pawn)
 						end
 						canExplode = true
 					end)
+					-- modApi:scheduleHook(1000, function()
+						-- if mission[DNT_PSION] then
+                            -- local pos = pawn:GetSpace()
+                            -- Board:AddAnimation(pos,"ExploRepulse3",0)
+                            -- Game:TriggerSound("/weapons/science_repulse")
+                            -- for i = DIR_START, DIR_END do
+                                -- local damage = SpaceDamage(pos + DIR_VECTORS[i], 0)
+                                -- damage.iPush = i
+                                -- damage.sAnimation = "airpush_"..i
+                                -- Board:DamageSpace(damage)
+                            -- end
+						-- end
+						-- canExplode = true
+					-- end)
 				end
 			)
 		end

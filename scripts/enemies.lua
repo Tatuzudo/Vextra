@@ -184,17 +184,26 @@ local myLadybug = {
 	"DNT_Ladybug",
 }
 
+local myReactive = {
+	"DNT_Reactive",
+}
+
 modApi.events.onPreMissionAvailable:subscribe(function(mission)
-    if true
-        and mission.BossPawn ~= nil
-        and _G[mission.BossPawn] ~= nil
-        and _G[mission.BossPawn].Leader ~= LEADER_NONE
-    then
-		mission:GetSpawner():BlockPawns(myPsions)
+	if mission then
+		if true
+			and mission.BossPawn ~= nil
+			and _G[mission.BossPawn] ~= nil
+			and _G[mission.BossPawn].Leader ~= LEADER_NONE
+		then
+			mission:GetSpawner():BlockPawns(myPsions)
+		end
+		
+		if mission.BossPawn == "DNT_JunebugBoss" then
+			mission:GetSpawner():BlockPawns(myLadybug)
+		end
+		
+		if mission.ID == "Mission_tosx_Submarine" then
+			mission:GetSpawner():BlockPawns(myReactive)
+		end
 	end
-
-    if mission.BossPawn == "DNT_JunebugBoss" then
-		mission:GetSpawner():BlockPawns(myLadybug)
-    end
-
 end)

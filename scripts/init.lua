@@ -78,8 +78,8 @@ local function load(self,options,version)
 		modApi:addSquad({
 			--"Vextra Secret Squad",
 			"Techno-Vextra", -- tatu change
-			"DNT_StinkbugMech",
 			"DNT_FlyMech",
+			"DNT_StinkbugMech",
 			"DNT_DragonflyMech",
 			id = "DNT_VextraSS"
 		},
