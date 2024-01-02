@@ -6,13 +6,13 @@ local tips = require(path .."libs/tutorialTips")
 tips:Add{
 	id = "Tip_DNT_Silkworm",
 	title = "Silkworms",
-	text = "The Silkworm sends a projectile forward, while webbing behind its attack!"
+	text = "The Silkworm sends a projectile forward, while webbing in the opposite direction!"
 }
 
 tips:Add{
 	id = "Tip_DNT_Thunderbug",
 	title = "Thunderbugs",
-	text = "The Thunderbug has a lightning whip like attack that can chain through multiple enemies!"
+	text = "The Thunderbug has a lightning whip-like attack that can chain through multiple enemies!"
 }
 
 tips:Add{
@@ -30,13 +30,13 @@ tips:Add{
 tips:Add{
 	id = "Tip_DNT_Ladybug",
 	title = "Ladybugs",
-	text = "The Ladybug heals the Junebug and has a hypnotic effect on mechs. If your weapon's target area is within the range of a ladybug, you must target your attack at the ladybug."
+	text = "The Ladybug heals the Junebug and has a hypnotic effect on mechs. If your weapon's target area is within the range of a Ladybug, you must target your attack at the Ladybug."
 }
 
 tips:Add{
 	id = "Tip_DNT_Dragonfly",
 	title = "Dragonflies",
-	text = "The Dragonfly puts down a smoke immediately, and prepares to explode it. If there's smoke on the tile it attacks, it explodes in a T shape, dealing damage and creating fire. Otherwise, it only hits the tile in front of it."
+	text = "The Dragonfly smokes its target immediately and prepares to strike it. If there's smoke on the tile it attacks, it explodes in a T shape, dealing damage and creating fire. Otherwise, it only hits the tile in front of it."
 }
 
 tips:Add{
@@ -54,13 +54,13 @@ tips:Add{
 tips:Add{
 	id = "Tip_DNT_Stinkbug",
 	title = "Stinkbugs",
-	text = "The Stinkbug releases a fart cloud on both sides of them that acts like smoke, but disapates after the Vek turn."
+	text = "The Stinkbug releases a fart cloud on both sides of them that acts like smoke, but dissipates after the Vek turn."
 }
 
 tips:Add{
 	id = "Tip_DNT_Cockroach",
 	title = "Cockroaches",
-	text = "The Cockroach has a special trait, as dead Cockroaches will revive just before Vek spawn. Damage or stomp on the corpse to kill them for good!"
+	text = "Dead Cockroaches will revive just before Vek spawn. Damage or stomp on the corpse to kill them for good!"
 }
 
 tips:Add{
@@ -84,13 +84,13 @@ tips:Add{
 tips:Add{
 	id = "Tip_DNT_Acid",
 	title = "Corrosive Psion",
-	text = "The Corrosive Psion removes A.C.I.D. from other vek every turn and causes their attacks to apply A.C.I.D."
+	text = "The Corrosive Psion removes A.C.I.D. from other Vek every turn and causes their attacks to apply A.C.I.D.."
 }
 
 tips:Add{
 	id = "Tip_DNT_Haste",
 	title = "Sonic Psion",
-	text = "The Haste Psion gives a +2 bonus movement to all Vek at the start of every turn."
+	text = "The Haste Psion gives +2 bonus movement to all Vek at the start of every turn."
 }
 
 tips:Add{
