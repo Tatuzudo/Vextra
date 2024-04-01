@@ -16,7 +16,7 @@ end
 -- eggman
 local options = mod_loader.currentModContent[mod.id].options
 local date = os.date("*t")
-local is_april_first = (date["month"] == 4 and date["day"] == 1) or (options.DNT_FoolEnabled and options.DNT_FoolEnabled.enabled)
+local is_april_first = (date["month"] == 4 and date["day"] == 1) or (options.DNT_FoolEnabled and options.DNT_FoolEnabled.value)
 
 -------------
 --  Icons  --
@@ -119,18 +119,18 @@ DNT_Haste_Passive_Tip = DNT_Haste_Passive:new{}
 
 function DNT_Haste_Passive_Tip:GetSkillEffect(p1,p2)
 	local ret = SkillEffect()
-	
+
 	Board:Ping(Point(1,0),GL_Color(0,255,0))
 	Board:GetPawn(Point(1,0)):AddMoveBonus(2)
-	
+
 	if is_april_first then
 		ret:AddMove(Board:GetPath(Point(1,0), Point(2,1), PATH_GROUND), FULL_DELAY)
 	else
 		ret:AddMove(Board:GetPath(Point(1,0), Point(3,3), PATH_GROUND), FULL_DELAY)
 	end
-	
+
 	ret:AddDelay(1)
-	
+
 	return ret
 end
 

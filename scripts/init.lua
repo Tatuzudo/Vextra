@@ -70,7 +70,7 @@ local function init(self)
 	local date = os.date("*t")
 	local is_april_first = date["month"] == 4 and date["day"] == 1
 
-	if (options.DNT_FoolEnabled and options.DNT_FoolEnabled.enabled) or is_april_first then
+	if (options.DNT_FoolEnabled and options.DNT_FoolEnabled.value) or is_april_first then
 		require(self.scriptPath.."fool/init")
 	end
 end
@@ -139,7 +139,6 @@ local function metadata()
 			values = {true, true, false},
 			strings = {"Spoiler Content Ahead", "Turn on Fool", "Turn off Fool"},
 			tooltips = {"You've been spoiled. April Fools!", "Turn on the April Fools Content (requires restart)", "Turn off the April Fools Content (requires restart)"},
-			value = "Spoiler Content Ahead",
 		}
 	)
 
