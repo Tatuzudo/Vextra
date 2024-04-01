@@ -158,3 +158,20 @@ Adds an option that allows you to add Vextra to the finale enemy and boss list. 
 	themselves, but I assume that if they do, they have a good idea of how to use easyEdit
 	Overall, it allows easy integration of Vextra into finale lists if desired
 Updated Extension Versions
+
+Version 1.1.0
+Gameplay:
+Added several new Vek to spice up gameplay only encounterable by playing
+Added a special boss encounter from another popular franchise
+Added compatibility with paradox core
+Added compatibility with reactive psion and far line drowning mission
+
+Art:
+Added special vfx to keep the player going
+Fixed up some of the portraits
+Fixed up the Vek noses to be more accurate to our original vision
+Made the secret squad more fun to play
+
+Misc.
+Generally cleaned up some of the code
+Changed the order of the secret squad in the hangar to be more accurate
