@@ -59,6 +59,7 @@ DNT_ThunderbugAtk1 = Skill:new{
 	Description = "Damage the target and adjacent units and buildings.",
 	Class = "Enemy",
 	Icon = "weapons/prime_lightning.png",
+	StrikeAnim = "Lightning_Attack_",
 	PathSize = 1,
 	Damage = 1,
 	MaxSpread = 2,
@@ -123,7 +124,7 @@ function DNT_ThunderbugAtk1:GetSkillEffect(p1, p2)
 
 			local direction = GetDirection(current - origin[hash(current)])
 			local damage = SpaceDamage(current,self.Damage - (self.MaxSpread - spread) * self.DistRed)
-			damage.sAnimation = "Lightning_Attack_"..direction
+			damage.sAnimation = self.StrikeAnim..direction
 			ret:AddQueuedDamage(damage)
 			ret:AddQueuedAnimation(current,"Lightning_Hit")
 			ret:AddQueuedSound("/weapons/electric_whip")

@@ -269,6 +269,7 @@ DNT_FAntAtk = DNT_WorkerAntAtk:new {
 	Name = "Sharp Sting",
 	Description = "Prepares to sting an adjacent tile",
 	Damage = 1,
+	StrikeAnim = "explomosquito_",
 	TipImage = {
 		Unit = Point(2,2),
 		Target = Point(2,1),
@@ -282,7 +283,7 @@ function DNT_FAntAtk:GetSkillEffect(p1,p2)
 	local dir = GetDirection(p2 - p1)
 	local damage = SpaceDamage(p2,self.Damage)
 	damage.sSound = "/enemy/hornet_1/attack"
-	damage.sAnimation = "explomosquito_"..dir
+	damage.sAnimation = self.StrikeAnim ..dir
 	ret:AddQueuedDamage(damage)
 	return ret
 end

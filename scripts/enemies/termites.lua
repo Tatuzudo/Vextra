@@ -61,6 +61,7 @@ DNT_TermitesAtk1 = Skill:new {
 	Damage = 1,
 	Class = "Enemy",
 	LaunchSound = "",
+	StrikeAnim = "explomosquito_",
 	Deployed = "Wall",
 	TipImage = { --This is all tempalate and probably needs to change
 		Unit = Point(2,4),
@@ -131,7 +132,7 @@ function DNT_TermitesAtk1:GetSkillEffect(p1,p2)
 	local damage = nil
 	if fullyBlocked then
 		damage = SpaceDamage(p2,self.Damage)
-		damage.sAnimation = "explomosquito_"..dir
+		damage.sAnimation = self.StrikeAnim..dir
 		damage.sSound = "/enemy/mosquito_1/attack"
 		ret:AddQueuedMelee(p1, damage)
 	else
@@ -150,7 +151,7 @@ function DNT_TermitesAtk1:GetSkillEffect(p1,p2)
 			if curr ~= target then
 				ret:AddQueuedDelay(.1)
 				damage = SpaceDamage(curr,self.Damage)
-				damage.sAnimation = "explomosquito_"..dir
+				damage.sAnimation = self.StrikeAnim..dir
 				damage.sSound = "/enemy/mosquito_1/attack"
 				ret:AddQueuedDamage(damage)
 			else break end

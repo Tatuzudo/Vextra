@@ -89,6 +89,8 @@ modApi:appendAsset("img/effects/DNT_explo_heart.png", resourcePath.."img/effects
 a.DNT_explo_heart = a.ExploArt3:new {
 	Image = "effects/DNT_explo_heart.png",
 	Time = 0.1,
+	PosX = -23,
+	PosY = -23,
 }
 
 modApi:appendAsset("img/icons/DNT_ladybug_spiral.png",resourcePath.."img/icons/DNT_ladybug_spiral.png")
@@ -113,6 +115,7 @@ DNT_LadybugAtkBoss = LineArtillery:new {
 	PathSize = 1,
 	ArtillerySize = 5,
 	Explosion = "",
+	StrikeAnim = "DNT_explo_heart",
 	Junebug = "DNT_JunebugBoss",
 	UpShot = "effects/shotup_ant2.png",
 	LaunchSound = "/enemy/scarab_1/attack",
@@ -168,7 +171,7 @@ function DNT_LadybugAtkBoss:AddHealing(ret,point,healing,arty) --This will check
 	arty = arty or false
 	local damage = SpaceDamage(point,healing)
 	if arty then
-		damage.sAnimation = "DNT_explo_heart"
+		damage.sAnimation = self.StrikeAnim
 		damage.sSound = "/ui/map/repair_mech"
 		ret:AddQueuedArtillery(damage, self.UpShot)
 	else

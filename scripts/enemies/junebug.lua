@@ -134,6 +134,7 @@ DNT_JunebugAtkBoss = Skill:new {
 	MinDamage = 1,
 	Class = "Enemy",
 	LaunchSound = "",
+	StrikeAnim = "DNT_JunebugShimmer",
   PathSize = 1,
   LaserArt = "effects/DNT_laser_junebug",
 	CustomTipImage = "DNT_JunebugAtkBoss_Tip",
@@ -170,7 +171,7 @@ function DNT_JunebugAtkBoss:GetSkillEffect(p1,p2)
 		targets = {p1+DIR_VECTORS[direction],p1+DIR_VECTORS[backdir]}
 		for _, target in pairs(targets) do
 			damage = SpaceDamage(target,self.Damage,GetDirection(target-p1))
-			damage.sAnimation = "DNT_JunebugShimmer"
+			damage.sAnimation = self.StrikeAnim
 			damage.sSound = "/weapons/electric_whip"
 			ret:AddQueuedMelee(p1, damage)
 		end

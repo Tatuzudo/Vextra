@@ -59,6 +59,7 @@ DNT_SilkwormAtk1 = Skill:new {
 	Damage = 1,
 	PathSize = 1,
 	Class = "Enemy",
+	StrikeAnim = "ExploFirefly1",
 	--LaunchSound = "",
 	Icon = "weapons/enemy_firefly1.png",
 	ImpactSound = "/impact/dynamic/enemy_projectile",
@@ -108,7 +109,7 @@ function DNT_SilkwormAtk1:GetSkillEffect(p1,p2)
 	--Firefly Attack
 	local target = GetProjectileEnd(p1,p2)
 	local damage = SpaceDamage(target, self.Damage)
-	damage.sAnimation = "ExploFirefly1"
+	damage.sAnimation = self.StrikeAnim
 	ret:AddQueuedProjectile(damage,self.Projectile)
 
 	--Web

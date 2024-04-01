@@ -55,6 +55,7 @@ DNT_MantisAtk1_StarfishAtk = Skill:new{
 	Class = "Enemy",
 	SoundBase = "/enemy/leaper_1",
 	Icon = "weapons/enemy_leaper1.png",
+	StrikeAnim = "SwipeClaw2",
 	PathSize = 1,
 	Damage = 1,
 	Range = 1,
@@ -111,7 +112,7 @@ function DNT_MantisAtk1_StarfishAtk:GetSkillEffect(p1, p2)
 		local pB = p1 + DIR_VECTORS[dirB] + DIR_VECTORS[dir]*i
 		local damage = SpaceDamage(pA,self.Damage)
 
-		damage.sAnimation = "SwipeClaw2"
+		damage.sAnimation = self.StrikeAnim
 		ret:AddQueuedDamage(damage)
 
 		damage.loc = pB

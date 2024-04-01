@@ -61,6 +61,7 @@ DNT_AntlionAtk1 = Skill:new {
 	PathSize = 1,
 	Class = "Enemy",
 	LaunchSound = "",
+	StrikeAnim = "SwipeClaw2",
 	Crack = 1,
 	ExtraTiles = false,
 	TipImage = {
@@ -113,7 +114,7 @@ function DNT_AntlionAtk1:GetSkillEffect(p1,p2)
 		--HOOK_pawnDamaged
 		damage = SpaceDamage(target,self.Damage)
 		damage.sSound = "/enemy/burrower_1/attack"
-		damage.sAnimation = "SwipeClaw2"
+		damage.sAnimation = self.StrikeAnim
 		ret:AddQueuedMelee(p1, damage, NO_DELAY)
 		ret:AddQueuedDelay(0.2)
 	end

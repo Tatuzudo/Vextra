@@ -161,6 +161,7 @@ DNT_CockroachAtk1 = LineArtillery:new {
 	SelfDamage = 1,
 	Class = "Enemy",
 	PathSize = 1,
+	StrikeAnim = "ExploArt1",
 	Projectile = "effects/shotup_ant1.png",
 	ImpactSound = "/impact/generic/explosion",
 	LaunchSound = "",
@@ -221,7 +222,7 @@ function DNT_CockroachAtk1:GetSkillEffect(p1,p2)
 
 	for _, target in pairs(targets) do
 		local damage = SpaceDamage(target, self.Damage)
-		damage.sAnimation = "ExploArt1"
+		damage.sAnimation = self.StrikeAnim
 		if Board:IsValid(target) then
 			ret:AddQueuedArtillery(damage,self.Projectile, NO_DELAY)
 		end

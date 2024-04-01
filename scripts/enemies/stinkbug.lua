@@ -118,6 +118,7 @@ DNT_StinkbugAtk1 = Skill:new {
 	LaunchSound = "",
 	PathSize = 1,
 	FartRange = 1,
+	StrikeAnim = "explomosquito_",
 	Icon = "weapons/enemy_leaper1.png",
 	SoundBase = "/enemy/mosquito_1",
 	CustomTipImage = "DNT_StinkbugAtk_Tip",
@@ -182,7 +183,7 @@ function DNT_StinkbugAtk1:GetSkillEffect(p1,p2)
 	end
 
 	local damage = SpaceDamage(p2,self.Damage) -- attack
-	damage.sAnimation = "explomosquito_"..dir
+	damage.sAnimation = self.StrikeAnim..dir
 	damage.sSound = self.SoundBase.."/attack"
 	ret:AddQueuedMelee(p1,damage)
 
@@ -279,7 +280,7 @@ function DNT_StinkbugAtk_Tip:GetSkillEffect(p1,p2)
 	local anim3 = IsPassiveSkill("Electric_Smoke") and "DNT_FartAppearDark" or "DNT_FartAppear"
 
 	local damage = SpaceDamage(p2,self.Damage) -- attack
-	damage.sAnimation = "explomosquito_"..dir
+	damage.sAnimation = self.StrikeAnim..dir
 	damage.sSound = self.SoundBase.."/attack"
 	ret:AddQueuedMelee(p1,damage)
 

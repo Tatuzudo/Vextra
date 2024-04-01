@@ -94,6 +94,7 @@ DNT_IceCrawlerAtk1 = Skill:new {
 	ImpactSound = "/impact/generic/explosion",
 	Projectile = "effects/shot_tankice",
 	PathSize = 1,
+	StrikeAnim = "chillthrower",
 	Icon = "weapons/enemy_leaper1.png",
 	SoundBase = "/enemy/leaper_1",
 	TipImage = {
@@ -157,7 +158,7 @@ function DNT_IceCrawlerAtk1:GetSkillEffect(p1,p2)
 	end
 	local distance = p1:Manhattan(curr)
 	local animation = SpaceDamage(curr,0)
-	animation.sAnimation = "chillthrower"..distance.."_"..dir
+	animation.sAnimation = self.StrikeAnim..distance.."_"..dir
 
 	local animation2 = nil --I need this later
 
@@ -172,7 +173,7 @@ function DNT_IceCrawlerAtk1:GetSkillEffect(p1,p2)
 
 		local distance2 = p1:Manhattan(curr)
 		animation2 = SpaceDamage(curr,0)
-		animation2.sAnimation = "chillthrower"..distance2.."_"..backdir
+		animation2.sAnimation = self.StrikeAnim..distance2.."_"..backdir
 		animation2.sSound = "/weapons/flamespreader"
 	end
 
@@ -212,7 +213,7 @@ function DNT_IceCrawlerAtk1:GetSkillEffect(p1,p2)
 					local tpawn = Board:GetPawn(curr)
 					if tpawn and tpawn:GetTeam() == TEAM_ENEMY then DNT_DES_Count = DNT_DES_Count + 1 end
 					damage = SpaceDamage(curr,currentDamage)
-					damage.sAnimation = "chillthrower1_"..currdir
+					damage.sAnimation = self.StrikeAnim.."1_"..currdir
 					-- damage.sSound = self.SoundBase.."/attack"
 					ret:AddQueuedDamage(damage)
 				end

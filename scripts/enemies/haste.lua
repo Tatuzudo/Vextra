@@ -13,6 +13,11 @@ local function IsTipImage()
 	return Board:GetSize() == Point(6,6)
 end
 
+-- eggman
+local options = mod_loader.currentModContent[mod.id].options
+local date = os.date("*t")
+local is_april_first = (date["month"] == 4 and date["day"] == 1) or (options.DNT_FoolEnabled and options.DNT_FoolEnabled.enabled)
+
 -------------
 --  Icons  --
 -------------
@@ -95,6 +100,17 @@ DNT_Haste_Passive = PassiveSkill:new{
 	}
 }
 
+if is_april_first then
+	DNT_Haste_Passive.Name = "Gotta Go Slow"
+	DNT_Haste_Passive.Description = "All player units receive -1 movement at the start of every turn."
+	DNT_Haste_Passive.TipImage = {
+		Unit = Point(2,3),
+		CustomPawn = "DNT_Haste1",
+		Target = Point(2,2),
+		Enemy = Point(1,0),
+	}
+end
+
 function DNT_Haste_Passive:GetSkillEffect(p1,p2) -- for passive preview
 	return SkillEffect()
 end
@@ -103,13 +119,18 @@ DNT_Haste_Passive_Tip = DNT_Haste_Passive:new{}
 
 function DNT_Haste_Passive_Tip:GetSkillEffect(p1,p2)
 	local ret = SkillEffect()
-
+	
 	Board:Ping(Point(1,0),GL_Color(0,255,0))
 	Board:GetPawn(Point(1,0)):AddMoveBonus(2)
-
-	ret:AddMove(Board:GetPath(Point(1,0), Point(3,3), PATH_GROUND), FULL_DELAY)
+	
+	if is_april_first then
+		ret:AddMove(Board:GetPath(Point(1,0), Point(2,1), PATH_GROUND), FULL_DELAY)
+	else
+		ret:AddMove(Board:GetPath(Point(1,0), Point(3,3), PATH_GROUND), FULL_DELAY)
+	end
+	
 	ret:AddDelay(1)
-
+	
 	return ret
 end
 
@@ -135,6 +156,8 @@ DNT_Haste1 = Pawn:new{
 }
 AddPawn("DNT_Haste1")
 
+if is_april_first then DNT_Haste1.Name = "Eggman Psion" end
+
 ----------------------
 -- Helper Functions --
 ----------------------
@@ -142,11 +165,23 @@ AddPawn("DNT_Haste1")
 local DNT_PSION = "DNT_Haste1"
 
 local function DNT_PsionTarget(pawn)
-	if GetCurrentMission() and pawn then
-		if GetCurrentMission()[DNT_PSION] and pawn:GetMoveSpeed() > 0 and pawn:GetType() ~= DNT_PSION then
-			if pawn:GetTeam() == TEAM_ENEMY or (IsPassiveSkill("Psion_Leech") and pawn:IsMech()) then
-				if _G[pawn:GetType()].DefaultFaction ~= FACTION_BOTS and not _G[pawn:GetType()].Minor then
-					return true
+	if is_april_first then
+		if GetCurrentMission() and pawn then
+			if GetCurrentMission()[DNT_PSION] and pawn:GetType() ~= DNT_PSION then
+				if pawn:GetTeam() == TEAM_PLAYER or (IsPassiveSkill("Psion_Leech") and pawn:GetTeam() == TEAM_ENEMY) then
+					if _G[pawn:GetType()].DefaultFaction ~= FACTION_BOTS and not _G[pawn:GetType()].Minor then
+						return true
+					end
+				end
+			end
+		end
+	else
+		if GetCurrentMission() and pawn then
+			if GetCurrentMission()[DNT_PSION] and pawn:GetMoveSpeed() > 0 and pawn:GetType() ~= DNT_PSION then
+				if pawn:GetTeam() == TEAM_ENEMY or (IsPassiveSkill("Psion_Leech") and pawn:IsMech()) then
+					if _G[pawn:GetType()].DefaultFaction ~= FACTION_BOTS and not _G[pawn:GetType()].Minor then
+						return true
+					end
 				end
 			end
 		end
@@ -195,13 +230,20 @@ local DNT_psionTraitB = function(trait,pawn)
 	end
 end
 
+local trait_title = "Gotta Go Fast"
+local trait_desc = "The Sonic Psion will add +2 bonus movement to all Vek at the turn start."
+if is_april_first then
+	trait_title = "Gotta Go Slow"
+	trait_desc = "The Eggman Psion is reducing the movement of all player units by 1 at the start of every turn."
+end
+
 trait:add{
 	func = DNT_psionTrait,
 	icon = "img/combat/icons/icon_kickoff.png",
 	icon_glow = "img/combat/icons/icon_kickoff_glow.png",
 	icon_offset = Point(0,9),
-	desc_title = "Gotta Go Fast",
-	desc_text = "The Sonic Psion will add +2 bonus movement to all Vek at the turn start.",
+	desc_title = trait_title,
+	desc_text = trait_desc,
 }
 
 trait:add{
@@ -209,8 +251,8 @@ trait:add{
 	icon = "img/combat/icons/icon_kickoff.png",
 	icon_glow = "img/combat/icons/icon_kickoff_glow.png",
 	icon_offset = Point(-1,14),
-	desc_title = "Gotta Go Fast",
-	desc_text = "The Sonic Psion will add +2 bonus movement to all Vek at the turn start.",
+	desc_title = trait_title,
+	desc_text = trait_desc,
 }
 
 ------------------------
@@ -218,6 +260,7 @@ trait:add{
 ------------------------
 
 local DNT_SPEED = 2
+if is_april_first then DNT_SPEED = -1 end
 
 local HOOK_pawnTracked = function(mission, pawn)
 	if isMissionBoard() then
@@ -261,8 +304,10 @@ local HOOK_pawnUntracked = function(mission, pawn)
 end
 
 local function HOOK_nextTurn(mission)
+	local turn = is_april_first and TEAM_PLAYER or TEAM_ENEMY
+	-- local turn = TEAM_ENEMY
 	if Board:GetTurn() ~= 0 then
-		if mission[DNT_PSION] and Game:GetTeamTurn() == TEAM_ENEMY then
+		if mission[DNT_PSION] and Game:GetTeamTurn() == turn then
 			local pawnList = extract_table(Board:GetPawns(TEAM_ANY))
 			for i = 1, #pawnList do
 				local currPawn = Board:GetPawn(pawnList[i])

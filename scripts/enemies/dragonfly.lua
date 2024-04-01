@@ -63,6 +63,10 @@ DNT_DragonflyAtk1 = Skill:new {
 	Class = "Enemy",
 	PathSize = 1,
 	LaunchSound = "",
+	StrikeAnim = "explopush2_",
+	ExploAnimSuccess = "ExploAir1",
+	ExploAnimFail = "ExploRaining1",
+	
 	Fire = 1,
 	TipImage = { --This is all tempalate and probably needs to change
 		Unit = Point(2,3),
@@ -137,14 +141,14 @@ function DNT_DragonflyAtk1:GetSkillEffect(p1,p2)
 		damage.iSmoke = 2 --Disperse
 		damage.iFire = self.Fire
 		damage.sSound = "/weapons/flamespreader"
-		damage.sAnimation = "explopush2_"..dir
+		damage.sAnimation = self.StrikeAnim..dir
 		ret:AddQueuedDamage(damage)
 		for i= -1, 1 do
 			local target = p2 + DIR_VECTORS[dir] + DIR_VECTORS[(dir+1)%4]*i
 			if Board:IsValid(target) then
 				damage = SpaceDamage(target,self.Damage)
 				damage.iFire = self.Fire
-				damage.sAnimation = "ExploAir1"
+				damage.sAnimation = self.ExploAnimSuccess
 				ret:AddQueuedDamage(damage)
 			end
 		end
@@ -152,7 +156,7 @@ function DNT_DragonflyAtk1:GetSkillEffect(p1,p2)
 		damage = SpaceDamage(p2,self.Damage)
 		damage.iFire = self.Fire
 		damage.sSound = "/weapons/flamespreader"
-		damage.sAnimation = "ExploRaining1"
+		damage.sAnimation = self.ExploAnimFail
 		ret:AddQueuedDamage(damage)
 	end
 	return ret
@@ -186,6 +190,7 @@ DNT_DragonflyAtkB = LineArtillery:new {
 	PathSize = 1,
 	LaunchSound = "",
 	Fire = 1,
+	UpShot = "effects/shotup_ignite_fireball.png",
 	TipImage = { --This is all tempalate and probably needs to change
 		Unit = Point(2,4),
 		Target = Point(2,2),
@@ -249,15 +254,15 @@ function DNT_DragonflyAtkB:GetSkillEffect(p1,p2)
 		damage.iSmoke = 2 --Disperse
 		damage.iFire = self.Fire
 		damage.sSound = "/weapons/flamespreader"
-		damage.sAnimation = "explopush2_"..dir
-		ret:AddQueuedArtillery(damage, "effects/shotup_ignite_fireball.png", NO_DELAY)
+		damage.sAnimation = self.StrikeAnim..dir
+		ret:AddQueuedArtillery(damage, self.UpShot, NO_DELAY)
 		ret:AddQueuedDelay(0.8)
 		for i= -1, 1 do
 			local target = p2 + DIR_VECTORS[dir] + DIR_VECTORS[(dir+1)%4]*i
 			if Board:IsValid(target) then
 				damage = SpaceDamage(target,self.Damage)
 				damage.iFire = self.Fire
-				damage.sAnimation = "ExploAir1"
+				damage.sAnimation = self.ExploAnimSuccess
 				ret:AddQueuedDamage(damage)
 			end
 		end
@@ -265,8 +270,8 @@ function DNT_DragonflyAtkB:GetSkillEffect(p1,p2)
 		damage = SpaceDamage(p2,self.Damage)
 		damage.iFire = self.Fire
 		damage.sSound = "/weapons/flamespreader"
-		damage.sAnimation = "ExploRaining1"
-		ret:AddQueuedArtillery(damage, "effects/shotup_ignite_fireball.png", FULL_DELAY)
+		damage.sAnimation = self.ExploAnimFail
+		ret:AddQueuedArtillery(damage, self.UpShot, FULL_DELAY)
 	end
 	return ret
 end

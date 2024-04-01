@@ -65,6 +65,14 @@ local function init(self)
 		local name = table[1]
 		require(self.scriptPath .. "enemies/" .. string.lower(name))
 	end
+
+	--Fool???? If you see this, don't spoil :eyes:
+	local date = os.date("*t")
+	local is_april_first = date["month"] == 4 and date["day"] == 1
+
+	if (options.DNT_FoolEnabled and options.DNT_FoolEnabled.enabled) or is_april_first then
+		require(self.scriptPath.."fool/init")
+	end
 end
 
 
@@ -122,6 +130,17 @@ local function metadata()
 		"Ladybug Wind Torrent Exception",
 		"Check to prevent the Ladybug from affecting wind torrent. (restart required)",
 		{ enabled = false }
+	)
+	modApi:addGenerationOption(
+		"DNT_FoolEnabled",
+		"Spoiler Option",
+		"DON'T CLICK if you want to stay spoiler free",
+		{
+			values = {true, true, false},
+			strings = {"Spoiler Content Ahead", "Turn on Fool", "Turn off Fool"},
+			tooltips = {"You've been spoiled. April Fools!", "Turn on the April Fools Content (requires restart)", "Turn off the April Fools Content (requires restart)"},
+			value = "Spoiler Content Ahead",
+		}
 	)
 
 end
