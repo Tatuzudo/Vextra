@@ -66,7 +66,7 @@ DNT_DragonflyAtk1 = Skill:new {
 	StrikeAnim = "explopush2_",
 	ExploAnimSuccess = "ExploAir1",
 	ExploAnimFail = "ExploRaining1",
-	
+
 	Fire = 1,
 	TipImage = { --This is all tempalate and probably needs to change
 		Unit = Point(2,3),
@@ -191,6 +191,10 @@ DNT_DragonflyAtkB = LineArtillery:new {
 	LaunchSound = "",
 	Fire = 1,
 	UpShot = "effects/shotup_ignite_fireball.png",
+	StrikeAnim = "explopush2_",
+	ExploAnimSuccess = "ExploAir1",
+	ExploAnimFail = "ExploRaining1",
+
 	TipImage = { --This is all tempalate and probably needs to change
 		Unit = Point(2,4),
 		Target = Point(2,2),

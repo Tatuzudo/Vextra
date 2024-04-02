@@ -175,3 +175,7 @@ Made the secret squad more fun to play
 Misc.
 Generally cleaned up some of the code
 Changed the order of the secret squad in the hangar to be more accurate
+
+Version 1.1.1
+Swapped the april fools options around to provide more freedom. Defaults to false
+Fixed a few bugs

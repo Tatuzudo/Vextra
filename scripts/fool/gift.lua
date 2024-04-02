@@ -97,6 +97,10 @@ local boss_odds = .01
 
 function DNT_Gift1:GetDeathEffect(p)
   local ret = SkillEffect()
+	local pawn = Board:GetPawn(p)
+	if pawn then
+		return ret
+	end
   local mission = GetCurrentMission()
 
 	ret:AddSound("ui/battle/emerge_resisted")

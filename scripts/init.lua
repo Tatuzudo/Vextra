@@ -70,7 +70,7 @@ local function init(self)
 	local date = os.date("*t")
 	local is_april_first = date["month"] == 4 and date["day"] == 1
 
-	if (options.DNT_FoolEnabled and options.DNT_FoolEnabled.value) or is_april_first then
+	if (options.DNT_FoolEnabled and options.DNT_FoolEnabled.value ~= "Off") or is_april_first then
 		require(self.scriptPath.."fool/init")
 	end
 end
@@ -133,12 +133,12 @@ local function metadata()
 	)
 	modApi:addGenerationOption(
 		"DNT_FoolEnabled",
-		"Spoiler Option",
-		"DON'T CLICK if you want to stay spoiler free",
+		"April Fools Content",
+		"Turn On or Off the April Fools Content (restart required)",
 		{
-			values = {true, true, false},
-			strings = {"Spoiler Content Ahead", "Turn on Fool", "Turn off Fool"},
-			tooltips = {"You've been spoiled. April Fools!", "Turn on the April Fools Content (requires restart)", "Turn off the April Fools Content (requires restart)"},
+			values = {"Off", "Part_On", "On"},
+			strings = {"All Fool Content Off", "Aesthetic Fool Content On", "All Fool Content On"},
+			tooltips = {"Turns off all april fools content.", "Turns on only the aesthetic fool content changes (no gameplay changes).", "Turn on all april fools content."},
 		}
 	)
 
@@ -151,7 +151,7 @@ return {
 	description = "VEK + EXTRA", --I love how this is still our description
 	modApiVersion = "2.9.1",
 	gameVersion = "1.2.83",
-  version = "1.1.0",
+  version = "1.1.1",
 	requirements = { "kf_ModUtils" },
 	dependencies = {
 		modApiExt = "1.21",

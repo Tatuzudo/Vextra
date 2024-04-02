@@ -16,7 +16,7 @@ end
 -- eggman
 local options = mod_loader.currentModContent[mod.id].options
 local date = os.date("*t")
-local is_april_first = (date["month"] == 4 and date["day"] == 1) or (options.DNT_FoolEnabled and options.DNT_FoolEnabled.value)
+local is_april_first = (date["month"] == 4 and date["day"] == 1) or (options.DNT_FoolEnabled and options.DNT_FoolEnabled.value == "On")
 
 -------------
 --  Icons  --

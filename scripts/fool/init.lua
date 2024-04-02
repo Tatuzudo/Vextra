@@ -2,13 +2,21 @@ local mod = mod_loader.mods[modApi.currentMod]
 local resourcePath = mod.resourcePath
 local scriptPath = mod.scriptPath
 
+local options = mod_loader.currentModContent[mod.id].options
+local date = os.date("*t")
+local is_april_first = (date["month"] == 4 and date["day"] == 1)
+
+--Only gets here if it is april first or it isn't off
 require(scriptPath.."fool/units")
 require(scriptPath.."fool/portraits")
 require(scriptPath.."fool/confetti")
 
-require(scriptPath.."fool/new_vek_spawns")
-require(scriptPath.."fool/clown")
-require(scriptPath.."fool/gift")
+--gameplay changes (april first or value is set to On)
+if (is_april_first or (options.DNT_FoolEnabled and options.DNT_FoolEnabled.value == "On")) then
+  require(scriptPath.."fool/new_vek_spawns")
+  require(scriptPath.."fool/clown")
+  require(scriptPath.."fool/gift")
+end
 
 
 
